@@ -4,11 +4,10 @@ PortSystem          1.0
 PortGroup           openssl 1.0
 
 name                stunnel
-version             5.67
+version             5.74
 revision            0
 set major           [lindex [split ${version} .] 0]
 categories          security net
-platforms           darwin
 maintainers         {mps @Schamschula} openmaintainer
 license             GPL-2+
 
@@ -27,9 +26,9 @@ master_sites        https://www.stunnel.org/downloads/archive/${major}.x/ \
                     http://ftp.nluug.nl/pub/networking/stunnel/archive/${major}.x/ \
                     http://stunnel.cybermirror.org/archive/${major}.x/
 
-checksums           rmd160  80bb9616fbab5aef8a09187277df1d99708aabee \
-                    sha256  3086939ee6407516c59b0ba3fbf555338f9d52f459bcab6337c0f00e91ea8456 \
-                    size    881256
+checksums           rmd160  e5e5c8430de2865960e280e9c5ea99f029c6afa1 \
+                    sha256  9bef235ab5d24a2a8dff6485dfd782ed235f4407e9bc8716deb383fc80cd6230 \
+                    size    904360
 
 openssl.branch      no_version
 
@@ -37,7 +36,8 @@ patchfiles          patch-configure \
                     patch-src-client.c.diff
 
 configure.args      --disable-libwrap \
-                    --disable-silent-rules
+                    --disable-silent-rules \
+                    ac_cv_search_mi_malloc=no
 
 variant openssl1 conflicts openssl3 description (Use openssl 1.1.1) {
     openssl.branch  1.1
@@ -58,6 +58,11 @@ default_variants    +openssl3
 variant libwrap description {Include libwrap support} {
     depends_lib-append      port:tcp_wrappers
     configure.args-delete   --disable-libwrap
+}
+
+variant mimalloc description {Build with mimalloc support} {
+    depends_lib-append      port:mimalloc
+    configure.args-delete   ac_cv_search_mi_malloc=no
 }
 
 if {${os.arch} ne "powerpc"} {

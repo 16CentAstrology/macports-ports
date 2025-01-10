@@ -4,26 +4,27 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-charset-normalizer
-version             3.0.1
+version             3.4.0
 revision            0
+distname            charset_normalizer-${version}
 categories-append   devel
 license             MIT
 supported_archs     noarch
 platforms           {darwin any}
 
-python.versions     35 36 37 38 39 310 311
+python.versions     36 37 38 39 310 311 312 313
 python.pep517       yes
 
 maintainers         {stromnov @stromnov} openmaintainer
 
 description         A library that helps you read text from an unknown charset encoding.
-long_description    ${description}
+long_description    {*}${description}
 
 homepage            https://github.com/ousret/charset_normalizer
 
-checksums           rmd160  40ae9e8c29a745dc3e7649fa8f00334d1e373157 \
-                    sha256  ebea339af930f8ca5d7a699b921106c6e29c617fe9606fa7baa043c1cdae326f \
-                    size    92842
+checksums           rmd160  f733bdb195d6b6185a5310dece74784de8c94b49 \
+                    sha256  223217c3d4f82c3ac5e29032b3f1c2eb0fb591b72161f86d93f5719079dae93e \
+                    size    106620
 
 if {${name} ne ${subport}} {
     if {${python.version} < 37} {

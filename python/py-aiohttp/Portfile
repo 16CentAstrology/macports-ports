@@ -4,11 +4,11 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-aiohttp
-version             3.8.3
+version             3.11.11
 categories-append   devel
 license             Apache-2
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
 maintainers         {ipglider.org:miguel @ipglider} openmaintainer
 
@@ -20,26 +20,22 @@ long_description    aiohttp key futures are the support for both client and \
 
 homepage            https://github.com/aio-libs/aiohttp
 
-checksums           rmd160  c92cb5b207ffbf219fbf49f3186f2b5b80d268ae \
-                    sha256  3828fb41b7203176b82fe5d699e0d845435f2374750a44b480ea6b930f6be269 \
-                    size    7337480
+checksums           rmd160  0215514e01393e9b482704f7a963d69cd86a2a83 \
+                    sha256  bb49c7f1e6ebf3821a42d81d494f538107610c3a705987f53068546b0e90303e \
+                    size    7669618
 
 if {${name} ne ${subport}} {
-    depends_build-append    port:py${python.version}-setuptools
-
     depends_lib-append      port:py${python.version}-aiodns \
+                            port:py${python.version}-aiohappyeyeballs \
                             port:py${python.version}-aiosignal \
-                            port:py${python.version}-async-timeout \
                             port:py${python.version}-attrs \
                             port:py${python.version}-brotli \
-                            port:py${python.version}-cchardet \
-                            port:py${python.version}-charset-normalizer \
                             port:py${python.version}-frozenlist \
                             port:py${python.version}-multidict \
+                            port:py${python.version}-propcache \
                             port:py${python.version}-yarl
 
-    if {${python.version} < 38} {
-        depends_lib-append  port:py${python.version}-asynctest \
-                            port:py${python.version}-typing_extensions
+    if {${python.version} < 311} {
+        depends_lib-append  port:py${python.version}-async-timeout
     }
 }

@@ -2,9 +2,10 @@
 
 PortSystem       1.0
 
-name             jdk17
+set feature 17
+name             jdk${feature}
 categories       java devel
-maintainers      {breun.nl:nils @breun} openmaintainer
+maintainers      nomaintainer
 platforms        darwin
 # This port uses prebuilt binaries; 'NoMirror' makes sure MacPorts doesn't mirror/distribute these third-party binaries
 license          NFTC NoMirror
@@ -14,26 +15,28 @@ universal_variant no
 supported_archs  x86_64 arm64
 
 # https://www.oracle.com/java/technologies/downloads/#jdk17-mac
-version      17.0.6
+version      ${feature}.0.12
 revision     0
 
-description  Oracle Java SE Development Kit 17
+description  Oracle Java SE Development Kit ${feature}
 long_description Java Platform, Standard Edition Development Kit (JDK). \
     The JDK is a development environment for building applications and components using the Java programming language. \
-    This software is provided under the Oracle No-Fee Terms and Conditions (NFTC) license (https://java.com/freeuselicense).
+    This software is provided under the Oracle No-Fee Terms and Conditions (NFTC) license (https://java.com/freeuselicense). \
+    Oracle JDK ${feature}.0.13 and later are only available under the OTN license and therefore cannot be made available via MacPorts. \
+    If you require an up-to-date JDK ${feature}, consider installing the 'openjdk${feature}' or another openjdk${feature}-* port instead.
 
-master_sites https://download.oracle.com/java/17/archive/
+master_sites https://download.oracle.com/java/${feature}/archive/
 
 if {${configure.build_arch} eq "x86_64"} {
     distname     jdk-${version}_macos-x64_bin
-    checksums    rmd160  dccf058127d4b3f4e8b740c37aa989069505fd77 \
-                 sha256  75ff8fd2306fd5b8c14454e4e677dc414ebf50f9dd887b9a790b2ce808ac9d0a \
-                 size    178373401
+    checksums    rmd160  cf665cf7137fadc32ea734aa53f81ba6a69cf044 \
+                 sha256  4a157a935142096e1bac83e53a458e41c05c4aad0e8414c0a5c01f36dc44c901 \
+                 size    179208015
 } elseif {${configure.build_arch} eq "arm64"} {
     distname     jdk-${version}_macos-aarch64_bin
-    checksums    rmd160  69bddf1ea802e5a9a5c5adfd9ce78164f3be0fe6 \
-                 sha256  efded5026943e43a26d149dbbe84b37c97771c87cf2a26ed2c141a61c8055acf \
-                 size    175659085
+    checksums    rmd160  038d49828e5e8bf5ab49780e1e0914fd8f22c349 \
+                 sha256  d8866b3678123c629c1c0fb3bdd95e984fba415b17511c7a6ff2c95ff4e9a34c \
+                 size    177042954
 }
 
 worksrcdir   jdk-${version}.jdk
@@ -42,7 +45,7 @@ homepage     https://www.oracle.com/java/
 
 livecheck.type      regex
 livecheck.url       https://www.oracle.com/java/technologies/downloads/
-livecheck.regex     Java SE Development Kit (17\.\[0-9\.\]+)
+livecheck.regex     JDK Development Kit (${feature}\.\[0-9\.\]+) downloads
 
 use_configure    no
 build {}
@@ -75,17 +78,21 @@ test.args   -version
 # macOS Java tools expect to find Java virtual machines under /Library/Java/JavaVirtualMachines, which is not under ${prefix}.
 destroot.violate_mtree yes
 
-set target /Library/Java/JavaVirtualMachines/${name}
-set destroot_target ${destroot}${target}
+set jvms /Library/Java/JavaVirtualMachines
+set jdk ${jvms}/${name}
 
 destroot {
-    xinstall -m 755 -d ${destroot_target}
-    copy ${worksrcpath}/Contents ${destroot_target}
+    xinstall -m 755 -d ${destroot}${prefix}${jdk}
+    copy ${worksrcpath}/Contents ${destroot}${prefix}${jdk}
+
+    # macOS Java tools expect to find Java virtual machines under /Library/Java/JavaVirtualMachines, so let's create a symlink there
+    xinstall -m 755 -d ${destroot}${jvms}
+    ln -s ${prefix}${jdk} ${destroot}${jdk}
 }
 
 notes "
 If you have more than one JDK installed you can make ${name} the default\
 by adding the following line to your shell profile:
 
-    export JAVA_HOME=${target}/Contents/Home
+    export JAVA_HOME=${jdk}/Contents/Home
 "

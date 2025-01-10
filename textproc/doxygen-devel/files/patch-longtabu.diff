@@ -1,6 +1,15 @@
---- src/latexdocvisitor.cpp.orig
+Description: work around latex tabu bug
+Last-Update: 2019-02-01
+Forwarded: https://bugs.debian.org/920621
+Author: Paolo Greppi <paolo.greppi@libpf.com>
+
+Updated: 2024-09-13
+
+Index: doxygen/src/latexdocvisitor.cpp
+===================================================================
+--- src/latexdocvisitor.cpp
 +++ src/latexdocvisitor.cpp
-@@ -1119,7 +1119,7 @@
+@@ -1194,7 +1194,7 @@
    }
    else
    {
@@ -9,9 +18,11 @@
    }
    //return isNested ? "TabularNC" : "TabularC";
  }
---- templates/latex/doxygen.sty.orig
+Index: doxygen/templates/latex/doxygen.sty
+===================================================================
+--- templates/latex/doxygen.sty
 +++ templates/latex/doxygen.sty
-@@ -339,10 +339,10 @@
+@@ -350,10 +350,10 @@
      \tabulinesep=1mm%
      \par%
      \ifthenelse{\equal{#1}{}}%
@@ -25,7 +36,7 @@
      }
      \multicolumn{2}{l}{\hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #2}\\[1ex]%
      \hline%
-@@ -359,7 +359,7 @@
+@@ -370,7 +370,7 @@
  \newenvironment{DoxyFields}[1]{%
      \tabulinesep=1mm%
      \par%
@@ -34,16 +45,18 @@
      \multicolumn{3}{l}{\hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #1}\\[1ex]%
      \hline%
      \endfirsthead%
-@@ -375,7 +375,7 @@
- \newenvironment{DoxyEnumFields}[1]{%
+@@ -387,8 +387,8 @@
      \tabulinesep=1mm%
      \par%
--    \begin{longtabu*}spread 0pt [l]{|X[-1,r]|X[-1,l]|}%
-+    \begin{longtabu*}spread 0pt [l]{|c|p{1cm}|}%
-     \multicolumn{2}{l}{\hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #1}\\[1ex]%
+     \ifthenelse{\equal{#1}{2}}%
+-      {\begin{longtabu*}spread 0pt [l]{|X[-1,r]|X[-1,l]|}}%
+-      {\begin{longtabu*}spread 0pt [l]{|X[-1,l]|X[-1,r]|X[-1,l]|}}% with init value
++      {\begin{longtabu*}spread 0pt [l]{|c|p{1cm}|}%
++      {\begin{longtabu*}spread 0pt [l]{|c|c|p{1cm}|}}% with init value
+     \multicolumn{2}{l}{\hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #2}\\[1ex]%
      \hline%
      \endfirsthead%
-@@ -397,7 +397,7 @@
+@@ -410,7 +410,7 @@
  \newenvironment{DoxyRetVals}[1]{%
      \tabulinesep=1mm%
      \par%
@@ -52,7 +65,7 @@
      \multicolumn{2}{l}{\hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #1}\\[1ex]%
      \hline%
      \endfirsthead%
-@@ -413,7 +413,7 @@
+@@ -426,7 +426,7 @@
  \newenvironment{DoxyExceptions}[1]{%
      \tabulinesep=1mm%
      \par%
@@ -61,7 +74,7 @@
      \multicolumn{2}{l}{\hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #1}\\[1ex]%
      \hline%
      \endfirsthead%
-@@ -429,7 +429,7 @@
+@@ -442,7 +442,7 @@
  \newenvironment{DoxyTemplParams}[1]{%
      \tabulinesep=1mm%
      \par%
@@ -70,7 +83,7 @@
      \multicolumn{2}{l}{\hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #1}\\[1ex]%
      \hline%
      \endfirsthead%
-@@ -505,11 +505,11 @@
+@@ -518,11 +518,11 @@
  \newcommand{\PBS}[1]{\let\temp=\\#1\let\\=\temp}%
  \newenvironment{TabularC}[1]%
  {\tabulinesep=1mm

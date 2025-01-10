@@ -2,7 +2,8 @@
 
 PortSystem       1.0
 
-name             openjdk11-openj9
+set feature 11
+name             openjdk${feature}-openj9
 categories       java devel
 maintainers      {breun.nl:nils @breun} openmaintainer
 platforms        darwin
@@ -14,28 +15,28 @@ universal_variant no
 # https://developer.ibm.com/languages/java/semeru-runtimes/downloads?os=macOS
 supported_archs  x86_64 arm64
 
-version      11.0.17
+version      ${feature}.0.25
 revision     0
 
-set build    8
-set openj9_version 0.35.0
+set build    9
+set openj9_version 0.48.0
 
-description  IBM Semeru with Eclipse OpenJ9 VM distribution, based on OpenJDK 11
+description  IBM Semeru with Eclipse OpenJ9 VM distribution, based on OpenJDK ${feature} (Long Term Support)
 long_description The IBM Semeru Runtimes are free production-ready open source binaries to run your Java applications\
                  built with the OpenJDK class libraries and the Eclipse OpenJ9 JVM.
 
-master_sites https://github.com/ibmruntimes/semeru11-binaries/releases/download/jdk-${version}%2B${build}_openj9-${openj9_version}/
+master_sites https://github.com/ibmruntimes/semeru${feature}-binaries/releases/download/jdk-${version}%2B${build}_openj9-${openj9_version}/
 
 if {${configure.build_arch} eq "x86_64"} {
     distname     ibm-semeru-open-jdk_x64_mac_${version}_${build}_openj9-${openj9_version}
-    checksums    rmd160  f59d0f69cbac234e62db9bcaa06679226ccb0418 \
-                 sha256  ad1cca11ae20da23d2d0b5ee8977b8c588119f6b4877249f385736b3034e4065 \
-                 size    204538090
+    checksums    rmd160  b5baf4b4b3981f726bec4acce1097cb6d30cc406 \
+                 sha256  059115dd6d00eed7ad04cf466b33bd22c71ec56f682b0a1863e09d9329a3134a \
+                 size    208171243
 } elseif {${configure.build_arch} eq "arm64"} {
     distname     ibm-semeru-open-jdk_aarch64_mac_${version}_${build}_openj9-${openj9_version}
-    checksums    rmd160  399b96077fede1a1ff2d60080208256464ca21e7 \
-                 sha256  c7dbae2bd708bd642245b996ce28bd4918dc3aaece3b40df4d02d3751f63aca3 \
-                 size    198855023
+    checksums    rmd160  1394708a7d76adbe6168bc10338987772364e830 \
+                 sha256  1e01ff2d62e5cfca84e431a1b5384c8ff7f6a9ba3f31c18784dd848196b2806f \
+                 size    202399507
 }
 
 worksrcdir   jdk-${version}+${build}
@@ -43,8 +44,8 @@ worksrcdir   jdk-${version}+${build}
 homepage     https://developer.ibm.com/languages/java/semeru-runtimes/
 
 livecheck.type      regex
-livecheck.url       https://github.com/ibmruntimes/semeru11-binaries/releases/
-livecheck.regex     ibm-semeru-open-jdk_.*_mac_(11\.\[0-9\.\]+)_\[0-9\]+_openj9-\[0-9\.\]+\.tar\.gz
+livecheck.url       https://github.com/ibmruntimes/semeru${feature}-binaries/releases/
+livecheck.regex     ibm-semeru-open-jdk_.*_mac_(${feature}\.\[0-9\.\]+)_\[0-9\]+_openj9-\[0-9\.\]+\.tar\.gz
 
 use_configure    no
 build {}
@@ -77,17 +78,21 @@ test.args   -version
 # macOS Java tools expect to find Java virtual machines under /Library/Java/JavaVirtualMachines, which is not under ${prefix}.
 destroot.violate_mtree yes
 
-set target /Library/Java/JavaVirtualMachines/${name}
-set destroot_target ${destroot}${target}
+set jvms /Library/Java/JavaVirtualMachines
+set jdk ${jvms}/${name}
 
 destroot {
-    xinstall -m 755 -d ${destroot_target}
-    copy ${worksrcpath}/Contents ${destroot_target}
+    xinstall -m 755 -d ${destroot}${prefix}${jdk}
+    copy ${worksrcpath}/Contents ${destroot}${prefix}${jdk}
+
+    # macOS Java tools expect to find Java virtual machines under /Library/Java/JavaVirtualMachines, so let's create a symlink there
+    xinstall -m 755 -d ${destroot}${jvms}
+    ln -s ${prefix}${jdk} ${destroot}${jdk}
 }
 
 notes "
 If you have more than one JDK installed you can make ${name} the default\
 by adding the following line to your shell profile:
 
-    export JAVA_HOME=${target}/Contents/Home
+    export JAVA_HOME=${jdk}/Contents/Home
 "

@@ -4,11 +4,11 @@ PortSystem          1.0
 
 name                mtools
 conflicts           multimarkdown
-version             4.0.42
+version             4.0.46
 revision            0
-checksums           rmd160  d4ba29bffdd0bdd1b6761225cce4e53b6a6dfce1 \
-                    sha256  40a98fd9bcc865997866015013c3c64a304d98c2892fe4ab892ffd6ac3dd9bae \
-                    size    382542
+checksums           rmd160  197982c36c22de55e1d360066bcd7fe5dc0c297b \
+                    sha256  8241b370d2337968c1d1314cbdbd5d5d188ddc905f2eb1198373a2bd90c70fab \
+                    size    391300
 
 categories          sysutils
 maintainers         {ryandesign @ryandesign} openmaintainer
@@ -23,6 +23,7 @@ use_lzip            yes
 
 depends_lib         port:libiconv
 
+# https://trac.macports.org/wiki/WimplicitFunctionDeclaration#strchr
 configure.checks.implicit_function_declaration.whitelist-append strchr
 
 configure.args      --without-x

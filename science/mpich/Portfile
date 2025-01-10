@@ -20,12 +20,11 @@ PortGroup           mpiutil 1.0
 
 # make sure to keep in sync with mpi-doc
 name                mpich
-version             4.0.3
+version             4.2.3
 revision            0
 
 license             BSD
 categories          science parallel net
-platforms           darwin
 maintainers         {eborisch @eborisch} \
                     {mascguy @mascguy}
 
@@ -47,14 +46,12 @@ long_description    MPICH is a high-performance and widely portable\
 homepage            https://www.mpich.org/
 master_sites        ${homepage}static/downloads/${version}
 
-checksums \
-    rmd160  7a65f2a1d080c2b7812295a8fc0b77ec1609b166 \
-    sha256  17406ea90a6ed4ecd5be39c9ddcbfac9343e6ab4f77ac4e8c5ebe4a3e3b6c501 \
-    size    38135700
+checksums           rmd160  2863f87760058f23e7598ad851af177a666b987c \
+                    sha256  7a019180c51d1738ad9c5d8d452314de65e828ee240bcb2d1f80de9a65be88a8 \
+                    size    40268629
 
-livecheck.type      regex
-livecheck.regex     {href=.([0-9.p]+)/}
-livecheck.url       ${homepage}/static/downloads/
+# Disable livecheck for all subports; only enabled for main port, at end of portfile
+livecheck.type      none
 
 #-------------------------------------------------------------------------------
 # Target Compiler Logic
@@ -75,10 +72,17 @@ dict set clist gcc7    {macports-gcc-7}
 dict set clist gcc10   {macports-gcc-10}
 dict set clist gcc11   {macports-gcc-11}
 dict set clist gcc12   {macports-gcc-12}
+dict set clist gcc13   {macports-gcc-13}
+dict set clist gcc14   {macports-gcc-14}
 dict set clist clang11 {macports-clang-11}
 dict set clist clang12 {macports-clang-12}
 dict set clist clang13 {macports-clang-13}
 dict set clist clang14 {macports-clang-14}
+dict set clist clang15 {macports-clang-15}
+dict set clist clang16 {macports-clang-16}
+dict set clist clang17 {macports-clang-17}
+dict set clist clang18 {macports-clang-18}
+dict set clist clang19 {macports-clang-19}
 
 # Only enable default (gcc), and Xcode clang, for MacOS 10.7 and later
 if { ${os.major} >= 11 } {
@@ -106,14 +110,6 @@ if { ${os.major} >= 10 && ${os.major} <= 14 } {
         gcc9
 }
 
-# Clang 15 only available on 10.7 and later
-if {${os.major} >= 11} {
-    dict set clist clang15 {macports-clang-15}
-} else {
-    lappend clist_unsupported \
-        clang15
-}
-
 #-------------------------------------------------------------------------------
 # Subport Creation/Validation
 #-------------------------------------------------------------------------------
@@ -134,6 +130,10 @@ set subport_enabled \
 #-------------------------------------------------------------------------------
 # General Subport Logic
 #-------------------------------------------------------------------------------
+
+if {[string match {*-clang1[3-6]} $subport]} {
+    platforms   {darwin >= 11}
+}
 
 if {${subport_enabled}} {
     PortGroup select 1.0
@@ -162,6 +162,9 @@ if {${subport_enabled}} {
         }
     }
 
+    # ch4 is hanging in finalize https://github.com/pmodels/mpich/issues/6584
+    # always use ch3 for now.
+
     configure.args  --disable-dependency-tracking    \
                     --disable-fortran                \
                     --disable-silent-rules           \
@@ -176,20 +179,28 @@ if {${subport_enabled}} {
                     --with-thread-package=posix      \
                     --with-hwloc-prefix=${prefix}    \
                     --disable-collalgo-tests         \
-                    --disable-f08                    \
-                    "F90FLAGS='' F90=''"
+                    --with-device=ch4:ofi:tcp
+
+    # Hopefully avoid double-rpath issues.
+    compilers.add_gcc_rpath_support no
 
     if {${os.major} < 12} {
         # MPICH requires OpenCL version 1.2, which was not introduced until OS X Mountain Lion
         configure.args-append \
                     --enable-opencl=no
+        # https://trac.macports.org/ticket/70418 (change in scandir prototype)
+        patchfiles-append   patch-scandir-lion.diff
     }
 
     patchfiles-append \
                     patch-no_qmkshrobj.diff \
-                    patch-ch4-ipv6.diff \
-                    patch-mpich-darwin-powerpc.diff \
-                    patch-pingpong.diff
+                    patch-mpich-darwin-powerpc.diff
+
+    post-patch {
+        reinplace \
+            "s/commons_use_dylibs_works=yes/commons_use_dylibs_works=no/" \
+            configure
+    }
 
     platform darwin powerpc {
         # libfabric calls for atomicops, on PPC at least
@@ -209,9 +220,6 @@ if {${subport_enabled}} {
     # Prevent "ccache" and "distcc" from being baked into the wrapper scripts.
     configure.ccache            no
     configure.distcc            no
-
-    # don't need to livecheck all the subports, just the port
-    livecheck.type              none
 
     if {${cname} ne "mp"} {
         set compiler            [dict get ${clist} ${cname}]
@@ -291,7 +299,8 @@ if {${subport_enabled}} {
 
         if {${cname} eq "gcc10" ||
             ${cname} eq "gcc11" ||
-            ${cname} eq "gcc12"} {
+            ${cname} eq "gcc12" ||
+            ${cname} eq "gcc13"} {
             # see https://lists.mpich.org/pipermail/discuss/2020-January/005862.html
             # see https://github.com/pmodels/mpich/issues/4300
             # see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91556
@@ -326,6 +335,14 @@ if {${subport_enabled}} {
     if {${fortran_enabled}} {
         configure.args-replace  --disable-fortran \
                                 --enable-fortran
+
+        # avoid
+        #     Python 3 is required to generate F90 bindings but not found!
+        set python_branch       3.11
+        set python_version      [string map {. {}} ${python_branch}]
+        depends_build-append    port:python${python_version}
+        depends_skip_archcheck-append   port:python${python_version}
+        configure.python        ${prefix}/bin/python${python_branch}
 
         select.file             ${filespath}/portselect/${name}-${cname}-fortran
     }
@@ -393,8 +410,13 @@ if {${subport_enabled}} {
         configure.args-replace      --enable-fast=O2 \
                                     --enable-fast=all
         # Note these need to be above the following foreach
-        configure.cflags-append     -march=native
-        configure.cxxflags-append   -march=native
+        if {${build_arch} in [list ppc ppc64]} {
+            configure.cflags-append     -mtune=native
+            configure.cxxflags-append   -mtune=native
+        } else {
+            configure.cflags-append     -march=native
+            configure.cxxflags-append   -march=native
+        }
     }
 
     #---------------------------------------------------------------------------
@@ -408,4 +430,8 @@ if {${subport_enabled}} {
     PortGroup               stub 1.0
 
     depends_lib-append      port:${name}-default
+
+    livecheck.type          regex
+    livecheck.regex         {href=.([0-9.p]+)/}
+    livecheck.url           ${homepage}/static/downloads/
 }

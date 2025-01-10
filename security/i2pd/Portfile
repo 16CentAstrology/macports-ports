@@ -3,26 +3,27 @@
 PortSystem              1.0
 PortGroup               boost 1.0
 PortGroup               cmake 1.1
+PortGroup               compiler_blacklist_versions 1.0
 PortGroup               github 1.0
 PortGroup               legacysupport 1.1
 PortGroup               openssl 1.0
 
-github.setup            PurpleI2P i2pd 2.45.1
+github.setup            PurpleI2P i2pd 2.55.0
 revision                0
 categories              security net
-maintainers             {@barracuda156 gmail.com:vital.had} {@catap korins.ky:kirill} openmaintainer
+maintainers             {@barracuda156 gmail.com:vital.had} openmaintainer
 license                 BSD
 description             End-to-End encrypted and anonymous Internet
-long_description        ${description}
+long_description        {*}${description}
 homepage                https://i2pd.website \
                         https://i2pd.readthedocs.io
-checksums               rmd160  b90ad8d78eb244fa6bc365562ae7f9cfa8c3bfbd \
-                        sha256  93c087ebb9432a6b2092be098ea556a6b84e5e3677d643da75e0452bbab8f929 \
-                        size    631388
+checksums               rmd160  f6f31efe0fc65450e3f4dc583fe94316d32bbfb4 \
+                        sha256  f5792a1c0499143c716663e90bfb105aaa7ec47d1c4550b5f90ebfc25da00c6c \
+                        size    690979
+github.tarball_from     archive
 
 depends_lib-append      port:zlib
 
-patch.pre_args          -p1
 patchfiles-append       0001-i2pd.conf-adjust-for-MacPorts.patch
 
 set i2pddir             ${prefix}/var/db/${name}

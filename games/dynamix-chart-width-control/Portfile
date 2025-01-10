@@ -2,11 +2,11 @@
 
 PortSystem      1.0
 PortGroup       github 1.0
-PortGroup       makefile 1.0
+PortGroup       conflicts_build 1.0
 
-github.setup    AXIS5hacker DNX-Note-Width-Changer 0.6.2 v
+github.setup    AXIS5hacker DNX-Note-Width-Changer 1.3.2 v
 name            dynamix-chart-width-control
-revision        0
+revision        1
 categories      games
 maintainers     {i0ntempest @i0ntempest} openmaintainer
 license         MIT
@@ -16,10 +16,43 @@ long_description \
                 ${description}. \
                 Compatible with xml charts produced with DynaMaker.
 
-build.dir       ${worksrcpath}/Dynamix chart width control
-makefile.override-append \
-                PREFIX
+checksums       rmd160  a995649c00e38d76395356b1979bfe174f03e1d3 \
+                sha256  a969c681b3654d4df795e2dd8974154c938743204bf160fe87037e060efab55b \
+                size    764156
 
-checksums       rmd160  f5e751347e9e6f26fd4830355ee685894db836b3 \
-                sha256  ba0772164935a6b8c5aa804f6ce613b1bf1679740638aba06bfe82443fb4db56 \
-                size    7044
+conflicts_build libunwind
+#macosx_deployment_target 12
+
+if {${name} eq ${subport}} {
+    PortGroup       makefile 1.0
+
+    build.dir       ${worksrcpath}/Dynamix_chart_width_control
+    compiler.cxx_standard \
+                    2011
+    configure.cxxflags-append \
+                    -std=c++11
+    makefile.override-append \
+                    PREFIX
+}
+
+subport ${name}-gui {
+    PortGroup       qt6 1.0
+    PortGroup       cmake 1.1
+    PortGroup       app 1.1
+
+    long_description-append \
+                    This is the Qt GUI version.
+
+    qt6.depends_build \
+                    qttools
+
+    cmake.source_dir \
+                    ${worksrcpath}/Dynamix_chart_width_control_GUI
+
+    app.name        Dynamix Chart Width Changer
+    app.executable  ${cmake.build_dir}/Dynamix_note_width_changer_GUI
+    app.icon        ${cmake.source_dir}/DNX icon_macOS.png
+    app.identifier  com.${github.author}.${github.project}
+
+    destroot {}
+}

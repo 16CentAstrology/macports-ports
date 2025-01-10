@@ -6,14 +6,16 @@ PortGroup               xcode 1.0
 PortGroup               xcodeversion 1.0
 
 github.setup            GPGTools pinentry-mac 0.9.4 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from     tarball
 revision                1
 categories              aqua security
 license                 GPL-3+
-maintainers             {ionic @Ionic}
+maintainers             nomaintainer
 platforms               macosx
 
 description             Cocoa interface for the password entry software pinentry.
-long_description        ${description} \
+long_description        {*}${description} \
                         It is based on the upstream version of pinentry, adding a \
                         custom interface based on Cocoa for OS X look and feel.
 homepage                https://github.com/GPGTools/pinentry-mac
@@ -30,7 +32,7 @@ patchfiles              patch-includes-quotes.diff \
                         patch-includes-quotes-2.diff \
                         patch-apple-silicon.diff
 
-patch.pre_args          -p1
+patch.pre_args-replace  -p0 -p1
 
 # This is a temporary kludge. The new Xcode build system fails to
 # destroot this for reasons that are poorly understood.
@@ -52,18 +54,18 @@ pre-fetch {
 
 platform macosx {
     notes   "
-             If you previously didn't have pinentry or gpg-agent installed \
-             and ${name} has been installed as a dependency of gpg-agent, \
+             If you previously didn't have pinentry or gpg-agent installed\
+             and ${name} has been installed as a dependency of gpg-agent\
              you don't need to do anything to use ${name}.
 
-             If you want to switch to the GTK2, ncurses or Qt4 based pinentry \
-             program, please install pinentry with the correct use flags and \
-             follow the instructions below substituting the ${name} program \
+             If you want to switch to the GTK2, ncurses or Qt4 based pinentry\
+             program, please install pinentry with the correct use flags and\
+             follow the instructions below substituting the ${name} program\
              path with ${prefix}/bin/pinentry.
 
 
-             If you previously had pinentry and gpg-agent installed and would \
-             like to switch to ${name}, you will have to set \
+             If you previously had pinentry and gpg-agent installed and would\
+             like to switch to ${name}, you will have to set\
              it as your pinentry program in \$HOME/.gnupg/gpg-agent.conf.
 
              Add the following line to the mentioned file:

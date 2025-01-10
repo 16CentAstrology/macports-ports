@@ -4,14 +4,13 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           cmake 1.1
 
-github.setup        shlomif fortune-mod 3.14.0 fortune-mod-
+github.setup        shlomif fortune-mod 3.24.0 fortune-mod-
 github.tarball_from releases
 conflicts           fortune
 
 categories          games
-platforms           darwin
 license             BSD
-maintainers         {outlook.com:mohd.akram @mohd-akram} openmaintainer
+maintainers         {makr @mohd-akram} openmaintainer
 
 description         Fortune-cookie generator
 
@@ -20,9 +19,9 @@ long_description    Implementation of the Unix fortune command for displaying \
 
 depends_lib         port:recode
 
-checksums           rmd160  5bd604d152756c87b759d4079e313837c3fd519c \
-                    sha256  8e307109f8cb8e785d29e32027010fcad095290e11e301de17cff767f17a5204 \
-                    size    1428984
+checksums           rmd160  93c3a21280c6d22f53a751110eb821a6db792b24 \
+                    sha256  1f387877254e95eab61f937257b42609f29b994ef0571531655bbfc3a2ac74ac \
+                    size    1475996
 
 use_xz              yes
 

@@ -4,7 +4,7 @@ PortSystem              1.0
 PortGroup               muniversal 1.0
 
 name                    lcms2
-version                 2.14
+version                 2.16
 revision                0
 worksrcdir              lcms2-${version}
 categories              graphics
@@ -25,9 +25,13 @@ homepage                https://littlecms.com/
 master_sites            sourceforge:project/lcms/lcms/${version}/ \
                         ${homepage}
 
-checksums               rmd160  0395967ca8ec9055d50e18f154504e78d0e0c90f \
-                        sha256  28474ea6f6591c4d4cee972123587001a4e6e353412a41b3e9e82219818d5740 \
-                        size    7406694
+checksums           rmd160  e4fe464eccbd6933703f98d3ca95c272c264a891 \
+                    sha256  d873d34ad8b9b4cea010631f1a6228d2087475e4dc5e763eb81acc23d9d45a51 \
+                    size    7632822
+
+# Disable use of obsolete 'register' storage class; causes dependent build errors with newer compilers:
+# lcms2.h: error: ISO C++17 does not allow 'register' storage class specifier [-Wregister]
+patchfiles-append       patch-disable-register.diff
 
 depends_lib             path:include/turbojpeg.h:libjpeg-turbo \
                         port:tiff \

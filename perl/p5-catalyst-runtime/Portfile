@@ -4,22 +4,19 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Catalyst-Runtime 5.90130
+perl5.setup         Catalyst-Runtime 5.90132
 revision            0
 license             {Artistic-1 GPL}
 maintainers         nomaintainer
-description         The Elegant MVC Web Application Framework
-long_description    Catalyst is a modern framework for making web \
-                    applications without the pain usually associated with \
-                    this process. This document is a reference to the main \
-                    Catalyst application.
+description         Catalyst::Runtime - The Catalyst Framework Runtime
+long_description    {*}${description}
 
 platforms           {darwin any}
 supported_archs     noarch
 
-checksums           rmd160  93661434e4c8a1c0de9ff055a4eed6f00a3c5e7b \
-                    sha256  445ce7d1f11f7f59a0eb6f3a4f0ee05fad1003ee9f68738f7950ce7c793ff5e3 \
-                    size    385554
+checksums           rmd160  54b821f793b171f23b8a4faa0cb3907e9a52578b \
+                    sha256  bb83758b7bda360d16e002e5ace69c6459e3d47227cdee6ac4b1b65a6685f110 \
+                    size    388613
 
 if {${perl5.major} != ""} {
     depends_build-append \

@@ -4,21 +4,16 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           muniversal 1.0
 
-github.setup        ivmai bdwgc 8.2.2 v
+github.setup        ivmai bdwgc 8.2.8 v
 revision            0
-checksums           rmd160  c9c8757783f4f26aaaad0f16e075a2eeea373030 \
-                    sha256  cc9a8c5f499bdf92f4187af4c1da960b426d41ce62afaba940684413256a2599 \
-                    size    819104
+checksums           rmd160  e2db8df0e04077681988b8283032febbfc17ce1f \
+                    sha256  7649020621cb26325e1fb5c8742590d92fb48ce5c259b502faf7d9fb5dabb160 \
+                    size    1219553
 
 name                boehmgc
-
 categories          devel
-platforms           darwin
 maintainers         nomaintainer
 license             Permissive
-# boehmgc only uses the MIT and Permissive parts of libatomic_ops, don't
-# conflict on the GPL part
-license_noconflict  libatomic_ops
 
 description         The Boehm-Demers-Weiser conservative C/C++ Garbage Collector
 long_description \
@@ -27,17 +22,16 @@ long_description \
     by a number of programming language implementations that use C as \
     intermediate code.
 
-# needed since we use the github version; also has the benefit of teaching
-# glibtool about -stdlib=libc++.
-use_autoreconf  yes
+github.tarball_from releases
+distname            gc-${version}
 
-# autoreconf needs pkgconfig
-depends_build-append \
-                port:pkgconfig \
-                port:libatomic_ops
+# gc_atomic_ops.h: warning: implicit declaration of function '__atomic_compare_exchange_n'
+# gc_atomic_ops.h: error: '__ATOMIC_RELAXED' undeclared (first use in this function)
+compiler.c_standard 2011
 
 configure.args  --enable-cplusplus \
-                --enable-static
+                --enable-static \
+                --with-libatomic-ops=none
 
 variant redirect description {Redirect malloc and friends to GC routines} {
     configure.args-append  \

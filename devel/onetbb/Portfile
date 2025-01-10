@@ -5,16 +5,14 @@ PortGroup           github 1.0
 PortGroup           cmake 1.1
 PortGroup           compiler_blacklist_versions 1.0
 
-github.setup        oneapi-src oneTBB 2021.7.0 v
+github.setup        oneapi-src oneTBB 2022.0.0 v
 github.tarball_from archive
-conflicts           tbb
 
 name                onetbb
 revision            0
 categories          devel parallel
-platforms           darwin
 license             Apache-2
-maintainers         {outlook.com:mohd.akram @mohd-akram} openmaintainer
+maintainers         {makr @mohd-akram} openmaintainer
 
 description         oneAPI Threading Building Blocks
 
@@ -22,31 +20,101 @@ long_description    oneTBB is a flexible C++ library that simplifies the work \
                     of adding parallelism to complex applications, even if you \
                     are not a threading expert.
 
-checksums           rmd160  0648cff27e3683eb6583c0e4db56f259e2aae113 \
-                    sha256  2cae2a80cda7d45dc7c072e4295c675fff5ad8316691f26f40539f7e7e54c0cc \
-                    size    2571727
+checksums           rmd160  4bbf82bf9c39c0945264e8775b8aa247a2284c11 \
+                    sha256  e8e89c9c345415b17b30a2db3095ba9d47647611662073f7fbf54ad48b7f3c2a \
+                    size    2654343
 
-patchfiles          patch-onetbb-older-malloc.diff
+patchfiles          patch-onetbb-older-platforms.diff \
+                    patch-onetbb-dispatch-fallback.diff
 
-compiler.blacklist-append   {clang < 700}
+# https://trac.macports.org/ticket/69657
+compiler.blacklist-append   {clang < 900}
 
-depends_lib-append  port:hwloc
+depends_build-append    path:bin/pkg-config:pkgconfig
 
-compiler.cxx_standard  2011
+depends_lib-append      port:hwloc
 
-# see https://github.com/oneapi-src/oneTBB/issues/819
-supported_archs     arm64 x86_64
+compiler.cxx_standard   2011
+
+# Temporary fix for a linking failure. To be dropped upon the next gcc12 update.
+# Related info: https://github.com/iains/darwin-toolchains-start-here/discussions/41
+compiler.blacklist-append \
+                    macports-gcc-12
 
 # OneTBB's build uses CMAKE_OSX_ARCHITECTURES to add -arch flags which may lead
 # to missed symbols from exported symbol list on universal build like:
 # Undefined symbols for architecture i386:
 #  "tbb::detail::r1::wait_bounded_queue_monitor(tbb::detail::r1::concurrent_monitor*, unsigned long, long, tbb::detail::d1::delegate_base&)", referenced from:
 #     -exported_symbol[s_list] command line option
-cmake.set_osx_architectures no
+if {${os.arch} ne "powerpc"} {
+    # In Rosetta this setting breaks the build; restrict it to non-PPC:
+    cmake.set_osx_architectures no
+}
 
 configure.args-append  -DTBB_TEST=OFF
 
+# install it into libexec to avoid conflict with tbb port
+cmake.install_prefix ${prefix}/libexec/${name}
+# but keep this port at prefix's cmake's lib
+post-destroot {
+    xinstall -d -m 0755 ${destroot}${prefix}/lib/cmake
+    foreach cmakedir [glob -type d -nocomplain -tails -directory ${destroot}${cmake.install_prefix}/lib/cmake *] {
+        xinstall -d -m 0755 ${destroot}${prefix}/lib/cmake/${cmakedir}
+        foreach cmakefile [glob -tails -directory ${destroot}${cmake.install_prefix}/lib/cmake/${cmakedir} *.cmake] {
+            ln -s ${cmake.install_prefix}/lib/cmake/${cmakedir}/${cmakefile} \
+                ${destroot}${prefix}/lib/cmake/${cmakedir}/
+            reinplace -q "s|\\\${CMAKE_CURRENT_LIST_DIR}|${cmake.install_prefix}/lib/cmake/${cmakedir}|g" \
+                 ${destroot}${cmake.install_prefix}/lib/cmake/${cmakedir}/${cmakefile}
+            reinplace -q "s|\\\${CMAKE_CURRENT_LIST_FILE}|${cmake.install_prefix}/lib/cmake/${cmakedir}/${cmakefile}|g" \
+                 ${destroot}${cmake.install_prefix}/lib/cmake/${cmakedir}/${cmakefile}
+        }
+    }
+}
+
+platform powerpc {
+    # Rather than disabling -Werror altogether, just disable these:
+    configure.cxxflags-append \
+                    -Wno-parentheses \
+                    -Wno-unused-function
+}
+
+# ___atomic_fetch_add_8, ___atomic_load_8, ___atomic_fetch_sub_8
+# Drop once this is merged: https://github.com/oneapi-src/oneTBB/pull/987
+if {[string match *gcc* ${configure.compiler}] && ${configure.build_arch} in [list i386 ppc]} {
+    configure.ldflags-append \
+                    -latomic
+}
+
 variant tests description {Enable tests} {
+    # Ensure test binaries can find dylibs:
+    configure.pre_args-replace \
+                    -DCMAKE_BUILD_WITH_INSTALL_RPATH:BOOL=ON \
+                    -DCMAKE_BUILD_WITH_INSTALL_RPATH:BOOL=OFF
+
     configure.args-delete   -DTBB_TEST=OFF
+
+    if {${configure.cxx_stdlib} ne "libc++"} {
+        # To mitigate malloc errors with libstdc++:
+        test.env-append     DYLD_LIBRARY_PATH=${prefix}/lib/libgcc
+    }
     test.run                yes
 }
+
+# This variant is aimed at supported legacy powerpc systems.
+# It works on some at the moment, but is not ready to be the default.
+# Old Intel systems can be added later upon testing.
+if {${os.platform} eq "darwin" && ${configure.build_arch} in [list ppc ppc64]} {
+    variant legacy_dispatch description "Enable dispatch via libdispatch-legacy port" {
+        # Drop fallback code:
+        patchfiles-delete   patch-onetbb-dispatch-fallback.diff
+
+        depends_lib-append \
+                    port:libdispatch-legacy
+        configure.cppflags-append \
+                    -I${prefix}/libexec/dispatch/usr/include
+        configure.ldflags-append \
+                    ${prefix}/libexec/dispatch/usr/lib/libdispatch.a
+    }
+}
+
+github.livecheck.regex  {([0-9.]+)}

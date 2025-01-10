@@ -6,11 +6,12 @@ PortGroup           select 1.0
 PortGroup           github 1.0
 
 name                py-awscli2
-github.setup        aws aws-cli 2.9.17
+github.setup        aws aws-cli 2.22.26
 revision            0
 
 categories          python devel
-platforms           darwin
+platforms           {darwin >= 20}
+supported_archs     noarch
 license             Apache-2
 maintainers         {gmail.com:davidgilman1 @dgilman} openmaintainer
 
@@ -19,23 +20,16 @@ long_description    {*}${description}
 
 homepage            https://aws.amazon.com/cli/
 
-checksums           rmd160  31ec4560ffd35eb81838aa4010c29724b1b59230 \
-                    sha256  da97e576726a878cf1deaa9d1565d3c476dce19d7be2cacae996cf91c0dfdf62 \
-                    size    12812123
+checksums           rmd160  1d7d2b68e92b630198b1db4b39a6b93e9d52ee07 \
+                    sha256  74fceb45a51e2e08bf07a84c710b989e87803f43062572d2d5b7e87f0640645f \
+                    size    15893372
 
-python.versions     38 39 310 311
+python.versions     39 310 311 312
 python.pep517       yes
 python.pep517_backend \
                     flit
 
 if {${name} ne ${subport}} {
-    if {${os.platform} eq "darwin" && ${os.major} <= 15} {
-        known_fail      yes
-        pre-fetch {
-            ui_error "${name} @${version} requires macOS 10.12 or later."
-            return -code error "incompatible macOS version"
-        }
-    }
     conflicts           py${python.version}-awscli
 
     depends_build-append \
@@ -63,8 +57,9 @@ if {${name} ne ${subport}} {
         copy -force ${filespath}/awscli2 ${worksrcpath}/py${python.version}-awscli2
     }
 
-    patch.pre_args      -p1
-    patchfiles          patch-requirements.diff
+    patch.pre_args-replace  -p0 -p1
+    patchfiles          patch-requirements.diff \
+                        0001-py-awscli2-Support-empty-PAGER.patch
 
     post-patch {
         reinplace \

@@ -1,18 +1,17 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem                  1.0
-PortGroup                   mpi 1.0
-PortGroup                   linear_algebra 1.0
-PortGroup                   muniversal 1.0
-PortGroup                   makefile 1.0
 PortGroup                   conflicts_build 1.0
+PortGroup                   linear_algebra 1.0
+PortGroup                   makefile 1.0
+PortGroup                   mpi 1.0
+PortGroup                   muniversal 1.0
 
 name                        mumps
-version                     5.3.1
-revision                    2
+version                     5.7.3
+revision                    1
 categories                  math
 license                     CeCILL-C
-platforms                   darwin
 maintainers                 {mcalhoun @MarcusCalhoun-Lopez} openmaintainer
 description                 MUltifrontal Massively Parallel sparse direct Solver
 long_description            MUMPS: a parallel sparse direct solver
@@ -22,14 +21,14 @@ depends_lib                 port:scotch \
                             port:metis \
                             port:parmetis
 
-homepage                    http://mumps.enseeiht.fr/
+homepage                    https://mumps-solver.org
 master_sites                ${homepage}
 
 distname                    MUMPS_${version}
 
-checksums                   rmd160  50a0485362e994b5d15753c3e675c99b54dcb031 \
-                            sha256  774fc9411a3ab4704bc907cb7d30090ce6a65b83cde32549c58d3e9f63594e1a \
-                            size    3910235
+checksums                   rmd160  a11df7b1399aa5ffbc74723c662ef01c0702c2d6 \
+                            sha256  84a47f7c4231b9efdf4d4f631a2cae2bdd9adeaabc088261d15af040143ed112 \
+                            size    4542883
 
 conflicts_build-append      ${name}
 
@@ -45,13 +44,16 @@ patchfiles-append           patch-shared.diff \
 
 use_parallel_build          no
 
-build.target                alllib
-build.args-append           SHAREDFLAGS="-dynamiclib" \
-                            SHAREDLIBEXT=".dylib"
+build.target                all allshared
+build.args-append           LIBEXT_SHARED=".dylib"
 
 configure.optflags          -O3
 configure.cflags-append     -fPIC
 configure.fflags-append     -fPIC
+
+# Xcode clang of 10.7 fails with error: invalid instruction mnemonic 'cvtsi2ssl'
+compiler.blacklist-append \
+                    {clang < 500} *gcc-4.* macports-gcc-5 macports-gcc-6
 
 # when using a non-GCC compiler, avoid:
 #     Undefined symbols for architecture i386:
@@ -66,7 +68,7 @@ if {(!${universal_possible} || ![variant_isset universal]) && ${build_arch} eq "
 }
 
 pre-build {
-    configure.env-append    MACPORTS_BLAS=${linalglib}
+    build.env-append        MACPORTS_BLAS=${linalglib}
 }
 
 if {!${universal_possible} || ![variant_isset universal]} {
@@ -93,7 +95,7 @@ destroot {
     xinstall -m 644 {*}[glob ${worksrcpath}/lib/*.dylib] ${destroot}${prefix}/lib
 }
 
-livecheck.url               http://mumps.enseeiht.fr/index.php?page=dwnld
+livecheck.url               ${homepage}/index.php?page=dwnld
 livecheck.regex             {>(\d+(?:\.\d+)*)<}
 
 test.run                    yes

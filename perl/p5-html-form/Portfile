@@ -4,21 +4,25 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         HTML-Form 6.10 ../../authors/id/S/SI/SIMBABQUE
+perl5.setup         HTML-Form 6.12
 revision            0
-platforms           {darwin any}
-maintainers         nomaintainer
 license             {Artistic-1 GPL}
+maintainers         nomaintainer
+description         HTML::Form - Class that represents an HTML form element
+long_description    {*}${description}
+
+platforms           {darwin any}
 supported_archs     noarch
 
-description         HTML::Form - Class that represents an HTML form element
-long_description    ${description}
-
-checksums           rmd160  c305acfd2aa5c16cb09e7b76ccdebfd253a3d6bb \
-                    sha256  df8393e35e495a0839f06a63fb65d6922842c180d260554137728a9f092df9d3 \
-                    size    42908
+checksums           rmd160  8f60571a99bb25d33474740077a8ffa748fa59d2 \
+                    sha256  2ced87d0878afa007d22c41927f0e8da63844608f20881f645f364dc32cdce6f \
+                    size    46965
 
 if {${perl5.major} != ""} {
+    depends_build-append \
+                    port:p${perl5.major}-test-simple \
+                    port:p${perl5.major}-test-warnings
+
     depends_lib-append \
                     port:p${perl5.major}-encode \
                     port:p${perl5.major}-html-parser \

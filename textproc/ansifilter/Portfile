@@ -3,11 +3,10 @@
 PortSystem      1.0
 
 name            ansifilter
-version         2.18
+version         2.21
 revision        0
 categories      textproc
 maintainers     {evermeet.cx:tessarek @tessus} openmaintainer
-platforms       darwin
 license         GPL-3
 
 description     remove ANSI codes from output
@@ -20,9 +19,9 @@ homepage        http://www.andre-simon.de/doku/ansifilter/en/ansifilter.php
 master_sites    http://www.andre-simon.de/zip/
 use_bzip2       yes
 
-checksums       rmd160  b374e90fbd5e833998a51957c63d8e244af5419c \
-                sha256  66cf017d36a43d5f6ae20609ce3b58647494ee6c0e41fc682c598bffce7d7d39 \
-                size    436432
+checksums       rmd160  b104ea02797089a935349b8b0e339d40906aabb3 \
+                sha256  5ea7cfdfd0752d5a169259da005c18b9037628036fd89d8b82624bacec9c1390 \
+                size    434994
 
 use_configure   no
 
@@ -38,3 +37,6 @@ build.args-append \
                 EXTRA_LDFLAGS="${configure.ldflags}"
 
 destroot.args   PREFIX="${prefix}"
+
+livecheck.regex ansifilter (\\d+(?:\\.\\d+)*)
+livecheck.url   http://www.andre-simon.de/doku/ansifilter/en/changelog.php

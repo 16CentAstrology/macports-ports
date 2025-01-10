@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-spyder-kernels
-version             2.4.0
+version             3.0.2
 revision            0
 epoch               1
 
@@ -15,24 +15,19 @@ license             MIT
 maintainers         {reneeotten @reneeotten} openmaintainer
 
 description         Jupyter kernels for Spyder's console.
-long_description    ${description}
+long_description    {*}${description}
 
 homepage            https://github.com/spyder-ide/spyder-kernels
 
-checksums           rmd160  3f6584d9592cb1293d054334e5c625f47b0b766f \
-                    sha256  3bd32fbe30a150ab9ccedbd5beb6ddd38bde1d9a8778da52f7edf420bbfb8e51 \
-                    size    73402
+distname            spyder_kernels-${version}
 
-python.versions     37 38 39 310
+checksums           rmd160  79920a75e015e1040b9c68112f3e0454dd968d7e \
+                    sha256  a5300a0cc18d9201c006827c170b0ec08cfc943f775f083abfb6bdf672feb561 \
+                    size    81912
+
+python.versions     39 310 311 312
 
 if {${name} ne ${subport}} {
-    conflicts       py${python.version}-spyder-kernels-devel
-
-    patchfiles      patch-ipython-setup.py.diff
-
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     depends_lib-append \
                     port:py${python.version}-cloudpickle \
                     port:py${python.version}-ipykernel \

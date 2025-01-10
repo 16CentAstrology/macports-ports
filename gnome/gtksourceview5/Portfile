@@ -6,41 +6,48 @@ PortGroup           meson 1.0
 
 name                gtksourceview5
 set gname           gtksourceview
-version             5.5.1
-license             LGPL-2.1+
-set branch          [join [lrange [split ${version} .] 0 1] .]
-maintainers         nonmaintainer
-categories          gnome
-platforms           darwin
-description         GtkSourceView-5.0 is a source highlighting text widget for GTK+ 4
+version             5.10.0
+revision            0
 
+categories          gnome
+license             LGPL-2.1+
+maintainers         {mascguy @mascguy} openmaintainer
+
+description         GtkSourceView-5.0 is a source highlighting text widget for GTK+ 4
 long_description    GtkSourceView is a text widget that extends GtkTextView \
                     by implementing syntax highlighting and other features \
                     typical of a source editor.
-
 homepage            https://wiki.gnome.org/Projects/GtkSourceView
+
+set branch          [join [lrange [split ${version} .] 0 1] .]
 master_sites        gnome:sources/${gname}/${branch}/
 distname            ${gname}-${version}
 use_xz              yes
 
-checksums           rmd160  57104d87c89af3ece0d38d34728e47b38e3d5236 \
-                    sha256  4ae58ccd15f071e45f88185f5a9b020560a0b1a950f99cab7dc5e8cd14c40d19 \
-                    size    1268504
+checksums           rmd160  348d74ef396b413b0863c9974539c825ab4a951b \
+                    sha256  b38a3010c34f59e13b05175e9d20ca02a3110443fec2b1e5747413801bc9c23f \
+                    size    1255564
+
+# Disable unexpected download of subprojects
+meson.wrap_mode     nodownload
+
+set port_ver_major  [lindex [split ${version} .] 0]
 
 depends_build-append \
-                    port:pkgconfig \
-                    port:gettext
+                    port:gettext \
+                    port:pkgconfig
 
-depends_lib-append  path:lib/pkgconfig/glib-2.0.pc:glib2 \
+depends_lib-append \
                     port:fribidi \
                     port:gettext-runtime \
-                    port:pcre2 \
+                    path:lib/pkgconfig/glib-2.0.pc:glib2 \
                     path:lib/pkgconfig/gobject-introspection-1.0.pc:gobject-introspection \
                     path:lib/pkgconfig/gtk4.pc:gtk4 \
                     port:libxml2 \
+                    port:pcre2 \
                     path:bin/vala:vala
 
-compiler.c_standard 2011
+compiler.c_standard 2017
 
 # gobject-introspection uses g-ir-scanner, which uses $CC from env
 if {${universal_possible} && [variant_isset universal]} {
@@ -69,8 +76,9 @@ if {[variant_isset quartz]} {
 post-destroot {
     set docdir ${prefix}/share/doc/${name}
     xinstall -d ${destroot}${docdir}
-    xinstall -m 644 -W ${worksrcpath} AUTHORS COPYING \
-        NEWS README.md ${destroot}${docdir}
+    xinstall -m 644 -W ${worksrcpath} \
+        AUTHORS COPYING NEWS README.md \
+        ${destroot}${docdir}
 }
 
 variant tests description "enable tests" {
@@ -83,5 +91,4 @@ test.target         test
 
 livecheck.type      gnome
 livecheck.name      ${gname}
-livecheck.regex     "LATEST-IS-(4\\.\\d*\[02468\](?:\\.\\d+)*)"
-
+livecheck.regex     "LATEST-IS-(${port_ver_major}\\.\\d*\[02468\](?:\\.\\d+)*)"

@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-identify
-version             2.5.13
+version             2.6.5
 revision            0
 
 categories-append   devel
@@ -14,20 +14,17 @@ license             MIT
 maintainers         {reneeotten @reneeotten} openmaintainer
 
 description         File identification library for Python
-long_description    ${description}
+long_description    {*}${description}
 
 homepage            https://github.com/pre-commit/identify
 
-checksums           rmd160  ed49091f3556a271abeae30cee5f26689bfab372 \
-                    sha256  abb546bca6f470228785338a01b539de8a85bbf46491250ae03363956d8ebb10 \
-                    size    98769
+checksums           rmd160  4430c58382e23e2d3034161661574f41c6d3715a \
+                    sha256  c10b33f250e5bba374fae86fb57f3adcebf1161bce7cdf92031915fd480c13bc \
+                    size    99213
 
-python.versions     39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     post-destroot {
         set docdir ${prefix}/share/doc/${subport}
         xinstall -d ${destroot}${docdir}

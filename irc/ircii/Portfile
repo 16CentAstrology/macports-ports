@@ -4,10 +4,9 @@ PortSystem          1.0
 
 name                ircii
 conflicts           ircii-classic
-version             20170704
-revision            2
+version             20240111
+revision            0
 categories          irc
-platforms           darwin
 maintainers         nomaintainer
 license             BSD ISC
 
@@ -17,25 +16,22 @@ long_description    The ircII program is a full screen, termcap based \
                     interface to Internet Relay Chat. It gives full access to all of the \
                     normal IRC functions, plus a variety of additional options.
 
-homepage            http://www.eterna.com.au/ircii/
-master_sites        http://ircii.warped.com/ \
-                    ftp://ircii.warped.com/pub/ircII/ \
-                    ftp://ircftp.au.eterna.com.au/pub/ircII/ \
-                    ftp://ftp.irc.org/irc/clients/unix/ircII/ \
-                    ftp://ftp.sergei.cc/pub/ircII/ \
-                    http://ftp.sergei.cc/pub/ircII/
+homepage            http://www.eterna23.net/ircii/
+master_sites        https://ircii.warped.com/
 
 use_bzip2           yes
 
-depends_lib         path:lib/libssl.dylib:openssl \
+depends_lib-append  path:lib/libssl.dylib:openssl \
                     port:ncurses
 
-checksums           rmd160  b857a49c6d843748b0bcbccf9e3aec16d7be974b \
-                    sha256  4e5a70fc4577de06fd5855ab7ca0a501fd16e02d5fd34e434a2b5abac80a2eda
+checksums           rmd160  969aef7f77be03e65ec5da86e08985932a49ab7c \
+                    sha256  acb9351d9215c783111ad118ab2a1d3ac27f96e53db9bdc685e5dde1c14fd95d \
+                    size    576700
 
 configure.env       COPY_DIRECTORY=tar
-configure.args      --enable-ipv6 \
-                    --with-default-server=irc.freenode.net
+# Currently, ircii doesn't know how to handle a default server that
+# uses TLS. Restore this when that gets fixed.
+#configure.args      --with-default-server=irc.libera.chat:6697
 
 livecheck.type      regex
 livecheck.url       ${homepage}

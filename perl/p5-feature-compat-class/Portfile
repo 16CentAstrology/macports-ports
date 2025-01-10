@@ -4,23 +4,22 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Feature-Compat-Class 0.05 ../../authors/id/P/PE/PEVANS
+perl5.setup         Feature-Compat-Class 0.07 ../../authors/id/P/PE/PEVANS
 revision            0
 license             {Artistic-1 GPL}
 maintainers         {devans @dbevans} openmaintainer
 description         Feature::Compat::Class - make class syntax available
-long_description    ${description}
+long_description    {*}${description}
 
 platforms           {darwin any}
 supported_archs     noarch
 
-checksums           rmd160  8f9366506ff04a46ce9f40658489ca04d678d69a \
-                    sha256  adc6063ef0337aba852ecd32bab435a8376b61763ebf50540e96dac1a015620c \
-                    size    18305
+checksums           rmd160  c636223760bb561adb10f124dd6c87d91ec8e679 \
+                    sha256  4da9105a5deba5adedb22196963d77353b163346170e02bc34e91fc8a25daa38 \
+                    size    20878
 
 if {${perl5.major} != ""} {
     depends_build-append \
-                    port:p${perl5.major}-test-fatal \
                     port:p${perl5.major}-test-simple
 
     depends_lib-append \

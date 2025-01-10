@@ -3,13 +3,13 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/jesseduffield/lazydocker 0.20.0 v
+go.setup            github.com/jesseduffield/lazydocker 0.23.3 v
 github.tarball_from archive
 revision            0
 
-checksums           rmd160  e80173d7897033ff37b5a636104b3b1f6f4f3793 \
-                    sha256  570ce8127b148bc99c2faa1d4a3530504e81d531d3546dd1f29a7258c4d9d9ea \
-                    size    13025402
+checksums           rmd160  cd4c3ea868aee5fdb6476a1c94cff108674c6352 \
+                    sha256  6ea52b69c3fb5cb371a01e55d1deeaf053b17fb240be069af577246c5169f4f1 \
+                    size    12166368
 
 categories          devel
 installs_libs       no

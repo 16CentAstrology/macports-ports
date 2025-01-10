@@ -6,7 +6,7 @@ PortGroup           python 1.0
 
 name                beets
 version             1.6.0
-revision            0
+revision            2
 
 categories          audio
 platforms           {darwin any}
@@ -21,7 +21,7 @@ long_description    Beets is the media library management system for obsessive m
 
 homepage            https://beets.io/
 
-maintainers         {@catap korins.ky:kirill} openmaintainer
+maintainers         nomaintainer
 
 checksums           rmd160  5866c23b2fcd122f4044601fe6b2631107f028f0 \
                     sha256  aa6fb734e44afc9b039c0abd0edd4c7706df00d4eb4aae7afa9ff4b6bb15525d \
@@ -39,16 +39,21 @@ if {$subport eq $name} {
 subport ${name}-devel {
     conflicts       $name
 
-    github.setup    beetbox beets e201dd4fe57b0aa2e80890dc3939b0a803e3448d
-    version         20221101
+    github.setup    beetbox beets bcf180d14dd14604e1d82414fac28d41c275e1c9
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
+    version         20231217
     revision        0
 
-    checksums       rmd160  cc6f09ce89e63000d74d7bde281b21c368111499 \
-                    sha256  f0973c06ea5a03fa2399e8b0fd83efd32312cd967d8e6fe64509e36e87c6d3ab \
-                    size    1755119
+    checksums       rmd160  a28f33f2da8521e7f2c854019ce1deeed3e3a990 \
+                    sha256  6d38be22f6be03edf8fd9feb97d77b0dab78dd179f1af762bb669dafac7cf77a \
+                    size    2239737
 
     depends_build-append \
                     port:py${python.version}-sphinx
+
+    depends_lib-append \
+                    port:py${python.version}-typing_extensions
 
     post-build {
         system -W ${worksrcpath} "make -C docs SPHINXBUILD=${python.prefix}/bin/sphinx-build BUILDDIR=../ man"
@@ -79,16 +84,23 @@ if {${name} eq ${subport} || "${name}-devel" eq ${subport}} {
                     port:py${python.version}-requests-oauthlib \
                     port:py${python.version}-soco \
                     port:py${python.version}-unidecode \
-                    port:py${python.version}-xdg \
+                    port:py${python.version}-pyxdg \
                     port:py${python.version}-yaml
 
+    # ffmpeg-devel now tracks ffmpeg7,
+    # so no path-style for ffmpeg v. 4.x.
     depends_run-append \
                     port:chromaprint \
-                    path:lib/libavcodec.dylib:ffmpeg \
-                    port:flac \
-                    port:mp3val \
                     port:ImageMagick \
+                    port:ffmpeg \
+                    port:flac \
+                    port:mp3val
+
+    # Do not pull in Go on PowerPC
+    if {${os.arch} ne "powerpc"} {
+        depends_run-append \
                     port:ipfs
+    }
 
     depends_test-append \
                     port:py${python.version}-coverage \
@@ -128,8 +140,8 @@ if {${name} eq ${subport} || "${name}-devel" eq ${subport}} {
 }
 
 subport ${name}-alternatives {
-    version         0.10.2.post1
-    revision        1
+    version         0.11.0
+    revision        0
 
     license         MIT
 
@@ -137,15 +149,25 @@ subport ${name}-alternatives {
     long_description \
                     {*}${description}
 
+    distfiles       [string map {- _} ${subport}]-${version}${extract.suffix}
+
     homepage        https://www.github.com/geigerzaehler/beets-alternatives
 
-    checksums       rmd160  832db7cf388d766671184b53e9d2a9ce2a578e7e \
-                    sha256  2ad1213b9a395233082062860a8ba165c29a4125624f7cd9a3a749ee15600bd6 \
-                    size    10943
+    checksums       rmd160  e9d5d9f79b4b677849764b66f78eb00615ffb53a \
+                    sha256  b9380301cf728864442038e1aeed5324645c7223a4b77711fd3ddbdd62c1900d \
+                    size    13757
+
+    extract.rename  yes
+
+    python.pep517   yes
+    python.pep517_backend \
+                    poetry
 }
 
 subport ${name}-amazon {
     github.setup    jmwatte beet-amazon da25d7671f3814a8401b004f592ccf0633197edf
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
     version         20210908
     revision        1
 
@@ -213,6 +235,8 @@ subport ${name}-autofix {
 
 subport ${name}-barcode {
     github.setup    8h2a beets-barcode ad18cace04873157a96c34a48e714874825db724
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
     version         20210908
     revision        1
 
@@ -232,7 +256,7 @@ subport ${name}-barcode {
 
 subport ${name}-beetcamp {
     python.rootname beetcamp
-    version         0.16.0
+    version         0.17.2
     revision        0
 
     license         GPL-2
@@ -243,9 +267,13 @@ subport ${name}-beetcamp {
 
     homepage        https://github.com/snejus/beetcamp
 
-    checksums       rmd160  cb40cd01f5e97783e25a326ff3baab4b5953e4c7 \
-                    sha256  5ddae625ba7ffadc92c5a455d33447cf2119e7bf6a4c89b739b0ec1e626bf74d \
-                    size    41575
+    checksums       rmd160  866ab8fe35e222115bded1c2a2cbcc7d3ab3cb6f \
+                    sha256  0b4f75323c43e4b32a6fa2d1ea4e1d9265e0299abd19eb558793f77fd5556bd1 \
+                    size    43387
+
+    python.pep517   yes
+    python.pep517_backend \
+                    poetry
 
     depends_lib-append \
                     port:py${python.version}-cached-property \
@@ -253,6 +281,16 @@ subport ${name}-beetcamp {
                     port:py${python.version}-dateutil \
                     port:py${python.version}-ordered-set \
                     port:py${python.version}-requests
+
+    post-destroot {
+        set docdir ${destroot}${prefix}/share/doc/${subport}
+        set doc_list [list LICENSE README.md]
+        xinstall -d ${docdir}
+        foreach f ${doc_list} {
+            xinstall -m 644 -W ${worksrcpath} ${f} ${docdir}
+            file delete -force ${destroot}/${python.pkgd}/${f}
+        }
+    }
 }
 
 subport ${name}-bpmanalyser {
@@ -295,8 +333,8 @@ subport ${name}-check {
 
 subport ${name}-copyartifacts {
     python.rootname beets-copyartifacts3
-    version         0.1.3
-    revision        1
+    version         0.1.5
+    revision        0
 
     license         MIT
 
@@ -306,9 +344,9 @@ subport ${name}-copyartifacts {
 
     homepage        https://github.com/adammillerio/beets-copyartifacts
 
-    checksums       rmd160  0a3295d358bf353247fdb1911b3a7656a7beb9e5 \
-                    sha256  e9fb32f3ec5dc279c96bd010322e0792e55e84eecf0c3383f74ef2b624539969 \
-                    size    5452
+    checksums       rmd160  980c23e39688dad1a6396cdc89d6519f10aa73e5 \
+                    sha256  522996017cd922f920d1c30963531d493e122c5366ad08f254f3245ea7489028 \
+                    size    5814
 }
 
 subport ${name}-describe {
@@ -336,6 +374,8 @@ subport ${name}-describe {
 
 subport ${name}-follow {
     github.setup    nolsto beets-follow eb504a0b3b457993d599530a66a54b11b740ecb5
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
     version         20210908
     revision        1
 
@@ -349,7 +389,7 @@ subport ${name}-follow {
                     sha256  e1dd35c3ea1cf8c3f5893fa3b49f3fd2f1c1c230e05f5fa0bf03b805a9eea39a \
                     size    4145
 
-    patch.pre_args  -p1
+    patch.pre_args-replace  -p0 -p1
     patchfiles      follow-confuse.diff
 
     depends_lib-append \
@@ -399,6 +439,8 @@ subport ${name}-ibroadcast {
 
 subport ${name}-importreplace {
     github.setup    edgars-supe beets-importreplace 0.2 v
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
     revision        1
 
     license         MIT
@@ -439,6 +481,8 @@ subport ${name}-mosaic {
 
 subport ${name}-moveall {
     github.setup    dsedivec beets-plugins c67038d91bca79d9fd52ab316ad9150c1ba1a236
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
     version         20210908
     revision        1
 
@@ -452,7 +496,7 @@ subport ${name}-moveall {
                     sha256  e055b07c5f5072cacb5c8858b009918b7542fa968964b4133bfc821ccc6f8a9d \
                     size    8110
 
-    patch.pre_args  -p1
+    patch.pre_args-replace  -p0 -p1
     patchfiles      moveall-2to3.diff
 
     build {}
@@ -485,6 +529,8 @@ subport ${name}-noimport {
 
 subport ${name}-originquery {
     github.setup    x1ppy beets-originquery c353e2b68804cb4dabca0f0f177cee1137888ca4
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
     version         20220311
     revision        0
 
@@ -505,9 +551,11 @@ subport ${name}-originquery {
 }
 
 subport ${name}-summarize {
-    github.setup    steven-murray beet-summarize b4a07c6c4db51d9a332a54e7a83bfc0ac60040ab
-    version         20210908
-    revision        1
+    github.setup    steven-murray beet-summarize 0d7890097fecf0be4202c972cee8ce9e0b1b8dfb
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
+    version         20231219
+    revision        0
 
     license         LGPL-3
 
@@ -515,13 +563,23 @@ subport ${name}-summarize {
     long_description \
                     {*}${description}
 
-    checksums       rmd160  9631bc2b10a0c6d09bd5c4f743ae6d91ce610155 \
-                    sha256  029cd7799cab022861599af58b608bacd2087aab01ff7096b25ba6303d76cd24 \
-                    size    11013
+    checksums       rmd160  e1d28adcf278b5754ebec6b06e31710697926365 \
+                    sha256  35a5199821d7708c5bba325731a63dbd5223ab8922881659814298de643c838b \
+                    size    13330
+
+    depends_build-append \
+                    port:py${python.version}-setuptools_scm
+
+    build.env-append \
+                    SETUPTOOLS_SCM_PRETEND_VERSION=${version}
+
+    github.livecheck.branch main
 }
 
 subport ${name}-usertag {
     github.setup    igordertigor beets-usertag 1b78e48ea471ced50d1e499085d6ef3b935537f1
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
     version         20211129
     revision        0
 
@@ -537,7 +595,7 @@ subport ${name}-usertag {
 }
 
 subport ${name}-xtractor {
-    version         0.3.1
+    version         0.4.1
     revision        0
 
     license         MIT
@@ -548,9 +606,9 @@ subport ${name}-xtractor {
 
     homepage        https://github.com/adamjakab/BeetsPluginXtractor
 
-    checksums       rmd160  6417ef60a2b2c8d0464abd731b68cc11d365cad9 \
-                    sha256  33ca6a701f87f71b79cb0a0d65c52ad2ca24fbdcb4dcfbd7e8392a4a9ebf4227 \
-                    size    10548
+    checksums       rmd160  5c085e85faa0e350c84d4861e6b2e5f881819ed5 \
+                    sha256  a08c3fc0c6e7911341d57b6a1e2c47eecb353eb2177a562ded10aa6d908626e0 \
+                    size    11437
 
     depends_lib-append \
                     port:py${python.version}-yaml

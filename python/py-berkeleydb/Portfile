@@ -4,26 +4,25 @@ PortSystem              1.0
 PortGroup               python 1.0
 
 name                    py-berkeleydb
-version                 18.1.5
+version                 18.1.12
 revision                0
 
 categories-append       databases
 license                 BSD
-maintainers             nomaintainer
+maintainers             {mascguy @mascguy} openmaintainer
 
 description             Python 3 bindings for Oracle Berkeley DB
 long_description        This port provides a nearly complete wrapping \
                         of the Oracle/Sleepycat C API for the Database \
                         Environment, Database, Cursor, Log Cursor, \
                         Sequence and Transaction objects.
+homepage                https://pypi.org/project/${python.rootname}
 
-homepage                https://pypi.python.org/pypi/${python.rootname}
+checksums               rmd160  566ae0eb2affb4169402a037700d78568f4a6074 \
+                        sha256  495a8179c6a36b22d0fa2f6881fa783cf752214a285760529605f608101deb28 \
+                        size    176313
 
-checksums               rmd160  4ef0c9153a44caeb5e31a316d7fd2a6622b9e23d \
-                        sha256  d8c2efbca9472f8848b13cce4f4904a5ea1e1540ee576e626a1491817832a50a \
-                        size    430952
-
-python.versions         38 39 310
+python.versions         39 310 311 312
 
 set db_version          62
 

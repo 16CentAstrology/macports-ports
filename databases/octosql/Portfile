@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/cube2222/octosql 0.12.0 v
+go.setup            github.com/cube2222/octosql 0.13.0 v
 github.tarball_from archive
 revision            0
 
@@ -30,14 +30,14 @@ license             MIT
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  4cceccc049b1c1e042d154859c44eb6734508e9d \
-                    sha256  046f31f1f8e4fc8dbc7c5e5769dae2a1dd249e7f96e61ef30ea1205921afa986 \
-                    size    2228805
+checksums           rmd160  8d59cf243afad42adac3caf96709008d6e03b70f \
+                    sha256  e22bdb710ca0609019b842df347990ff9aed4f3635f5308ff1acf50d093b7942 \
+                    size    2224423
 
-build.env-delete    GO111MODULE=off GOPROXY=off
+go.offline_build no
 
 build.pre_args-append \
-    -ldflags \"-X ${go.package}/cmd.VERSION=${version}\"
+    -ldflags \"-X ${go.package}/cmd.VERSION=${github.tag_prefix}${version}\"
 build.args-append   -o ./bin/${name}
 
 destroot {

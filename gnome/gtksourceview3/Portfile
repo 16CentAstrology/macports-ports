@@ -13,7 +13,6 @@ license             LGPL-2.1+
 set branch          [join [lrange [split ${version} .] 0 1] .]
 maintainers         {devans @dbevans} openmaintainer
 categories          gnome
-platforms           darwin
 description         GtkSourceView-3.0 is a source highlighting text widget for GTK+ 3
 
 long_description    GtkSourceView is a text widget that extends the standard \
@@ -32,15 +31,17 @@ checksums           rmd160  34e86ab283b39f2778d5091a8595f5440598eb62 \
                     sha256  691b074a37b2a307f7f48edc5b8c7afa7301709be56378ccf9cc9735909077fd \
                     size    1438232
 
+set port_ver_major  [lindex [split ${version} .] 0]
+
 depends_build       port:gettext \
                     port:gtk-doc \
-                    port:pkgconfig
+                    port:pkgconfig \
+                    path:bin/vala:vala
 
 depends_lib         path:lib/pkgconfig/glib-2.0.pc:glib2 \
                     port:gettext-runtime \
                     path:lib/pkgconfig/gtk+-3.0.pc:gtk3 \
-                    port:libxml2 \
-                    path:bin/vala:vala
+                    port:libxml2
 
 gobject_introspection yes
 
@@ -58,14 +59,6 @@ configure.args      --enable-compile-warnings=no \
 test.run            yes
 test.dir            ${worksrcpath}/testsuite
 test.target         check
-
-variant quartz {}
-
-if {[variant_isset quartz]} {
-    require_active_variants gtk3 quartz
-} else {
-    require_active_variants gtk3 x11
-}
 
 variant glade description {Install a glade catalog file} {
     configure.args-append   --enable-glade-catalog
@@ -88,4 +81,4 @@ post-destroot {
 
 livecheck.type      gnome
 livecheck.name      ${gname}
-livecheck.regex     "LATEST-IS-(3\\.\\d*\[02468\](?:\\.\\d+)*)"
+livecheck.regex     "LATEST-IS-(${port_ver_major}\\.\\d*\[02468\](?:\\.\\d+)*)"

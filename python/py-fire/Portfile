@@ -4,7 +4,9 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-fire
-version             0.4.0
+version             0.7.0
+revision            0
+
 platforms           {darwin any}
 license             Apache-2
 maintainers         nomaintainer
@@ -16,19 +18,19 @@ long_description    {*}${description}
 
 homepage            https://github.com/google/python-fire
 
-checksums           rmd160  21de86e1ac7c2108c1b1b88c8b5c7f24879f4af4 \
-                    sha256  c5e2b8763699d1142393a46d0e3e790c5eb2f0706082df8f647878842c216a62 \
-                    size    87684
+checksums           rmd160  2cc0d24dd7da78d182ec5830c01a0af85a80b133 \
+                    sha256  961550f07936eaf65ad1dc8360f2b2bf8408fad46abbfa4d2a3794f8d2a95cdf \
+                    size    87189
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     depends_run-append \
-                    port:py${python.version}-six \
                     port:py${python.version}-termcolor
 
-    livecheck.type  none
+    depends_test-append \
+                    port:py${python.version}-hypothesis \
+                    port:py${python.version}-levenshtein
+
+    test.run        yes
 }

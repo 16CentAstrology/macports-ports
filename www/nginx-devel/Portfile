@@ -4,7 +4,7 @@ PortSystem          1.0
 
 name                nginx-devel
 set propername      nginx
-version             1.23.3
+version             1.27.3
 revision            0
 categories          www mail
 license             BSD
@@ -27,9 +27,9 @@ master_sites        https://nginx.org/download:nginx \
 
 distfiles           ${propername}-${version}${extract.suffix}:nginx
 checksums           ${propername}-${version}${extract.suffix} \
-                    rmd160  cce70b148fee8f503d1c6f4cf4917026f5273e40 \
-                    sha256  75cb5787dbb9fae18b14810f91cc4343f64ce4c24e27302136fb52498042ba54 \
-                    size    1108958
+                    rmd160  57373b351c7334ed975561e2665827005eef37a0 \
+                    sha256  ba23a9568f442036b61cd0e29bd66a47b90634efa91e0b2cf2d719057a9b7903 \
+                    size    1271526
 
 depends_lib         port:pcre \
                     port:zlib
@@ -55,6 +55,8 @@ proc nginx_set_portfile_var {var_name new_value} {
     set portfile_var   $new_value
 }
 
+# portfile-scoped vars for variant routines to re-def and use in port-stages (post-extract, pre-patch, etc)
+set nginx_lua_mod_dirname      ""
 
 configure.args-append \
                     --with-cc-opt=\"${configure.cppflags} ${configure.cflags}\" \
@@ -136,6 +138,7 @@ if {${subport} eq ${name}} {
 subport ${name}-geoip2 {
     set geoipext_filename   ngx_http_geoip2_module
     set geoipext_version    3.4
+    revision                1
     set geoipext_distname   ${geoipext_filename}-${geoipext_version}
     distfiles-append        ${geoipext_version}.tar.gz:geoip2_module
     checksums-append        ${geoipext_version}.tar.gz \
@@ -154,13 +157,14 @@ subport ${name}-geoip2 {
 
 subport ${name}-headers_more {
     set ngx_h_more_filename     headers-more-nginx-module
-    set ngx_h_more_version      0.34
+    set ngx_h_more_version      0.37
+    revision                    0
     set ngx_h_more_distname     ${ngx_h_more_filename}-${ngx_h_more_version}
     distfiles-append            v${ngx_h_more_version}.tar.gz:h_more_module
     checksums-append            v${ngx_h_more_version}.tar.gz \
-                                rmd160  d437b7f755b5584548a94354f9b82dcd84e906d6 \
-                                sha256  0c0d2ced2ce895b3f45eb2b230cd90508ab2a773299f153de14a43e44c1209b3 \
-                                size    28827
+                                rmd160  14e70a27cf6bcadfd792034ccaff14ef2e7a41e1 \
+                                sha256  cf6e169d6b350c06d0c730b0eaf4973394026ad40094cddd3b3a5b346577019d \
+                                size    29433
 
     configure.args-append       --add-dynamic-module=${workpath}/${ngx_h_more_distname}
 
@@ -173,24 +177,29 @@ subport ${name}-headers_more {
 subport ${name}-lua {
     depends_lib-append      port:luajit-openresty
     set ngx_lua_filename    lua-nginx-module
-    set ngx_lua_version     0.10.22
+    set ngx_lua_version     0.10.27
+    revision                0
     set ngx_lua_distname    ${ngx_lua_filename}-${ngx_lua_version}
     distfiles-append        v${ngx_lua_version}.tar.gz:lua_module
     checksums-append        v${ngx_lua_version}.tar.gz \
-                            rmd160  afe7e3bd5bfa75fd0f511753b454d6891e8043ea \
-                            sha256  294d3d4b2d14fda1b8c539ff86f90047d203df861eb9a1ac44ec5c679ef55408 \
-                            size    690975
+                            rmd160  5cfbb75ef65d19ea4f27bfb7e6470301dd5975c5 \
+                            sha256  d4d1655d954eba254c3c12359739ec1dd70829af7ef57f78cd0d50d19c901ab7 \
+                            size    758977
+
+    platforms {darwin >= 11}
 
     configure.cflags        -I${prefix}/include/luajit-2.1/ ${configure.cflags}
     configure.env           LUAJIT_INC=${prefix}/include/luajit-2.1/
     configure.env           LUAJIT_LIB=${prefix}/lib
     configure.args-append   --add-dynamic-module=${workpath}/${ngx_lua_distname}
 
-    patchfiles-append       patch-lua_headers_in.c.diff
+    nginx_set_portfile_var  nginx_lua_mod_dirname    "${ngx_lua_distname}"
+
+    patchfiles-append       patch-lua_config.diff
 
     # patch routine balks on file names with "../", but rel-paths in patchfiles start from $worksrcpath
     pre-patch {
-        ln -s   "${workpath}/${ngx_lua_distname}" "${worksrcpath}/ngx_lua_distname.tmp"
+        ln -s   "${workpath}/${nginx_lua_mod_dirname}" "${worksrcpath}/ngx_lua_distname.tmp"
     }
     post-patch {
         file delete   "${worksrcpath}/ngx_lua_distname.tmp"
@@ -205,6 +214,7 @@ subport ${name}-lua {
 subport ${name}-rtmp {
     set rtmp_filename       nginx-rtmp-module
     set rtmp_version        1.2.2
+    revision                1
     set rtmp_distname       ${rtmp_filename}-${rtmp_version}
     distfiles-append        v${rtmp_version}:rtmp_module
     checksums-append        v${rtmp_version} \
@@ -244,13 +254,13 @@ variant degradation description {Allow to return 204 or 444 code for some locati
 
 variant devel_kit description {Enable ngx_devel_kit module (https://github.com/simpl/ngx_devel_kit)} {
     set devel_kit_filename  ngx_devel_kit
-    set devel_kit_version   0.3.2
+    set devel_kit_version   0.3.3
     set devel_kit_distname  ${devel_kit_filename}-${devel_kit_version}
     distfiles-append        v${devel_kit_version}.tar.gz:devel_kit_module
     checksums-append        v${devel_kit_version}.tar.gz \
-                            rmd160  bd3e1d164e521988e50f18d97b3d58c14e97e953 \
-                            sha256  aa961eafb8317e0eb8da37eb6e2c9ff42267edd18b56947384e719b85188f58b \
-                            size    66551
+                            rmd160  3fdd31a09b276f2a4d47bea4f7503feddc1b265e \
+                            sha256  faa2fcd5168b10764d35081356511d5f84db5c526a1aa4b6add2db94b6853b2b \
+                            size    66561
 
     configure.args-append     --add-module=${workpath}/${devel_kit_distname}
 }

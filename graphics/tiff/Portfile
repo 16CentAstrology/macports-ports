@@ -5,11 +5,11 @@ PortGroup           xcodeversion 1.0
 PortGroup           muniversal 1.0
 
 name                tiff
-version             4.5.0
+version             4.7.0
 revision            0
-checksums           rmd160  77c82b093ee54cb66561f6e6ecd078f06e32f3d5 \
-                    sha256  c7a1d9296649233979fa3eacffef3fa024d73d05d589cb622727b5b08c423464 \
-                    size    3880855
+checksums           rmd160  f307a4810e45a522bd62ff51b314335b08e886cd \
+                    sha256  67160e3457365ab96c5b3286a0903aa6e78bdc44c4bc737d2e486bcecb6ba976 \
+                    size    3896583
 
 categories          graphics
 maintainers         {ryandesign @ryandesign} openmaintainer
@@ -30,11 +30,12 @@ long_description    \
     There is also considerable support for some of the more     \
     esoteric portions of the 6.0 TIFF spec.
 
-homepage            http://simplesystems.org/libtiff/
-master_sites        http://download.osgeo.org/libtiff/ \
+homepage            https://libtiff.gitlab.io/libtiff/
+master_sites        https://download.osgeo.org/libtiff/ \
                     freebsd
 
-depends_lib         port:lerc \
+depends_lib-append  port:lerc \
+                    port:libdeflate \
                     path:include/turbojpeg.h:libjpeg-turbo \
                     port:xz \
                     port:zlib \
@@ -45,9 +46,6 @@ test.target         check
 
 compiler.c_standard 1999
 
-patchfiles          allow-opengl-without-x11.patch \
-                    dont-find-x11-opengl.patch
-
 configure.args      --disable-jbig \
                     --disable-webp \
                     --with-x=no \
@@ -56,6 +54,8 @@ configure.args      --disable-jbig \
                     --with-jpeg-lib-dir=${prefix}/lib \
                     --with-lerc-include-dir=${prefix}/include \
                     --with-lerc-lib-dir=${prefix}/lib \
+                    --with-libdeflate-include-dir=${prefix}/include \
+                    --with-libdeflate-lib-dir=${prefix}/lib \
                     --with-lzma-include-dir=${prefix}/include \
                     --with-lzma-lib-dir=${prefix}/lib \
                     --with-zlib-include-dir=${prefix}/include \

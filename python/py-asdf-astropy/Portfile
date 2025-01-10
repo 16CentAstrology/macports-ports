@@ -1,0 +1,35 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           python 1.0
+
+name                py-asdf-astropy
+python.rootname     asdf_astropy
+version             0.7.0
+revision            0
+license             BSD
+maintainers         {mps @Schamschula} openmaintainer
+description         This package includes plugins that provide ASDF serialization \
+                    support for astropy objects.
+long_description    {*}${description} The plugins are automatically enabled when the \
+                    package is installed.
+homepage            https://github.com/astropy/asdf-astropy
+
+checksums           rmd160  80ceb1af9459f8f020e42f16c5904461aca1273b \
+                    sha256  c981754e10145439de3cc6808ffb3101ef055d0b3164742c72f44b0b2b5c0525 \
+                    size    77336
+
+python.versions     39 310 311 312
+
+if {${name} ne ${subport}} {
+    depends_build-append \
+                    port:py${python.version}-setuptools_scm
+
+    depends_lib-append  \
+                    port:py${python.version}-asdf \
+                    port:py${python.version}-asdf-coordinates-schemas \
+                    port:py${python.version}-asdf-transform-schemas \
+                    port:py${python.version}-astropy \
+                    port:py${python.version}-numpy \
+                    port:py${python.version}-packaging
+}

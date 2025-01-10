@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-drms
-version             0.6.3
+version             0.8.0
 revision            0
 license             BSD
 maintainers         {mps @Schamschula} openmaintainer
@@ -16,14 +16,15 @@ supported_archs     noarch
 platforms           {darwin any}
 homepage            https://sunpy.org
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312
 
-checksums           rmd160  1669db779a28129e89d06082c8c9d06f469c8f1e \
-                    sha256  72b3d5a3b00b12b656bcd72c689fc1b816b45647c2b19f82f76f71e241191cac \
-                    size    53439
+checksums           rmd160  8f9b06afce78523242d0c4186b68790d2ffe0617 \
+                    sha256  2e01eeee64e088bde7da555a3a1a697567d088cd021642beeb3e9e0642f198a6 \
+                    size    57479
 
 if {${name} ne ${subport}} {
     depends_build-append \
+                    port:py${python.version}-oldest-supported-numpy \
                     port:py${python.version}-setuptools_scm
 
     depends_lib-append \

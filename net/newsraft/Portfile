@@ -1,0 +1,40 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           codeberg 1.0
+PortGroup           legacysupport 1.1
+PortGroup           makefile 1.0
+
+codeberg.setup      newsraft newsraft 0.27 newsraft-
+revision            0
+
+categories          net
+license             ISC
+maintainers         {@sikmir disroot.org:sikmir} openmaintainer
+description         Feed reader for terminal
+long_description    {*}${description}
+
+checksums           rmd160  fc114e7a912912512102c112bbf1d7a43d6a1cc4 \
+                    sha256  627b274901e5c3298d430f5adfedbd69b09de365ffeb18e768f091738fe39089 \
+                    size    155854
+
+depends_build-append \
+                    path:bin/pkg-config:pkgconfig
+
+depends_lib-append  port:curl \
+                    port:expat \
+                    port:gumbo-parser \
+                    port:ncurses \
+                    port:sqlite3 \
+                    port:yajl
+
+# Otherwise linking to LegacySupport is not done,
+# and build fails on systems where it is needed.
+patchfiles-append   patch-makefile.diff
+
+post-patch {
+    reinplace "s|@CFLAGS@|${configure.cflags} [get_canonical_archflags cc]|" ${worksrcpath}/makefile
+    reinplace "s|@LDFLAGS@|${configure.ldflags} [get_canonical_archflags ld]|" ${worksrcpath}/makefile
+}
+
+destroot.args       PREFIX=${prefix}

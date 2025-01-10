@@ -5,11 +5,11 @@ PortGroup           python 1.0
 
 # Remember to update libvirt and py-libvirt at the same time.
 name                py-libvirt
-version             9.0.0
+version             10.10.0
 revision            0
-checksums           rmd160  b4614c8da2de501ddfabd51986370ea106911509 \
-                    sha256  49702d33fa8cbcae19fa727467a69f7ae2241b3091324085ca1cc752b2b414ce \
-                    size    242486
+checksums           rmd160  db492f70c98478f33ef66d56ce3c8ceab16e2267 \
+                    sha256  8acf6dcfb33a03ed92f9440cb1a0b8d3fc53fb23bba2e76ceedeb8bfb5327557 \
+                    size    241054
 
 license             MIT
 maintainers         {ryandesign @ryandesign} openmaintainer
@@ -24,16 +24,12 @@ long_description    The libvirt virtualization API python binding provides a \
 homepage            https://libvirt.org
 master_sites        ${homepage}/sources/python
 distname            libvirt-python-${version}
+livecheck.name      ${python.rootname}-python
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
     depends_build       port:py${python.version}-setuptools \
-                        port:pkgconfig
+                        path:bin/pkg-config:pkgconfig
     depends_lib         port:libvirt
-
-    livecheck.type  none
-} else {
-    livecheck.name  ${python.rootname}-python
-    livecheck.type  pypi
 }

@@ -4,15 +4,14 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-imageio
-version             2.24.0
+version             2.36.1
 revision            0
 categories-append   graphics
 license             BSD
 platforms           {darwin any}
 supported_archs     noarch
 
-python.versions     37 38 39 310 311
-python.pep517       yes
+python.versions     39 310 311 312 313
 
 maintainers         {stromnov @stromnov} openmaintainer
 
@@ -21,9 +20,9 @@ long_description    {*}${description}
 
 homepage            https://imageio.github.io/
 
-checksums           rmd160  8d0fa320e54a46500c1b42e187527eb38be0fb05 \
-                    sha256  f240f8229f4f329a1546281194b52da5d6694141a524668fed3f81b0d07782fa \
-                    size    3437522
+checksums           rmd160  fe07f3280929e44c86b527f76fa4edd748b0453a \
+                    sha256  e4e1d231f47f9a9e16100b0f7ce1a86e8856fb4d1c0fa2c4365a316f1746be62 \
+                    size    389522
 
 if {${name} ne ${subport}} {
     depends_lib-append  port:py${python.version}-numpy \

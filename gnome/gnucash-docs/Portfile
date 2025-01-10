@@ -4,12 +4,12 @@ PortSystem      1.0
 PortGroup       cmake 1.1
 
 name            gnucash-docs
-version         4.11
+version         5.9
 license         GFDL-1.1+
 categories      gnome x11
 maintainers     {dports @drkp} openmaintainer
 description     docs for gnucash
-platforms       macosx
+platforms       any
 long_description \
                 GnuCash is a personal and small-business \
                 financial-accounting software, freely licensed under the \
@@ -27,9 +27,9 @@ long_description \
 homepage        https://www.gnucash.org
 master_sites    sourceforge:project/gnucash/gnucash%20%28stable%29/${version}
 
-checksums       rmd160  e2d09d616c800da972447ba60998242731638cdd \
-                sha256  a83b8ef39111961d805100a860053557a1166cbf0b93a66dfb2c3f732ec25898 \
-                size    67472142
+checksums       rmd160  3fc99d4cd9bea090bc5e37e561eb4a1fd94cc2d1 \
+                sha256  9bc43a2bd11cb431de446023fa6c273e0c432b5bd8933e2177ad007091f294c9 \
+                size    115751579
 
 depends_lib     bin:scrollkeeper-config:rarian \
                 port:libxml2 \

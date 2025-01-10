@@ -44,12 +44,13 @@ depends_run \
 use_bzip2           yes
 distfiles           ${name}-src-${version}${extract.suffix}
 
-worksrcdir          ${name}
-
 configure.args      --without-ccache
 
 if {${configure.cxx_stdlib} ne ""} {
-    configure.ldflags-append -stdlib=${configure.cxx_stdlib}
+    if {[string match *clang* ${configure.compiler}]} {
+        configure.ldflags-append \
+                    -stdlib=${configure.cxx_stdlib}
+    }
 }
 
 build.type          gnu

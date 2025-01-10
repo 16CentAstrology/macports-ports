@@ -4,9 +4,8 @@ PortSystem          1.0
 PortGroup           compilers 1.0
 PortGroup           github 1.0
 
-github.setup        nco nco 5.1.4
-revision            1
-platforms           darwin
+github.setup        nco nco 5.3.0
+revision            0
 maintainers         {takeshi @tenomoto} \
                     {me.com:remko.scharroo @remkos} \
                     openmaintainer
@@ -21,9 +20,9 @@ if {${os.major} > 12} {
     compilers.setup -clang33 -clang34
 }
 
-checksums           rmd160  e739fead0522aca07111988a9cb7c8bdae76e9eb \
-                    sha256  99fe7bea1e7ba3b433876725d1e4c1908ec73ec944fabb5570b78c02ea7e0bdc \
-                    size    6454205
+checksums           rmd160  dfbcbc17e6b573703aa844e8057ed1d6b72b4328 \
+                    sha256  a7a42d5d0cf51a9cc3501fcfd6ebce108a82598dcd615a57a6859cc0f1b17a4f \
+                    size    6854511
 
 homepage            http://nco.sourceforge.net/
 long_description \
@@ -37,15 +36,9 @@ long_description \
 
 depends_lib         port:curl \
                     port:gettext \
-                    port:libiconv \
-                    port:libxml2 \
                     port:netcdf \
-                    path:lib/libssl.dylib:openssl \
                     port:udunits2 \
-                    port:zlib \
-                    port:gsl \
-                    port:hdf5 \
-                    port:xercesc3
+                    port:gsl
 depends_build       port:antlr \
                     port:bison \
                     port:m4 \
@@ -57,7 +50,6 @@ configure.env       HAVE_ANTLR=yes ANTLR_ROOT=${prefix} \
 configure.cppflags-append   -I${prefix}/include/udunits2 \
                             -I${prefix}/include \
                             -DENABLE_NETCDF4
-configure.ldflags-append    -lxerces-c
 configure.args      --disable-dependency-tracking \
                     --mandir=${prefix}/share/man  \
                     --disable-shared              \

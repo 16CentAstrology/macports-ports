@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-absl
-version             1.2.0
+version             2.1.0
 revision            0
 python.rootname     absl-py
 
@@ -15,21 +15,20 @@ maintainers         {emcrisostomo @emcrisostomo} openmaintainer
 
 description         Abseil Python Common Libraries
 long_description    ${python.rootname} is a collection of Python \
-                    library code for building Python applications. The \
-                    code is collected from Google's own Python code \
-                    base, and has been extensively tested and used in \
-                    production.
+                    library code for building Python applications. \
+                    The code is collected from Google's own Python \
+                    code base, and has been extensively tested \
+                    and used in production.
 
 homepage            https://github.com/abseil/abseil-py
 
-checksums           rmd160  71960787e96c5a840089bbb113b7579e3a826255 \
-                    sha256  f568809938c49abbda89826223c992b630afd23c638160ad7840cfe347710d97 \
-                    size    108906
+checksums           rmd160  c7d81bcb6ebc459450ddb4e41cdf284e735bc79f \
+                    sha256  7820790efbb316739cde8b4e19357243fc3608a152024288513dd968d7d959ff \
+                    size    118055
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312
 
 if {${name} ne ${subport}} {
     depends_build-append \
-        port:py${python.version}-setuptools \
         port:py${python.version}-setuptools_scm
 }

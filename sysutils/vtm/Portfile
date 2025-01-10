@@ -6,7 +6,7 @@ PortGroup               cmake 1.1
 PortGroup               legacysupport 1.1
 PortGroup               compiler_blacklist_versions 1.0
 
-github.setup            netxs-group vtm 0.9.8q v
+github.setup            netxs-group vtm 0.9.9u v
 github.tarball_from     archive
 revision                0
 
@@ -19,9 +19,9 @@ description             Monotty Desktopio - text-based desktop environment \
 long_description        ${name} is a terminal multiplexer with window manager \
                         and session sharing.
 
-checksums               rmd160  7f258ff62df4a7a397ba88ba8a835b689aaddb37 \
-                        sha256  31982ae6a5896299f7360099fb19b5e48d3c330cee20c1cbca2b5740e4775690 \
-                        size    1356043
+checksums               rmd160  1cdd029804982c01e31cef4e95d1c770f7a2bde4 \
+                        sha256  c0d8d47b7dd9e722264b2a8af237fad888734d893081147d06585b9e14df3e33 \
+                        size    1410099
 
 # Requires a compiler with full C++20 support
 compiler.cxx_standard   2020
@@ -29,8 +29,8 @@ compiler.cxx_standard   2020
 compiler.blacklist-append \
                         {clang}
 
-# Needed for std::filesystem
-legacysupport.newest_darwin_requires_legacy 18
+# Needed for std::filesystem and std::atomic_notify_all
+legacysupport.newest_darwin_requires_legacy 19
 legacysupport.use_mp_libcxx yes
 
 if {[variant_isset debug]} {
@@ -42,8 +42,6 @@ if {[variant_isset debug]} {
     cmake.build_type    RelWithDebInfo
     configure.optflags
 }
-
-configure.args-append   ${worksrcpath}/src
 
 notes "
 Recommended to use it in a terminal with mouse\

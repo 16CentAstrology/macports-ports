@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-setuptools
-version             65.7.0
+version             75.8.0
 categories-append   devel
 # License status is murky. The current maintainer decided to relicense as
 # MIT, but he doesn't appear to have obtained the permission of previous
@@ -24,30 +24,50 @@ platforms           {darwin any}
 
 homepage            https://pypi.org/project/setuptools/
 
-checksums           md5 8e46e4130eb796c01f4665304a4fe4b5 \
-                    rmd160 0d590604e4a6eebe25265a7bed7d896b88f9f36b \
-                    sha256 4d3c92fac8f1118bb77a22181355e29c239cabfe2b9effdaa665c66b711136d7
+checksums           md5 a42b075e3e18e724580f4caf7944354a \
+                    rmd160 561883005cdd0571da2d95bb3cdadccb831a64a6 \
+                    sha256 c5afc8f407c626b8313a86e10311dd3f661c6cd9c09d4bf8c15c0e11f9f2b0e6
 
-python.versions     26 27 33 34 35 36 37 38 39 310 311
+python.versions     26 27 32 33 34 35 36 37 38 39 310 311 312 313
 python.link_binaries no
+python.pep517_backend
 
 if {$subport ne $name} {
 
-    if {${python.version} >= 36} {
-        python.pep517   yes
+    set pythonpath [list ${worksrcpath}]
+     if {${python.version} in {37 38 39}} {
+        # break circular dependencies
         python.add_dependencies no
-        depends_build   port:py-bootstrap-modules
+        depends_build   port:py-bootstrap-modules \
+                        port:py${python.version}-installer
         depends_lib     port:python${python.version}
-        build.env-append    PYTHONPATH=${prefix}/share/py-bootstrap-modules
+        lappend pythonpath ${worksrcpath}/setuptools/_vendor \
+                           ${prefix}/share/py-bootstrap-modules
         build.args      --skip-dependency-check
-        destroot.env-append PYTHONPATH=${prefix}/share/py-bootstrap-modules
-    } else {
+    }
+    build.env-append    PYTHONPATH=[join $pythonpath :]
+    if {${python.version} <= 35} {
         use_zip     yes
         post-destroot {
             ln -s ${python.prefix}/bin/easy_install-${python.branch} ${destroot}${prefix}/bin
         }
     }
     switch ${python.version} {
+        38 {
+            version     75.3.0
+            revision    0
+            checksums   md5 ca5ea2d5e9622d6a7b9f6c6664821853 \
+                        rmd160 2eeeb9c94187f7dd65e1f7589acdea85716bd41d \
+                        sha256 fba5dd4d766e97be1b1681d98712680ae8f2f26d7881245f2ce9e40714f1a686
+            patchfiles-append   4666.diff
+        }
+        37 {
+            version     67.7.2
+            revision    0
+            checksums   md5 aa8e2bc19324d0127e6726d7ee8ed0ed \
+                        rmd160 6afb68cca7cbec82406e6156bc7d98d803c97db0 \
+                        sha256 f104fa03692a2602fa0fec6c6a9e63b6c8a968de13e17c026957dd1f53d80990
+        }
         36 {
             version     59.6.0
             revision    0
@@ -76,6 +96,13 @@ if {$subport ne $name} {
                         rmd160 6070de164cf74412fe7c9a9d04031112b06cfc2a \
                         sha256 f7cddbb5f5c640311eb00eab6e849f7701fa70bf6a183fc8a2c33dd1d1672fb2
         }
+        32 {
+            version     29.0.1
+            revision    0
+            checksums   md5 ab145ab25ebb85ffed5dc1db9d03a099 \
+                        rmd160 ac5afca835f4caed809a1166826783c64ab90923 \
+                        sha256 c9c24ebdfe7b83fe90c4fe503b4152d721ef17e13714200c8e9ddfeed27fefd8
+        }
         27 {
             version     44.1.1
             revision    0
@@ -94,9 +121,15 @@ if {$subport ne $name} {
 
     build.env-append    SETUPTOOLS_INSTALL_WINDOWS_SPECIFIC_FILES=0
     destroot.env-append SETUPTOOLS_INSTALL_WINDOWS_SPECIFIC_FILES=0
+    set docfiles [list README.rst]
+    if {${python.version} >= 38} {
+        lappend docfiles NEWS.rst
+    } else {
+        lappend docfiles CHANGES.rst
+    }
     post-destroot {
        xinstall -m 755 -d ${destroot}${prefix}/share/doc/${subport}
-       xinstall -m 644 -W ${worksrcpath} CHANGES.rst README.rst \
+       xinstall -m 644 -W ${worksrcpath} {*}${docfiles} \
           ${destroot}${prefix}/share/doc/${subport}
     }
     livecheck.type      none

@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/gruntwork-io/kubergrunt 0.10.2 v
+go.setup            github.com/gruntwork-io/kubergrunt 0.16.0 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -27,11 +28,9 @@ license             Apache-2
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  81e242e75d71cbd3a7a0a299cd439bc928614c59 \
-                    sha256  837442e40827831599429f2006f46cab3b48e2e4fad96ad887a2a2a6443bceb2 \
-                    size    145132
-
-build.env-delete    GO111MODULE=off GOPROXY=off
+checksums           rmd160  fbc890d0cbde8da0bec02b54930d18714f91cd6e \
+                    sha256  f4c7314d83c1385128c4ce917df5c3c0f4cdd44ab6e2032dc7149021c9a32bb0 \
+                    size    161335
 
 build.pre_args      -o ${worksrcpath}/${name}
 build.args          ./cmd

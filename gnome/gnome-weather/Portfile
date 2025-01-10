@@ -11,10 +11,11 @@ license             GPL-2+
 set branch          [join [lrange [split ${version} .] 0 1] .]
 description         A small application that allows you to monitor the current weather \
                     conditions for your city, or anywhere in the world
-long_description    ${description}
+long_description    {*}${description}
 maintainers         {devans @dbevans} openmaintainer
 categories          gnome
-platforms           darwin
+platforms           any
+supported_archs     noarch
 homepage            https://wiki.gnome.org/Apps/Weather
 master_sites        gnome:sources/${name}/${branch}/
 
@@ -54,7 +55,7 @@ configure.args      --disable-schemas-compile \
                     --disable-silent-rules
 
 post-activate {
-   system "${prefix}/bin/gtk-update-icon-cache-3.0 -f -t ${prefix}/share/icons/hicolor"
+   system "${prefix}/bin/gtk-update-icon-cache -f -t ${prefix}/share/icons/hicolor"
    system "${prefix}/bin/update-desktop-database ${prefix}/share/applications"
    system "${prefix}/bin/glib-compile-schemas ${prefix}/share/glib-2.0/schemas"
 }

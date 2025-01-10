@@ -5,13 +5,12 @@ PortGroup           python 1.0
 PortGroup           github 1.0
 PortGroup           boost 1.0
 
-github.setup        schrodinger pymol-open-source 2.5.0 v
-revision            4
+github.setup        schrodinger pymol-open-source 3.0.0 v
 name                pymol
+revision            1
 conflicts           pymol-devel
 
 categories          science chemistry
-platforms           darwin
 universal_variant   no
 license             PSF
 maintainers         {gmail.com:howarth.at.macports @jwhowarth} openmaintainer
@@ -23,32 +22,34 @@ long_description    PyMOL is a molecular graphics system with an embedded Python
 
 homepage            https://www.pymol.org/
 
-checksums           rmd160  6432d47616aee1e5d9d40cc2a74425b33159d7a0 \
-                    sha256  67c5aa944ce9ac2e3babd42e7e2b78ed11719283a2c0a063e100cfe24665c0d3 \
-                    size    10471287
+checksums           rmd160  d963b8704371db01d78cf75708b29f8f1c27829a \
+                    sha256  27659a99d843c58c513bd9fd78cc67a717cef151b34a439213fbca8bffa2298f \
+                    size    29508167
 
 subport pymol-devel {
-    github.setup    schrodinger pymol-open-source 7c931c893a8a22eeeed915be
-    version         20230111-[string range ${github.version} 0 7]
+    github.setup    schrodinger pymol-open-source 9d3061ca58d8b69d7dad74a6
+    version         20240905-[string range ${github.version} 0 7]
     conflicts       pymol
     revision        1
     maintainers     {reneeotten @reneeotten} openmaintainer
-    checksums       rmd160  68f090c7b3c31e07191a43965bca623da1a210e3 \
-                    sha256  4fdb41325ee47050cd967f2fd662c4ea5a3e6375c6e77e503c181962a13e146f \
-                    size    10494214
+    checksums       rmd160  89fbc4f954209a7e6801d49227b25a444df67863 \
+                    sha256  7093313c832f95a74a47aee852bf49b27053bd319981f444c48a47aabdbaa511 \
+                    size    29537019
+    depends_build-append \
+                    path:bin/cmake:cmake
 }
 
-variant python37 conflicts python38 python39 python310 python311 description {Use Python 3.7} {}
-variant python38 conflicts python37 python39 python310 python311 description {Use Python 3.8} {}
-variant python39 conflicts python37 python38 python310 python311 description {Use Python 3.9} {}
-variant python310 conflicts python37 python38 python39 python311 description {Use Python 3.10} {}
-variant python311 conflicts python37 python38 python39 python310 description {Use Python 3.11} {}
+variant python39 conflicts python310 python311 python312 python313 description {Use Python 3.9} {}
+variant python310 conflicts python39 python311 python312 python313 description {Use Python 3.10} {}
+variant python311 conflicts python39 python310 python312 python313 description {Use Python 3.11} {}
+variant python312 conflicts python39 python310 python311 python313 description {Use Python 3.12} {}
+variant python313 conflicts python39 python310 python311 python312 description {Use Python 3.13} {}
 
-if {![variant_isset python37] && ![variant_isset python38] && ![variant_isset python39] && ![variant_isset python310]} {
-    default_variants +python311
+if {![variant_isset python39] && ![variant_isset python310] && ![variant_isset python311]&& ![variant_isset python312] } {
+    default_variants +python313
 }
 
-foreach pv {311 310 39 38 37} {
+foreach pv {313 312 311 310 39} {
     if {[variant_isset python${pv}]} {
         python.default_version ${pv}
         break
@@ -56,10 +57,11 @@ foreach pv {311 310 39 38 37} {
 }
 
 python.link_binaries no
+python.pep517   no
 
 boost.depends_type build
 
-compiler.cxx_standard 2011
+compiler.cxx_standard 2017
 
 variant vtkm description {Use VTK-m for isosurface generation} {
     depends_lib-append  port:vtk-m
@@ -72,6 +74,9 @@ variant openmp description {Enable OpenMP support} {
     compiler.openmp_version 4.0
     patchfiles-append   patch-openmp.diff
 }
+
+depends_build-append \
+                    port:py${python.version}-setuptools
 
 depends_lib-append  port:freetype \
                     port:glew \
@@ -90,13 +95,8 @@ patchfiles          pymol_shell.diff \
                     setup.py.diff \
                     patch-boost-include.diff
 
-# two fixes for PyMOL v2.5.0 (can be removed upon next update):
-# 1. fix for build on 10.13 and below;
-# see: https://github.com/schrodinger/pymol-open-source/issues/193
-# 2. fix for build with VTK-M 1.6
-if {${subport} != "pymol-devel"} {
-    patchfiles-append   patch-layer1_Wizard.cpp.diff \
-                        patch-vtkm.diff
+if {${subport} == "pymol-devel"} {
+    patchfiles-replace setup.py.diff patch-devel-setup.py.diff
 }
 
 post-patch {

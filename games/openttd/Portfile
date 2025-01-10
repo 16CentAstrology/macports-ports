@@ -13,12 +13,12 @@ maintainers         {cal @neverpanic} openmaintainer
 if {${name} eq ${subport}} {
     PortGroup           cmake 1.1
 
-    version             12.2
+    version             14.1
     revision            0
 
-    checksums           rmd160  33e354a8bfca07e43837425e2559b9794933cc28 \
-                        sha256  81508f0de93a0c264b216ef56a05f8381fff7bffa6d010121a21490b4dace95c \
-                        size    7377496
+    checksums           rmd160  ac02ce0fb6726b721be712703054a6799baf523a \
+                        sha256  2c14c8f01f44148c4f2c88c169a30abcdb002eb128a92b9adb76baa76b013494 \
+                        size    8015032
 
     license             GPL-2
 
@@ -56,6 +56,16 @@ if {${name} eq ${subport}} {
     configure.args-append \
                         -DOPTION_USE_ASSERTS=Off \
                         -DCMAKE_INSTALL_PREFIX=${applications_dir}/OpenTTD.app/Contents/Resources/
+
+    post-destroot {
+        xinstall -m 0644 ${worksrcpath}/os/macosx/openttd.icns \
+            ${destroot}${applications_dir}/OpenTTD.app/Contents/Resources/OpenTTD.icns
+
+        xinstall -m 0644 ${cmake.build_dir}/Info.plist.in \
+            ${destroot}${applications_dir}/OpenTTD.app/Contents/Info.plist
+        reinplace "s|#CPACK_PACKAGE_VERSION#|${version}|g" \
+            ${destroot}${applications_dir}/OpenTTD.app/Contents/Info.plist
+    }
 
     livecheck.type      regex
     livecheck.url       ${homepage}

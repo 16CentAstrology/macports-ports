@@ -2,31 +2,33 @@
 
 PortSystem      1.0
 PortGroup       github 1.0
-PortGroup       java 1.0
 
-github.setup    micronaut-projects micronaut-starter 3.8.2 v
+github.setup    micronaut-projects micronaut-starter 4.7.3 v
 revision        0
 name            micronaut
 categories      java
 platforms       {darwin any}
 maintainers     {breun.nl:nils @breun} openmaintainer
 license         Apache-2
-supported_archs x86_64
+supported_archs x86_64 arm64
 universal_variant no
 
 description     Micronaut is a modern, JVM-based, full-stack framework \
-                for building modular, easily testable microservice and serverless applications.
+                for building modular, easily testable microservice and \
+                serverless applications.
 
-long_description Micronaut is a modern, JVM-based, full stack Java framework designed for \
-                building modular, easily testable JVM applications with support for Java, \
-                Kotlin and the Groovy language. \
+long_description Micronaut is a modern, JVM-based, full stack Java framework \
+                designed for building modular, easily testable JVM \
+                applications with support for Java, Kotlin and the Groovy \
+                language. \
                 \n\
-                \nMicronaut is developed by the creators of the Grails framework and takes \
-                inspiration from lessons learnt over the years building real-world applications \
-                from monoliths to microservices using Spring, Spring Boot and Grails. \
+                \nMicronaut is developed by the creators of the Grails \
+                framework and takes inspiration from lessons learnt over the \
+                years building real-world applications from monoliths to \
+                microservices using Spring, Spring Boot and Grails. \
                 \n\
-                \nMicronaut aims to provide all the tools necessary to build microservice \
-                applications including: \
+                \nMicronaut aims to provide all the tools necessary to build \
+                microservice applications including: \
                 \n\
                 \n* Dependency Injection and Inversion of Control (IoC) \
                 \n* Aspect Oriented Programming (AOP) \
@@ -40,8 +42,8 @@ long_description Micronaut is a modern, JVM-based, full stack Java framework des
                 \n* HTTP Routing \
                 \n* Client-Side Load Balancing \
                 \n\
-                \nAt the same time Micronaut aims to avoid the downsides of frameworks like Spring, \
-                Spring Boot and Grails by providing: \
+                \nAt the same time Micronaut aims to avoid the downsides of \
+                frameworks like Spring, Spring Boot and Grails by providing: \
                 \n\
                 \n* Fast startup time \
                 \n* Reduced memory footprint \
@@ -52,11 +54,18 @@ long_description Micronaut is a modern, JVM-based, full stack Java framework des
 
 homepage        https://micronaut.io
 github.tarball_from releases
-distname        mn-darwin-amd64-v${version}
 
-checksums       rmd160  db7d18b326d905d55437e01ab812e6638432c068 \
-                sha256  98e8dd49e8bbe28997d8c70408d2d28be765c2a1344e433464d048634714da5c \
-                size    20142119
+if {${configure.build_arch} eq "x86_64"} {
+    distname     mn-darwin-amd64-v${version}
+    checksums    rmd160  04832766055e6821056c012ccd82ebb33c0c10cc \
+                 sha256  870c7839460cc153a0c8b4f1fe5c32fecf510aebb602c537cca47fad34dde848 \
+                 size    27808338
+} elseif {${configure.build_arch} eq "arm64"} {
+    distname     mn-darwin-aarch64-v${version}
+    checksums    rmd160  87b3b9a5f18386f2741732d56bf5232098f9ce4a \
+                 sha256  d927685d269e8736769e1cb6d959382ca80ae086ce000fa01f2b3ac6ca0563c1 \
+                 size    27590069
+}
 
 use_zip         yes
 use_configure   no

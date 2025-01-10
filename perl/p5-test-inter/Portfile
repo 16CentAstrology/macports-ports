@@ -4,25 +4,21 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Test-Inter 1.09
-platforms           {darwin any}
-maintainers         nomaintainer
+perl5.setup         Test-Inter 1.12
+revision            0
 license             {Artistic-1 GPL}
+maintainers         nomaintainer
+description         Test::Inter - framework for more readable interactive test scripts
+long_description    {*}${description}
 
-description         Test::Inter - framework for more readable interactive \
-                    test scripts
+platforms           {darwin any}
+supported_archs     noarch
 
-long_description    ${description}
-
-checksums           rmd160  7863d45bd4f0aedba8aeaf4512f34c10826d4873 \
-                    sha256  1e9f129cc1a001fb95449d385253b38afabf5b466e3b3bd33e4e430f216e177a \
-                    size    44460
+checksums           rmd160  b9376aff6f8ba9fdf3bcc4b52d46a4154214d3f0 \
+                    sha256  f2b1987ecef9f6c9223e8fba2e8e48854333896650aabea81bdc30e0c9656b63 \
+                    size    46208
 
 if {${perl5.major} != ""} {
     depends_build-append \
-                    port:p${perl5.major}-file-find-rule \
-                    port:p${perl5.major}-test-pod \
-                    port:p${perl5.major}-test-pod-coverage
-
-    supported_archs noarch
+                    port:p${perl5.major}-test-simple
 }

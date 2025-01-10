@@ -4,19 +4,19 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         App-Cmd 0.335
+perl5.setup         App-Cmd 0.337
 revision            0
 license             {Artistic-1 GPL}
 maintainers         nomaintainer
 description         App::Cmd - write command line apps with less suffering
-long_description    ${description}
+long_description    {*}${description}
 
 platforms           {darwin any}
 supported_archs     noarch
 
-checksums           rmd160  bc1405bb64c82bca86f03ef13a1d82882224f4fc \
-                    sha256  f95517fc4df348d9e7ea01467aabd9725f0715662ee483b54b81d3f0b38c9874 \
-                    size    49009
+checksums           rmd160  eb23e3ff319c3082396562f4efcc3b196d959c23 \
+                    sha256  f6acf2c31108bbc38a6f0d747112df0036cb95f33db094ac470f698b0539a0eb \
+                    size    50287
 
 if {${perl5.major} != ""} {
     depends_build-append \

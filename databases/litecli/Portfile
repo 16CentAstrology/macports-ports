@@ -4,11 +4,12 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           github 1.0
 
-github.setup        dbcli litecli 1.7.0 v
+github.setup        dbcli litecli 1.12.2 v
+github.tarball_from archive
 revision            0
 
 categories          databases python
-maintainers         {@xeron gmail.com:xeron.oskom} openmaintainer
+maintainers         nomaintainer
 license             BSD
 platforms           {darwin any}
 supported_archs     noarch
@@ -17,24 +18,27 @@ long_description    {*}${description}
 
 homepage            https://litecli.com/
 
-checksums           rmd160  73710fa23b4f9a90db3008e247ea2211c6b8d2b6 \
-                    sha256  604814e171ce77761f720185b37be1392a4e99512a5af9ecc75aa30a094ff2db \
-                    size    884808
+checksums           rmd160  d480713d149283ad58502772b189aec3495b84c7 \
+                    sha256  a942eabe538b3fdedea98e0ead6fe9d4276302b33b217b312fa425bc67beedc7 \
+                    size    884807
 
-variant python37 conflicts python38 python39 python310 description "Use Python 3.7" {}
-variant python38 conflicts python37 python39 python310 description "Use Python 3.8" {}
-variant python39 conflicts python37 python38 python310 description "Use Python 3.9" {}
-variant python310 conflicts python37 python38 python39 description "Use Python 3.10" {}
+variant python38 conflicts python39 python310 python311 description "Use Python 3.8" {}
+variant python39 conflicts python38 python310 python311 description "Use Python 3.9" {}
+variant python310 conflicts python38 python39 python311 description "Use Python 3.10" {}
+variant python311 conflicts python38 python39 python310 description "Use Python 3.11" {}
+variant python312 conflicts python38 python39 python310 description "Use Python 3.12" {}
 
-if {[variant_isset python37]} {
-    python.default_version 37
-} elseif {[variant_isset python38]} {
+if {[variant_isset python38]} {
     python.default_version 38
 } elseif {[variant_isset python39]} {
     python.default_version 39
-} else {
-    default_variants +python310
+} elseif {[variant_isset python310]} {
     python.default_version 310
+} elseif {[variant_isset python311]} {
+    python.default_version 311
+} else {
+    default_variants +python312
+    python.default_version 312
 }
 
 depends_lib-append  port:py${python.version}-cli-helpers \

@@ -4,30 +4,29 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         PDL-FFTW3 0.06
+perl5.setup         PDL-FFTW3 0.19
+revision            0
 license             GPL-3
 maintainers         nomaintainer
 description         PDL::FFTW3 - PDL interface to the Fastest Fourier Transform in the West v3
-long_description    ${description}
-
-homepage            https://metacpan.org/release/${perl5.module}
+long_description    {*}${description}
 
 platforms           darwin
 
-checksums           rmd160  b487e6f122fba0f2e7a7ccc4b6708788b3b764b0 \
-                    sha256  f3aee5c445dd6b005b349d018abf75ebad7ab6aa22d4c2aa1c7cbc1197435eaa \
-                    size    32974
+checksums           rmd160  36190bb1559aeab7210df1be8b065b0a4ca45f44 \
+                    sha256  9e93daa4041fafcf317a79243918050d66b3dd6a5c1b209b2d30624d0b82bfcd \
+                    size    44500
 
 if {${perl5.major} != ""} {
 # Alien::FFTW3 has gone AWOL from CPAN/MetaCPAN so don't depend on it
 # PDL::FFTW3 can use pkg-config just as well
     depends_build-append \
                     port:p${perl5.major}-ipc-run \
+                    port:p${perl5.major}-test-simple \
                     port:pkgconfig
 
     depends_lib-append \
                     port:p${perl5.major}-pdl \
                     port:fftw-3 \
-                    port:fftw-3-single \
-                    port:fftw-3-long
+                    port:fftw-3-single
 }

@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/alajmo/mani 0.23.0 v
+go.setup            github.com/alajmo/mani 0.30.0 v
 github.tarball_from archive
 revision            0
 
@@ -25,12 +25,12 @@ license             MIT
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  ce022a40e880b6a28c7a4abbb11b302a82673a56 \
-                    sha256  944fcf07428318fc707460d50dcb88d3f18bb6f6e40af73eb552856759ffee3c \
-                    size    438116
+checksums           rmd160  04d75d17aedf2f58516d4968dfe6d390626c267e \
+                    sha256  c7b28ad1f58b862babd0aac8c47f71f3a06cb041056210290629de598823cf60 \
+                    size    923014
 
 # Allow Go to fetch deps at build time
-build.env-delete    GO111MODULE=off GOPROXY=off
+go.offline_build no
 
 build.cmd           make
 build.pre_args      DATE=""

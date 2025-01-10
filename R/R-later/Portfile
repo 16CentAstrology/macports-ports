@@ -7,17 +7,19 @@ PortGroup           R 1.0
 # clock_gettime, timespec_gettimespec_get
 legacysupport.newest_darwin_requires_legacy 15
 
-R.setup             github r-lib later 1.3.0 v
+R.setup             github r-lib later 1.4.1 v
 revision            0
 maintainers         {@barracuda156 gmail.com:vital.had} openmaintainer
 license             MIT
 description         The fastest delimited reader for R
-long_description    Schedule an R function or formula to run after a specified period of time. \
+long_description    Schedule an R function or formula to run \
+                    after a specified period of time. \
                     Similar to JavaScript’s setTimeout function.
 homepage            https://r-lib.github.io/later
-checksums           rmd160  035ba6cbee102df3c39594c9d32d76164bffcaf9 \
-                    sha256  3963504c13d4663c313649a3272e534cf3f2aefc1e58633b1afe590775a6be0f \
-                    size    58010
+checksums           rmd160  c3aadf5c331f340de8922648a774e238b66b17e7 \
+                    sha256  058f0055b06d98bf1a95b1b485322c416437fed1790b8ad1373c6d29c9ec42b1 \
+                    size    64005
+github.tarball_from archive
 
 depends_lib-append  port:R-Rcpp \
                     port:R-rlang
@@ -30,3 +32,11 @@ if {${os.platform} eq "darwin" && ${os.major} < 16} {
         reinplace "s|@PREFIX@|${prefix}|" ${worksrcpath}/configure
     }
 }
+
+depends_test-append port:R-knitr \
+                    port:R-nanonext \
+                    port:R-R6 \
+                    port:R-rmarkdown \
+                    port:R-testthat
+
+test.run            yes

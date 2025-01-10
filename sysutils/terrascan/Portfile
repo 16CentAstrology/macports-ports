@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/accurics/terrascan 1.17.1 v
+go.setup            github.com/accurics/terrascan 1.19.9 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -22,15 +23,12 @@ license             Apache-2
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-# Due to issues vendoring dependencies, allow fetching deps at build time.
-build.env-delete    GO111MODULE=off GOPROXY=off
-
 build.cmd           make
 build.target        build
 
-checksums           rmd160  17d6c1155a8d151cb0c96db36ab8194e74825f0f \
-                    sha256  6201cc094e89d13c4b1142a279bdb42ac994832d5fc9193a447e154e942da459 \
-                    size    1995718
+checksums           rmd160  f822a8957e16ceda08b6d4673f1e7ace90438a6c \
+                    sha256  13c120a63d7024ca8c54422e047424e318622625336ed77b2c1a36ef5fb1441c \
+                    size    1923503
 
 destroot {
     xinstall -m 0755 ${worksrcpath}/bin/${name} ${destroot}${prefix}/bin/
