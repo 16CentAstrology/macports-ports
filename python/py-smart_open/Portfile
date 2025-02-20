@@ -4,23 +4,26 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-smart_open
-version             6.2.0
+version             7.0.5
 revision            0
 categories-append   textproc
 license             MIT
 supported_archs     noarch
 platforms           {darwin any}
 
-python.versions     37 38 39 310
-python.pep517       yes
+python.versions     39 310 311 312 313
 
 maintainers         {stromnov @stromnov} openmaintainer
 
 description         Utils for streaming large files (S3, HDFS, gzip, bz2...)
 long_description    {*}${description}
 
-homepage            https://github.com/RaRe-Technologies/smart_open
+homepage            https://github.com/piskvorky/smart_open
 
-checksums           rmd160  e5bd3392fe2ef9f6f66cedb537b34381768fcda7 \
-                    sha256  1b4df5c8365218f3852c507451920ccad606c80b0acb4e67508e50ba9b5d2632 \
-                    size    66233
+checksums           rmd160  37c5bc096ab0c6b0b89d70c9f296430213372e04 \
+                    sha256  d3672003b1dbc85e2013e4983b88eb9a5ccfd389b0d4e5015f39a9ee5620ec18 \
+                    size    71693
+
+if {${name} ne ${subport}} {
+    depends_lib-append  port:py${python.version}-wrapt
+}

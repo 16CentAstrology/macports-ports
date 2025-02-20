@@ -15,32 +15,50 @@ epoch               3
 # tested the candidate version using the `go-devel` port, to verify how it
 # builds against current and older versions of macOS.
 
-# Go 1.18 does not build on macOS 10.12 and older
+if {$subport eq $name} {
+# Go 1.22 does not build on macOS 10.12 and older.
+# 1.14.x is the last branch to support i386 on macOS.
+# However past 1.11.x everything is broken.
+# FIXME: consider implementing support for PowerPC.
 if {${os.platform} eq "darwin" && ${os.major} < 17} {
-    version         1.17.13
-    set unsupported_macos true
+    if {${build_arch} eq "i386"} {
+        version     1.11.13
+        revision    0
+        set unsupported_macos_386 true
+        set unsupported_macos false
+    } else {
+        version     1.17.13
+        revision    0
+        set unsupported_macos true
+        set unsupported_macos_386 false
+    }
 } else {
-    version         1.19.5
+    version         1.24.0
     set unsupported_macos false
+    set unsupported_macos_386 false
+    revision        0
 }
-
-revision            0
-
-set legacy_build    true
+platforms           {darwin >= 10} freebsd linux
+}
 
 # Subport for Go Unstable Version
 subport ${name}-devel {
-    version         1.20rc3
+    version         1.24.0
     revision        0
     epoch           1
+    platforms       {darwin >= 17} freebsd linux
+}
 
-    set legacy_build false
+if {${os.platform} eq "darwin" \
+    && (${os.major} < 11 || ${configure.build_arch} eq "i386")} {
+    set legacy_build    true
+} else {
+    set legacy_build    false
 }
 
 homepage            https://go.dev
 
 categories          lang
-platforms           darwin freebsd linux
 license             BSD
 description         compiled, garbage-collected, concurrent programming \
                     language developed by Google Inc.
@@ -66,23 +84,33 @@ livecheck.url       ${homepage}/dl/
 if {$subport eq "${name}-devel"} {
     # Go (DEVEL / UNSTABLE)
     checksums       ${go_src_dist} \
-                    rmd160  a94780447d826e8e0cfdf3b79705d234d8d9ff30 \
-                    sha256  88c4898dea3fbeed4c8bf0976425f2c71dbb11da1d37b5374dd47626328e318b \
-                    size    26154256 \
+                    rmd160  e6961c0c656bd59be09fb84fc7f7f9cc62a9d52b \
+                    sha256  d14120614acb29d12bcab72bd689f257eb4be9e0b6f88a8fb7e41ac65f8556e5 \
+                    size    30663922 \
                     ${go_armbin_dist} \
-                    rmd160  135041e913f281bfc7dc25e5a38861fd67302b52 \
-                    sha256  62aeba508c8b768c158950046c04761298d556554594c3ac6ffc3509f5dece41 \
-                    size    96039972 \
+                    rmd160  3e4a9239ff945adf3924139fb630be8d325ca8e8 \
+                    sha256  fd9cfb5dd6c75a347cfc641a253f0db1cebaca16b0dd37965351c6184ba595e4 \
+                    size    76111845 \
                     ${go_amdbin_dist} \
-                    rmd160  43668b2697ddacdd96765fe44421282b12b1754d \
-                    sha256  b5b988b538d6b183d0c8a4959e9a83d3bbc91e4fd9d63d6c6df7103dba691ade \
-                    size    99852260
+                    rmd160  8d6677cfa877b6086b3335848830369ce68f938e \
+                    sha256  7af054e5088b68c24b3d6e135e5ca8d91bbd5a05cb7f7f0187367b3e6e9e05ee \
+                    size    79800907
 
     livecheck.regex {go([0-9.A-z]+)\.src\.tar\.gz}
 } else {
     # Go (RELEASE)
 
-    if {${unsupported_macos}} {
+    if {${unsupported_macos_386}} {
+        # 1.11
+        checksums   ${go_src_dist} \
+                    rmd160  19d71fb4c196bd5bb03cab40cc99b35f312aaefc \
+                    sha256  5032095fd3f641cafcce164f551e5ae873785ce7b07ca7c143aecd18f7ba4076 \
+                    size    21114296
+
+        notes-append "
+            Please note: Go 1.22 does not build on macOS 10.6 and older, so Go ${version} has been installed.
+        "
+    } elseif {${unsupported_macos}} {
         # 1.17
         checksums   ${go_src_dist} \
                     rmd160  6d8a13da5112ee67bb886eca0fec77ffaab27a5f \
@@ -98,22 +126,22 @@ if {$subport eq "${name}-devel"} {
                     size    137060546
 
         notes-append "
-            Please note: Go 1.18 does not build on macOS 10.12 and older, so Go ${version} has been installed.
+            Please note: Go 1.22 does not build on macOS 10.12 and older, so Go ${version} has been installed.
         "
     } else {
-        # 1.19
+        # 1.23
         checksums   ${go_src_dist} \
-                    rmd160  99d9e5f644203083ece70679ce379f2704428be1 \
-                    sha256  8e486e8e85a281fc5ce3f0bedc5b9d2dbf6276d7db0b25d3ec034f313da0375f \
-                    size    26545858 \
+                    rmd160  e6961c0c656bd59be09fb84fc7f7f9cc62a9d52b \
+                    sha256  d14120614acb29d12bcab72bd689f257eb4be9e0b6f88a8fb7e41ac65f8556e5 \
+                    size    30663922 \
                     ${go_armbin_dist} \
-                    rmd160  2b9d44b9e1f3c9aed6c468c19dc18941aedc28c3 \
-                    sha256  4a67f2bf0601afe2177eb58f825adf83509511d77ab79174db0712dc9efa16c8 \
-                    size    146449161 \
+                    rmd160  3e4a9239ff945adf3924139fb630be8d325ca8e8 \
+                    sha256  fd9cfb5dd6c75a347cfc641a253f0db1cebaca16b0dd37965351c6184ba595e4 \
+                    size    76111845 \
                     ${go_amdbin_dist} \
-                    rmd160  703d7a1344e98cf8caa296e1f34855bf7a7b62b8 \
-                    sha256  23d22bb6571bbd60197bee8aaa10e702f9802786c2e2ddce5c84527e86b66aa0 \
-                    size    152217590
+                    rmd160  8d6677cfa877b6086b3335848830369ce68f938e \
+                    sha256  7af054e5088b68c24b3d6e135e5ca8d91bbd5a05cb7f7f0187367b3e6e9e05ee \
+                    size    79800907
     }
 
     livecheck.regex {go([0-9.]+)\.src\.tar\.gz}
@@ -121,7 +149,7 @@ if {$subport eq "${name}-devel"} {
 
 master_sites        https://storage.googleapis.com/golang/
 distfiles           ${go_src_dist}
-worksrcdir          ${subport}
+worksrcdir          ${name}
 
 maintainers         {ciserlohn @ci42} \
                     {gmail.com:herby.gillot @herbygillot} \
@@ -159,6 +187,7 @@ build.env           GOROOT=${GOROOT} \
                     GOOS=darwin \
                     GOROOT_FINAL=${GOROOT_FINAL} \
                     CC=${configure.cc}
+
 # Set build.jobs to -1 to disable MacPorts from adding the -j flag for
 # parallel builds, since the build.cmd contains "make".
 build.jobs          -1
@@ -168,9 +197,13 @@ if {${os.platform} eq "darwin" && ${os.major} <= ${legacysupport.newest_darwin_r
     # since go doesn't use the standard CFLAGS/CXXFLAGS.
     # We need to patch the build system and set up env variables manually.
 
-    # Older compilers don't support the -Wno-nullability-completeness flag and if
-    # that's the case, they won't need it anyway, so just patch it out.
-    patchfiles-append   patch-cgo-drop-no-nullability-completeness.diff
+    if {[vercmp ${version} < 1.19] && !${legacy_build}} {
+        # Older compilers don't support the -Wno-nullability-completeness flag and if
+        # that's the case, they won't need it anyway, so just patch it out.
+        # Upstream no longer uses the flag as of 1.19beta1.
+        # https://github.com/golang/go/commit/bf19163a545c3117ab3c309a691f32a42cf29efd
+        patchfiles-append   patch-cgo-drop-no-nullability-completeness.diff
+    }
 
     # Fix building with the -x flag ("show all commands as they are executed"),
     # useful for debugging of the bootstrapping process.
@@ -210,9 +243,13 @@ if {${os.platform} eq "darwin" && ${os.major} <= ${legacysupport.newest_darwin_r
     }]
 }
 
-if {${os.platform} eq "darwin" && ${os.major} eq 10} {
-    # The branch https://github.com/catap/go/tree/macos-10.6
-    patchfiles-append   patch-macOS-10.6.diff
+if {${os.platform} eq "darwin" && ${os.major} == 10} {
+    if {${configure.build_arch} eq "x86_64"} {
+        # The branch https://github.com/catap/go/tree/macos-10.6
+        patchfiles-append   patch-macOS-10.6.diff
+    } elseif {${configure.build_arch} eq "i386"} {
+        patchfiles-append   patch-1.11.13-for-10.6-i386.diff
+    }
 }
 
 use_parallel_build  no
@@ -233,7 +270,7 @@ if {${configure.build_arch} eq "arm64"} {
             "${extract.cmd} ${extract.pre_args} ${distpath}/${go_armbin_dist} ${extract.post_args}"
     }
 
-} elseif {(${configure.build_arch} eq "x86_64" && ${os.major} >= 21) || !${legacy_build}} {
+} elseif {${configure.build_arch} eq "x86_64" && (${os.major} >= 21 || !${legacy_build})} {
 
     # Use a temporary installation of the binary AMD64 Go distribution to
     # build Go for AMD64 on macOS 12 since go-1.4 fails to build
@@ -251,7 +288,9 @@ if {${configure.build_arch} eq "arm64"} {
 
 } else {
 
-    build.env-append        GOROOT_BOOTSTRAP=${prefix}/lib/go-1.4
+    # https://trac.macports.org/ticket/69160
+    build.env-append        GOROOT_BOOTSTRAP=${prefix}/lib/go-1.4 \
+                            GOHOSTARCH=${GOARCH}
 
     depends_build-append    port:go-1.4
 }
@@ -283,7 +322,7 @@ destroot {
     xinstall -d ${grfdir}
     xinstall -d ${docdir}
 
-    foreach f {api bin lib misc pkg src test} {
+    foreach f {api bin lib misc pkg src test VERSION} {
         copy ${worksrcpath}/${f} ${grfdir}
     }
 
@@ -294,19 +333,17 @@ destroot {
     xinstall -m 0644 -W ${worksrcpath} \
         CONTRIBUTING.md \
         LICENSE \
-        README.md \
         PATENTS \
-        SECURITY.md \
         VERSION \
         ${docdir}
 
-    copy {*}[glob -directory ${worksrcpath}/doc *] ${docdir}
-}
+    if {!${legacy_build}} {
+        xinstall -m 0644 -W ${worksrcpath} SECURITY.md ${docdir}
+    }
 
-if {${os.platform} eq "darwin" && ${os.major} < 10} {
-    known_fail yes
-    pre-fetch {
-        ui_error "${subport} @${version} requires Mac OS X 10.6 or greater."
-        return -code error "incompatible Mac OS X version"
+    copy {*}[glob -directory ${worksrcpath}/doc *] ${docdir}
+
+    if { [ file exists ${worksrcpath}/go.env ] } {
+        copy ${worksrcpath}/go.env ${grfdir}/
     }
 }

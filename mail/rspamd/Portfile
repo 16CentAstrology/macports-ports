@@ -4,16 +4,16 @@ PortSystem          1.0
 PortGroup           cmake 1.1
 PortGroup           compiler_blacklist_versions 1.0
 PortGroup           github 1.0
+PortGroup           legacysupport 1.1
 
-github.setup        rspamd rspamd 3.4
+github.setup        rspamd rspamd 3.11.0
 revision            0
-
 categories          mail
 license             BSD
 maintainers         nomaintainer
-platforms           darwin
 license             Apache-2
 homepage            https://rspamd.com
+github.tarball_from archive
 
 description         Rapid spam filtering system.
 long_description    Rspamd is an advanced spam filtering system and \
@@ -37,24 +37,27 @@ long_description    Rspamd is an advanced spam filtering system and \
                     API to access external resources, such as DNS, \
                     HTTP or even generic TCP/UDP services.
 
-checksums           rmd160  3ed81bb95265d2fc7cec5641262d9e1f14daa022 \
-                    sha256  92c0830c7f9d9d18d1d4eaebbde7a954bfab519eec75f246a6e81758a73a4a2f \
-                    size    5690455
+checksums           rmd160  8df9625b2c6f860d59eb87f6e30a568c4238f1cc \
+                    sha256  6dbe6fc7df4079a64f59cd6e8e996400d02d946d808140a1f30060cea76088a6 \
+                    size    6440612
+
+# open_memstream, fmemopen, std::filesystem
+legacysupport.newest_darwin_requires_legacy 18
+legacysupport.use_mp_libcxx                 yes
 
 depends_build-append \
-                    port:pkgconfig
+                    path:bin/pkg-config:pkgconfig
 
 depends_lib-append  port:fann \
                     port:gd2 \
                     path:lib/pkgconfig/glib-2.0.pc:glib2 \
                     port:gmime \
-                    port:hyperscan \
+                    port:vectorscan \
                     path:lib/pkgconfig/icu-uc.pc:icu \
                     port:libevent \
                     port:libmagic \
                     port:libsodium \
                     port:libstemmer \
-                    port:libunwind \
                     port:lua \
                     path:lib/libluajit-5.1.2.dylib:luajit \
                     path:lib/libopenblas.dylib:OpenBLAS \
@@ -63,13 +66,32 @@ depends_lib-append  port:fann \
                     port:perl5 \
                     port:ragel \
                     port:sqlite3 \
-                    port:zlib
+                    port:xxhashlib \
+                    port:zlib \
+                    port:zstd
 
 depends_run-append  port:hiredis \
                     port:redis
 
-# fatal error: error in backend: Cannot select: intrinsic %llvm.x86.aesni.aesenclast
-compiler.blacklist  {clang < 800}
+variant hyperscan \
+    description {Use hyperscan instead of vectorscan.} {
+    if {${build_arch} ne {x86_64}} {
+        known_fail  yes
+        pre-fetch {
+            ui_error "hyperscan is only available \
+                with the x86_64 architecture."
+            error {unsupported platform}
+        }
+    }
+
+    depends_lib-replace \
+                    port:vectorscan \
+                    port:hyperscan
+}
+
+# Match requirements of dependency vectorscan
+supported_archs     arm64 x86_64
+compiler.cxx_standard 2020
 
 # Previous issue note; see https://github.com/rspamd/rspamd/issues/2884
 # For issues with -DENABLE_PCRE2=ON, enable pcre jit debugging
@@ -107,7 +129,9 @@ configure.args-append \
                     -DMANDIR=${prefix}/share/man \
                     -DNO_SHARED=ON \
                     -DRSPAMD_USER=${rspamd_user} \
-                    -DRUNDIR=${prefix}/var/run/${name}
+                    -DRUNDIR=${prefix}/var/run/${name} \
+                    -DSYSTEM_XXHASH=ON \
+                    -DSYSTEM_ZSTD=ON
 
 # Build with -DENABLE_FULL_DEBUG=ON
 # configure.args-append \

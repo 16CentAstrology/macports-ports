@@ -3,11 +3,11 @@
 PortSystem          1.0
 
 name                osinfo-db
-version             20190304
+version             20250124
 platforms           any
 categories          sysutils gnome
 license             LGPL-2.1+
-maintainers         nomaintainer
+maintainers         {makr @mohd-akram} openmaintainer
 supported_archs     noarch
 
 description         Libosinfo database files
@@ -16,9 +16,9 @@ long_description    {*}${description}
 homepage            https://libosinfo.org
 master_sites        https://releases.pagure.org/libosinfo/
 
-checksums           rmd160  7c1394e42ee5372b92294cf2d7fda713a08abb7d \
-                    sha256  0e31c3f19f2f897dd2ba08d8656fe0bc4abc24f9c1558aff46bb9e9858cbbdb6 \
-                    size    83024
+checksums           rmd160  40dd8cef5def4319cd79e06d9e62084ce041c3f4 \
+                    sha256  7ca717f0975a798135a2b39eefdd1436a0b0682e29685c7fd01ef7f83a257250 \
+                    size    159540
 
 depends_build       port:osinfo-db-tools
 
@@ -30,5 +30,5 @@ extract.only
 build {}
 
 destroot {
-    system "osinfo-db-import --root \"${destroot}${prefix}\" --dir \"/usr/share/osinfo\" \"${distpath}/${distfiles}\""
+    system "osinfo-db-import --system --root \"${destroot}\" \"${distpath}/${distfiles}\""
 }

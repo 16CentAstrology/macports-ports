@@ -5,6 +5,8 @@ PortGroup           github 1.0
 PortGroup           python 1.0
 
 github.setup        python-hyper hpack 4.0.0 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 name                py-hpack
 revision            0
 
@@ -27,20 +29,13 @@ checksums           rmd160  c449de11ba7f73acbffee7abc1a4c61fa5af82e7 \
                     sha256  631714245360141d404e5c03d86a000cc7cefe84cb731112d1339033bfb83e79 \
                     size    5303301
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     depends_test-append \
-                    port:py${python.version}-pytest \
                     port:py${python.version}-hypothesis
 
     test.run        yes
-    test.cmd        py.test-${python.branch}
-    test.target     test
-    test.env        PYTHONPATH=${worksrcpath}/build/lib
 
     post-destroot {
         set docdir ${prefix}/share/doc/${subport}

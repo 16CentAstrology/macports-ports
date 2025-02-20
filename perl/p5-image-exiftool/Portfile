@@ -6,7 +6,7 @@ PortGroup           perl5 1.0
 perl5.branches      5.28 5.30 5.32 5.34
 perl5.link_binaries no
 # when updating this port, don't forget to keep port exiftool at same version
-perl5.setup         Image-ExifTool 12.55
+perl5.setup         Image-ExifTool 13.19
 revision            0
 license             {Artistic-1 GPL}
 maintainers         {devans @dbevans} openmaintainer
@@ -14,15 +14,16 @@ maintainers         {devans @dbevans} openmaintainer
 platforms           {darwin any}
 supported_archs     noarch
 
-description         Perl interface to read, write and edit EXIF metadata
-long_description    ${description}
+description         Image::Exiftool - a set of Perl modules to read and write meta information \
+                    in a wide variety of image, audio, video and document files.
+long_description    {*}${description}
 
 homepage            https://exiftool.org
 master_sites        ${homepage}
 
-checksums           rmd160  989b1918f83c6ff8eab817acf104b0f7ea7d91e8 \
-                    sha256  08581bd7a1a760f20a1b43cb6d38927e6ec545d59906dae85c7df673946eea08 \
-                    size    5174111
+checksums           rmd160  7e6dfd8a8158e6f03a560d29f843773ca45c3e00 \
+                    sha256  d159ef6b7ffb58b86fb84145fc08865a55ed27ee8d375f8ba1febef64a1aef1a \
+                    size    7297584
 
 livecheck.type      regex
 livecheck.url       ${homepage}/rss.xml

@@ -3,13 +3,12 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        ibara oksh 7.2 oksh-
+github.setup        ibara oksh 7.6 oksh-
 revision            0
-checksums           rmd160  8a45f2649d6fabca5b52a6991cd8b4950863eec0 \
-                    sha256  3340ca98b1d5a2800ebe7dba75312d8a4971a3fcff20fcd0d0ec5cf7b719427e \
-                    size    309723
+checksums           rmd160  dfe87160b39acb7419650da6f0b4e88264f2f2fc \
+                    sha256  26b45fc3dcaab786db6b87dcd741ac572a7ef539dbb88ea22c43ed8b54405c74 \
+                    size    319970
 
-homepage            https://devio.us/~bcallah/oksh/
 github.tarball_from releases
 
 description         A portable OpenBSD Korn Shell

@@ -1,5 +1,5 @@
---- magic/Makefile.am.orig	2022-12-02 10:18:18.000000000 -0600
-+++ magic/Makefile.am	2023-01-11 21:02:12.000000000 -0600
+--- magic/Makefile.am.orig	2024-10-06 12:04:42.000000000 -0500
++++ magic/Makefile.am	2024-12-02 02:41:40.000000000 -0600
 @@ -5,7 +5,7 @@
  MAGIC_DIR = $(top_srcdir)/magic
  MAGIC_FRAGMENT_DIR = $(MAGIC_DIR)/$(MAGIC_FRAGMENT_BASE)
@@ -9,7 +9,7 @@
  
  MAGIC_FRAGMENTS = \
  $(MAGIC_DIR)/Header \
-@@ -383,3 +383,14 @@
+@@ -388,3 +388,14 @@
  	  fi)
  	$(FILE_COMPILE) -C -m magic
  	@rm -fr magic

@@ -4,7 +4,7 @@ PortSystem              1.0
 PortGroup               python 1.0
 
 name                    py-cssutils
-version                 2.4.0
+version                 2.11.1
 revision                0
 
 categories              python www
@@ -14,17 +14,15 @@ supported_archs         noarch
 platforms               {darwin any}
 
 description             A CSS Cascading Style Sheets library for Python
-long_description        ${description}
+long_description        {*}${description}
 
-python.versions         37 38 39 310
+python.versions         39 310 311 312 313
 
 homepage                https://github.com/jaraco/cssutils
 
-checksums               rmd160  d90f51a54e0f50e68dbf1818b5a2408ef957bbbf \
-                        sha256  2d97210a83b0a3fe1e4469f5ff9a6420b078572035188b1bab7103c3a36dc89b \
-                        size    725986
-
-python.pep517           yes
+checksums               rmd160  80342700ce8dfe871ee02442190884602b8fb2f1 \
+                        sha256  0563a76513b6af6eebbe788c3bf3d01c920e46b3f90c8416738c5cfc773ff8e2 \
+                        size    711657
 
 if {${name} ne ${subport}} {
     depends_build-append \
@@ -33,7 +31,7 @@ if {${name} ne ${subport}} {
     post-destroot {
         set docdir ${prefix}/share/doc/${subport}
         xinstall -d ${destroot}${docdir}
-        xinstall -m 0644 -W ${worksrcpath} README.rst CHANGES.rst \
+        xinstall -m 0644 -W ${worksrcpath} README.rst \
             ${destroot}${docdir}
     }
 }

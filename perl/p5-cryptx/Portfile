@@ -4,18 +4,17 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         CryptX 0.077 ../../authors/id/M/MI/MIK
+perl5.setup         CryptX 0.085 ../../authors/id/M/MI/MIK
 revision            0
 
-platforms           darwin
 maintainers         {ionic @Ionic} openmaintainer
 license             {Artistic-1 GPL}
 description         Crypto toolkit (self-contained no external libraries needed)
-long_description    ${description}
+long_description    {*}${description}
 
-checksums           rmd160  64bf80f24e67d032325e775151c887a6d1fa2890 \
-                    sha256  f741cd3a371f7754e790d174ff80c8f7fc1b120f95a0ab482bbe26a5246726a9 \
-                    size    1647312
+checksums           rmd160  e732c85daf0428dee82b868985bca59c3c561f19 \
+                    sha256  be817c6d254c236d2c42958a1bcba4b9dbee1855b7160fa2ecf9cf2934b33ffe \
+                    size    1786764
 
 if {${perl5.major} != ""} {
     depends_lib-append \

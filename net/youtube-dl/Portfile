@@ -8,12 +8,14 @@ name                youtube-dl
 
 if {${subport} eq ${name}} {
     github.setup    ytdl-org ${subport} 2021.12.17
-    revision        1
+    revision        3
     checksums       rmd160  beca02d231a287488cecffe4c98651b4d6537b9d \
                     sha256  9f3b99c8b778455165b4525f21505e86c7ff565f3ac319e19733d810194135df \
                     size    3332299
 
-    homepage        https://youtube-dl.org
+    homepage        https://${github.author}.github.io/${github.project}/
+
+    python.pep517_backend setuptools
 
     set symlinks [list \
         etc/bash_completion.d/${subport}.bash-completion \
@@ -35,14 +37,16 @@ if {${subport} eq ${name}} {
 }
 
 subport yt-dlp {
-    github.setup    yt-dlp ${subport} 2023.01.06
-    revision        1
-    checksums       rmd160  62e3d2b3d1cba19b4eda9bdf5294597e36d4c289 \
-                    sha256  a77b01ed42e8436233bb36ea405a46b6a05fbc1b24726f11815b515face2d116 \
-                    size    5020523
+    github.setup    yt-dlp ${subport} 2025.01.26
+    revision        0
+    checksums       rmd160  1de0ec2a900f45ce2144fa91f620f30294aef947 \
+                    sha256  f9b62c5f8c3db910d693a7ac1477f44696a923ff9b0a3f9d87fefea4e10e9e04 \
+                    size    5827713
 
     dist_subdir     ${subport}/${version}
     distname        ${subport}
+
+    python.pep517_backend hatch
 
     set symlinks [list \
         share/bash-completion/completions/${subport} \
@@ -64,7 +68,7 @@ long_description    ${name} is a small {*}${description}.
 
 github.tarball_from releases
 
-worksrcdir          ${name}
+worksrcdir          ${subport}
 
 patchfiles-append   ${subport}-config-location.patch \
                     ${subport}-update.patch
@@ -73,7 +77,7 @@ post-patch {
     if {${subport} eq ${name}} {
         set optfile options.py
     } else {
-        set optfile utils.py
+        set optfile utils/_utils.py
     }
     reinplace -W ${worksrcpath} "s|@PREFIX@|${prefix}|g" \
             README.md \
@@ -99,19 +103,18 @@ variant ffmpeg description {Add ffmpeg dependency, used to extract audio} {
 
 default_variants    +ffmpeg
 
-variant python37 conflicts python38 python39 python310 python311 description {Use Python 3.7} {}
-variant python38 conflicts python37 python39 python310 python311 description {Use Python 3.8} {}
-variant python39 conflicts python37 python38 python310 python311 description {Use Python 3.9} {}
-variant python310 conflicts python37 python38 python39 python311 description {Use Python 3.10} {}
-variant python311 conflicts python37 python38 python39 python310 description {Use Python 3.11} {}
+variant python38 conflicts python39 python310 python311 python312 python313 description {Use Python 3.8} {}
+variant python39 conflicts python38 python310 python311 python312 python313 description {Use Python 3.9} {}
+variant python310 conflicts python38 python39 python311 python312 python313 description {Use Python 3.10} {}
+variant python311 conflicts python38 python39 python310 python312 python313 description {Use Python 3.11} {}
+variant python312 conflicts python38 python39 python310 python311 python313 description {Use Python 3.12} {}
+variant python313 conflicts python38 python39 python310 python311 python312 description {Use Python 3.13} {}
 
-if {![variant_isset python37] && ![variant_isset python38] && ![variant_isset python39] && ![variant_isset python310] && ![variant_isset python311]} {
-    default_variants +python311
+if {![variant_isset python38] && ![variant_isset python39] && ![variant_isset python310] && ![variant_isset python311] && ![variant_isset python312] && ![variant_isset python313]} {
+    default_variants +python313
 }
 
-if {[variant_isset python37]} {
-    python.default_version  37
-} elseif {[variant_isset python38]} {
+if {[variant_isset python38]} {
     python.default_version  38
 } elseif {[variant_isset python39]} {
     python.default_version  39
@@ -119,9 +122,11 @@ if {[variant_isset python37]} {
     python.default_version  310
 } elseif {[variant_isset python311]} {
     python.default_version  311
+} elseif {[variant_isset python312]} {
+    python.default_version  312
+} elseif {[variant_isset python313]} {
+    python.default_version  313
 }
-
-depends_build-append        port:py${python.version}-setuptools
 
 # WARNING: hlsnative has detected features it does not support, extraction will be delegated to ffmpeg
 depends_lib-append          port:py${python.version}-pycryptodome

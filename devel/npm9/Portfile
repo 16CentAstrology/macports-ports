@@ -3,10 +3,10 @@
 PortSystem          1.0
 
 name                npm9
-version             9.4.0
+version             9.9.3
 revision            0
 categories          devel
-platforms           darwin
+platforms           any
 supported_archs     noarch
 license             MIT
 maintainers         {ciserlohn @ci42} openmaintainer
@@ -15,7 +15,7 @@ long_description    npm is a package manager for node. \
                     You can use it to install and publish your node programs. \
                     It manages dependencies and does other cool stuff.
 
-conflicts           npm3 npm4 npm5 npm6 npm7 npm8
+conflicts           npm3 npm4 npm5 npm6 npm7 npm8 npm10
 
 homepage            https://www.npmjs.com/
 
@@ -27,10 +27,10 @@ extract.suffix      .tgz
 
 # Please keep the sha1 - users can use it to validate sha values
 # published on npmjs.org for the package
-checksums           rmd160  34f8a7f1058243015f13f008e9a91c3e7c5c3459 \
-                    sha1    6e92558bed18063189dac5b5cd239dd2dca931a4 \
-                    sha256  bfee8d924a2edf8cb3148125464c8aef907f2d526a107f824ff80adba313a933 \
-                    size    2437923
+checksums           rmd160  d7b516f0a22c08b162f9fd0f5b22e4a2391a7d28 \
+                    sha1    18272a7b966721417691fec0ca18f7fbe4a9794e \
+                    sha256  d835b2d7293ce928e98bc967a05a3ef5ac48d4ea10bb8fb1a1dd1049dc5ef06e \
+                    size    2712435
 
 worksrcdir          "package"
 
@@ -90,4 +90,4 @@ ${prefix}/lib/node_modules/ until you manually delete them.
 
 livecheck.type      regex
 livecheck.url       https://registry.npmjs.org/npm
-livecheck.regex     {"latest":"(.*?)"}
+livecheck.regex     {"next-9":"(.*?)"}

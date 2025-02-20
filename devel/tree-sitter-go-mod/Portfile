@@ -4,9 +4,15 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           tree_sitter 1.0
 
-github.setup        camdencheek tree-sitter-go-mod 4a65743dbc2bb3094114dd2b43da03c820aa5234
-version             20220517
+github.setup        camdencheek tree-sitter-go-mod 1.1.0 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 revision            0
+epoch               1
+
+checksums           rmd160  19104ec7fd71863b8e7c0233dd596e48735db919 \
+                    sha256  1505e75332bb01893883494067217c324b08f1f595c0afe6867315281e0ee63c \
+                    size    27297
 
 description         A tree-sitter parser for go.mod files
 
@@ -16,11 +22,10 @@ categories          devel
 license             MIT
 maintainers         {amake @amake} openmaintainer
 
-checksums           rmd160  127c33771c7817a89f44164c7973251789574d6b \
-                    sha256  5a20480eccd0a30f8b5fc13f60169b0738d2d22742657ca7853da5dd20679eb0 \
-                    size    19159
-
 worksrcdir          ${worksrcdir}/src
+
+# parser.c: error: ‘for’ loop initial declaration used outside C99 mode
+configure.cflags-append -std=c99
 
 tree_sitter.libname gomod
 

@@ -4,24 +4,24 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-pytest-xprocess
-version             0.21.0
+version             0.23.0
 revision            0
 
 supported_archs     noarch
 platforms           {darwin any}
 license             MIT
-maintainers         {@catap korins.ky:kirill} openmaintainer
+maintainers         nomaintainer
 
 description         A pytest plugin for managing processes across test runs.
 long_description    {*}${description}
 
 homepage            https://github.com/pytest-dev/pytest-xprocess/
 
-checksums           rmd160  9532e3ee0ae11b9256ba4e640284cc0675e14fb6 \
-                    sha256  f9470bfcf884f7299eb6b82a43d298c318b8e53ec314ee624c987e0e87c1b449 \
-                    size    30601
+checksums           rmd160  106288f92b6a6822a676bb7bb3741d06b9e61e5d \
+                    sha256  f8d4041a20a1c1ef1943054e4a3df7ac7b43e7f291f640f43c34e9dcc4b34dfa \
+                    size    31350
 
-python.versions     37 38 39 310 311
+python.versions     37 38 39 310 311 312
 
 python.pep517       yes
 

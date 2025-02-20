@@ -1,12 +1,11 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
-PortGroup           github 1.0
 PortGroup           python 1.0
 PortGroup           compiler_blacklist_versions 1.0
 
 name                py-pikepdf
-github.setup        pikepdf pikepdf 6.2.9 v
+version             9.5.2
 revision            0
 categories-append   graphics
 license             MPL-2
@@ -15,22 +14,24 @@ description         pikepdf is based on QPDF, a powerful PDF manipulation and re
                     library.
 long_description    {*}${description}
 
-homepage            https://github.com/pikepdf/pikepdf
+python.versions     39 310 311 312 313
 
-python.versions     37 38 39 310 311
+# stealth update to switch back to PyPi
+dist_subdir         ${name}/${version}_${revision}
 
-checksums           rmd160  79294c2dceb2a0774d8c0579bfa52b0ede7fe68b \
-                    sha256  9872117bc835cdab8732998c03b0f9334556865ed10bf99bf17df90345493c34 \
-                    size    2906113
+checksums           rmd160  ad769f372c53aad14dd7b9db603b46576854dfb9 \
+                    sha256  190b3bb4891a7a154315f505d7dcd557ef21e8130cea8b78eb9646f8d67072ed \
+                    size    2916549
+
+# fix overly tight py-setuptools version
+patchfiles         patch-pyproject.toml.diff
 
 if {${name} ne ${subport}} {
     depends_build-append \
-                    port:py${python.version}-setuptools_scm \
-                    port:py${python.version}-setuptools_scm_git_archive \
-                    port:py${python.version}-toml \
-                    port:py${python.version}-wheel
+                    port:py${python.version}-setuptools_scm
 
     depends_lib-append  \
+                    port:py${python.version}-deprecated \
                     port:py${python.version}-lxml \
                     port:py${python.version}-packaging \
                     port:py${python.version}-Pillow \

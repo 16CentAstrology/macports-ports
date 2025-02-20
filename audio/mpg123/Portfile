@@ -4,7 +4,13 @@ PortSystem          1.0
 PortGroup           muniversal 1.0
 
 name                mpg123
-version             1.31.1
+version             1.32.10
+revision            0
+
+checksums           rmd160  90f4dd080ad95a812af2e0aa3ab81709429e5086 \
+                    sha256  87b2c17fe0c979d3ef38eeceff6362b35b28ac8589fbf1854b5be75c9ab6557c \
+                    size    1118315
+
 categories          audio
 maintainers         nomaintainer
 license             LGPL-2.1
@@ -21,9 +27,6 @@ homepage            https://www.mpg123.de/
 master_sites        sourceforge:project/mpg123/mpg123/${version} \
                     ${homepage}download/
 use_bzip2           yes
-checksums           rmd160  53dbf51475ce7e483188d3811deddf587c858144 \
-                    sha256  5dcb0936efd44cb583498b6585845206f002a7b19d5066a2683be361954d955a \
-                    size    1093324
 
 platform macosx {
     configure.args-append --with-audio=coreaudio

@@ -8,7 +8,7 @@ PortGroup       openssl         1.0
 legacysupport.newest_darwin_requires_legacy 10
 
 name            socat
-version         1.7.4.3
+version         1.8.0.2
 revision        0
 
 homepage        http://www.dest-unreach.org/socat
@@ -29,9 +29,9 @@ maintainers     nomaintainer
 
 master_sites    ${homepage}/download/
 
-checksums       rmd160  a5a44c67ba9f8ca33acb5b7d649ec0d92f55bf40 \
-                sha256  d47318104415077635119dfee44bcfb41de3497374a9a001b1aff6e2f0858007 \
-                size    516192
+checksums       rmd160  b6ed6fbc886c58ded6d73fa757bc102bf2e7ab80 \
+                sha256  adc07a9c2723527cf6568d2fb96559794cf9c254a4bc2edd36f7f3789e9f7625 \
+                size    579370
 
 use_bzip2       yes
 

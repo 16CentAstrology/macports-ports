@@ -3,14 +3,18 @@
 PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           cmake 1.1
+PortGroup           legacysupport 1.1
 
-github.setup        microsoft mimalloc 2.0.9 v
+# arc4random, strndup
+legacysupport.newest_darwin_requires_legacy 10
+
+github.setup        microsoft mimalloc 3.0.1 v
 github.tarball_from archive
 
 revision            0
 categories          devel
 license             MIT
-maintainers         {outlook.com:mohd.akram @mohd-akram} openmaintainer
+maintainers         {makr @mohd-akram} openmaintainer
 
 description         mimalloc is a compact general purpose allocator with \
                     excellent performance
@@ -18,8 +22,39 @@ description         mimalloc is a compact general purpose allocator with \
 long_description    mimalloc is a general purpose allocator with excellent \
                     performance characteristics.
 
-checksums           rmd160  984b43fc094751aa8c5ec52e91ac816d9c5d9c52 \
-                    sha256  4a29edae32a914a706715e2ac8e7e4109e25353212edeed0888f4e3e15db5850 \
-                    size    1143452
+checksums           rmd160  0b4670c11427f030bc9c48043107657109b46ffd \
+                    sha256  6a514ae31254b43e06e2a89fe1cbc9c447fdbf26edc6f794f3eb722f36e28261 \
+                    size    1281782
 
 patchfiles          patch-cmake.diff
+
+compiler.cxx_standard   2017
+compiler.c_standard     2011
+
+configure.args-append \
+                    -DMI_BUILD_TESTS=ON
+# Ensure test binaries can find dylibs
+configure.pre_args-replace \
+                    -DCMAKE_BUILD_WITH_INSTALL_RPATH:BOOL=ON \
+                    -DCMAKE_BUILD_WITH_INSTALL_RPATH:BOOL=OFF
+
+if {${os.platform} eq "darwin" && ${os.major} < 11} {
+    # Reduce stress for older systems
+    patchfiles-append \
+                    patch-test-stress.diff
+    # Turning on MI_OSX_INTERPOSE breaks the build with undefined symbols:
+    # https://trac.macports.org/ticket/67220
+    # https://github.com/microsoft/mimalloc/issues/779
+    # Turning on MI_OSX_ZONE breaks test-stress with Bus error.
+    configure.args-append \
+                    -DMI_OSX_INTERPOSE=OFF \
+                    -DMI_OSX_ZONE=OFF
+    if {[string match *gcc* ${configure.compiler}]} {
+        configure.args-append \
+                    -DMI_USE_LIBATOMIC=ON
+    }
+}
+
+# If built with MI_OSX_INTERPOSE=OFF MI_OSX_ZONE=OFF, realpath test case in test-api fails.
+# https://github.com/microsoft/mimalloc/issues/778
+test.run            yes

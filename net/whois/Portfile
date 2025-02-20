@@ -13,11 +13,13 @@ PortGroup                   compiler_blacklist_versions 1.0
 PortGroup                   github 1.0
 PortGroup                   perl5 1.0
 
-github.setup                rfc1036 whois 5.5.15 v
+github.setup                rfc1036 whois 5.5.23 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from         tarball
 revision                    0
-checksums                   rmd160  96d703ac23b13e864fe7dd239e65de4a53189968 \
-                            sha256  16951471874750cd735405cc995d659f8b45005f6dfe4eabf71e8b4f59f8aeb8 \
-                            size    89960
+checksums                   rmd160  168d657932ea361b0d6c2721d641f1d6ac6053a5 \
+                            sha256  35c04e46bd8435f46e446a817728b5fae2f0a389033a9383e5e20bb6e8fba14a \
+                            size    90920
 
 conflicts                   bahamut expect ripe-whois
 categories                  net
@@ -34,12 +36,12 @@ master_sites                http://ftp.debian.org/debian/pool/main/w/${name}/
 use_xz                      yes
 
 distfiles                   ${name}_${version}${extract.suffix}
-worksrcdir                  ${name}
 
 perl5.branches              5.34
 
-depends_build               port:perl${perl5.major} \
-                            port:pkgconfig
+depends_build               port:bash-completion \
+                            port:perl${perl5.major} \
+                            path:bin/pkg-config:pkgconfig
 
 depends_lib                 port:gettext \
                             port:libidn2 \

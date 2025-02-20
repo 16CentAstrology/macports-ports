@@ -4,13 +4,14 @@ PortSystem          1.0
 PortGroup           meson 1.0
 
 name                mm-common
-version             1.0.4
+version             1.0.6
 revision            0
 
 categories          gnome devel
-license             GPL-2
+license             GPL-2+
 maintainers         {devans @dbevans} {mascguy @mascguy} openmaintainer
 supported_archs     noarch
+platforms           any
 
 description         The mm-common module provides the build infrastructure and \
                     utilities shared among the GNOME C++ binding libraries.
@@ -27,16 +28,19 @@ set branch          [join [lrange [split ${version} .] 0 1] .]
 master_sites        gnome:sources/${name}/${branch}/
 use_xz              yes
 
-checksums           sha256  e954c09b4309a7ef93e13b69260acdc5738c907477eb381b78bb1e414ee6dbd8 \
-                    rmd160  c8bd9ee045acbf9ee8dd6803ac071e7276a493b0 \
-                    size    290164
+checksums           sha256  b55c46037dbcdabc5cee3b389ea11cc3910adb68ebe883e9477847aa660862e7 \
+                    rmd160  dee3bcc1b20cdd776634d61cb6ade4ab552220b0 \
+                    size    287832
 
-set py_ver          3.10
+# Disable unexpected download of subprojects
+meson.wrap_mode     nodownload
+
+set py_ver          3.12
 set py_ver_nodot    [string map {. {}} ${py_ver}]
 
 depends_build-append \
-                    port:gsed \
                     port:curl \
+                    port:gsed \
                     port:wget
 
 depends_lib-append \
@@ -44,26 +48,24 @@ depends_lib-append \
 
 configure.python    ${prefix}/bin/python${py_ver}
 
-patchfiles-append \
-                    patch-use-our-python3.diff
-
+patchfiles-append   patch-meson-python3.diff
 post-patch {
-    reinplace -W ${worksrcpath} \
-        "s|@@PYTHON3_BIN@@|${configure.python}|" \
-        meson.build \
-        util/doc_install.py \
-        util/doc_postprocess.py \
-        util/mm-common-get.in \
-        util/build_scripts/check-dllexport-usage.py \
-        util/build_scripts/dist-build-scripts.py \
-        util/build_scripts/dist-changelog.py \
-        util/build_scripts/doc-reference.py \
-        util/build_scripts/generate-binding.py \
-        util/meson_aux/copy-files.py \
-        util/meson_aux/extra-dist-cmd.py \
-        util/meson_aux/extra-install-cmd.py \
-        util/meson_aux/libstdcxx-tag.py \
-        util/meson_aux/skeletonmm-tarball.py
+    reinplace "s|@@PYTHON3_BIN@@|${configure.python}|" \
+                    meson.build \
+                    skeletonmm/meson.build
+
+    reinplace "s|/usr/bin/env python3$|${configure.python}|" \
+                    util/mm-common-get.in
+
+    fs-traverse f ${worksrcpath} {
+        if {[string match *.py ${f}]} {
+            ui_info "patching script: ${f}"
+            reinplace "s|/usr/bin/env python3$|${configure.python}|" ${f}
+        }
+    }
 }
+
+configure.args-append \
+                    -Duse-network=false
 
 livecheck.type      gnome

@@ -4,33 +4,35 @@ PortSystem      1.0
 
 PortGroup       github 1.0
 PortGroup       cmake 1.1
+PortGroup       legacysupport 1.1
 PortGroup       compiler_blacklist_versions 1.0
 
-github.setup    ihhub fheroes2 1.0.0
+github.setup    ihhub fheroes2 1.1.6
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 
 categories      games
-platforms       darwin
 maintainers     {@oleg-derevenetz gmail.com:oleg.derevenetz} openmaintainer
 license         GPL-2
 
 description     Free implementation of Heroes of Might and Magic II game engine
 long_description \
-                ${description}
+                {*}${description}
 
 homepage        https://ihhub.github.io/fheroes2/
 
-checksums       rmd160  828be6b99bc89bf4815039b95605a46535dbaf95 \
-                sha256  8fd210cfd9ef327f580b0845d7957f8cd71bc6dfae5511a1205cdd2bbd6d066c \
-                size    10929388
+checksums       rmd160  fd838f8eccbb46475e1cb61595432431f340b0dc \
+                sha256  69fcaee4340cd78492ae75003210cbde2ad39e4d89951af3b9ca9bf51e99f6bf \
+                size    12128955
 
 depends_build-append \
                 port:gettext
 
-depends_lib     port:libpng \
-                port:zlib \
-                port:libsdl2 \
+depends_lib     port:libsdl2 \
                 port:libsdl2_mixer \
-                port:libsdl2_image
+                port:zlib
+
+depends_run     port:innoextract
 
 patchfiles      patch-readme-txt.diff
 
@@ -40,6 +42,15 @@ compiler.thread_local_storage \
                 yes
 compiler.blacklist-append \
                 {clang < 900}
+
+# On macOS < 10.15 built-in libc++ has no support for std::filesystem
+legacysupport.newest_darwin_requires_legacy \
+                18
+# GCC can be enforced instead of Clang
+if {[string match *clang* ${configure.compiler}]} {
+    legacysupport.use_mp_libcxx \
+                yes
+}
 
 post-destroot {
     copy ${destroot}${prefix}/share/doc/fheroes2/demo/download_demo_version.sh ${destroot}${prefix}/bin/fheroes2-install-demo

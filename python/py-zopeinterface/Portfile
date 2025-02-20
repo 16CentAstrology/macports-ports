@@ -5,29 +5,54 @@ PortGroup           python 1.0
 
 name                py-zopeinterface
 python.rootname     zope.interface
-version             5.5.1
+version             7.1.0
 revision            0
-python.versions     27 35 36 37 38 39 310 311
+python.versions     27 35 36 37 38 39 310 311 312 313
 categories-append   zope
 license             ZPL-2.1
-platforms           darwin
 maintainers         {mcalhoun @MarcusCalhoun-Lopez} openmaintainer
 description         Python interfaces for Zope
 long_description    {*}${description}
 
 homepage            https://zopetoolkit.readthedocs.io/
 
-checksums           rmd160  9d4c18ef846cefd59b5809c7157571e625207478 \
-                    sha256  6d678475fdeb11394dc9aaa5c564213a1567cc663082e0ee85d52f78d1fbaab2 \
-                    size    300064
+checksums           rmd160  7bacf3c3c73191fbc9758d72ad3205f2c758b726 \
+                    sha256  3f005869a1a05e368965adb2075f97f8ee9a26c61898a9e52a9764d93774f237 \
+                    size    300239
 
 if {${name} ne ${subport}} {
     depends_build   port:py${python.version}-setuptools
 
-    depends_test    port:py${python.version}-zope-event \
-                    port:py${python.version}-pip
+    if {${python.version} <= 36} {
+        version             5.5.2
+        revision            0
 
-    test.run        yes
+        checksums           rmd160  b56a9e93853ccc43993cf3b6f893a9d1986e6917 \
+                            sha256  bfee1f3ff62143819499e348f5b8a7f3aa0259f9aca5e0ddae7391d059dce671 \
+                            size    300533
+
+        livecheck.type none
+    } elseif {${python.version} <= 37} {
+        version             6.4.post2
+        revision            0
+
+        checksums           rmd160  59e3047c059e30e0c7afee248cb3b6b7e301e7ba \
+                            sha256  1c207e6f6dfd5749a26f5a5fd966602d6b824ec00d2df84a7e9a924e8933654e \
+                            size    294539
+    } else {
+        distname        zope_interface-${version}
+
+        post-patch {
+            reinplace "s|\"setuptools<.*\"|\"setuptools\"|" ${worksrcpath}/pyproject.toml
+        }
+    }
+
+    if {${python.version} >= 37} {
+        # Probably fails due to lack of port for zope.testing
+        depends_test    port:py${python.version}-zope-event
+        test.run        yes
+        test.args       --pyargs zope.interface.common.tests
+    }
 
     post-destroot {
         xinstall -d ${destroot}${prefix}/share/doc/${subport}

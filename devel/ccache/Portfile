@@ -10,12 +10,11 @@ legacysupport.use_mp_libcxx yes
 # src/third_party/blake3/CMakeLists.txt checks CMAKE_SIZEOF_VOID_P
 PortGroup           muniversal 1.0
 
-github.setup        ccache ccache 4.7.4 v
-revision            1
-
-checksums           rmd160  93628e2160257397e139e5c2ebb21bb1da18d31a \
-                    sha256  df0c64d15d3efaf0b4f6837dd6b1467e40eeaaa807db25ce79c3a08a46a84e36 \
-                    size    547820
+github.setup        ccache ccache 4.10.2 v
+revision            0
+checksums           rmd160  81b7c987b956d4d34b5f93ddc00e7925e4caa926 \
+                    sha256  c0b85ddfc1a3e77b105ec9ada2d24aad617fa0b447c6a94d55890972810f0f5a \
+                    size    485460
 
 categories          devel
 platforms           darwin freebsd
@@ -46,7 +45,7 @@ compiler.cxx_standard \
 
 depends_build-append \
                     bin:perl:perl5 \
-                    port:pkgconfig
+                    path:bin/pkg-config:pkgconfig
 
 depends_lib-append  port:hiredis \
                     port:zstd
@@ -63,6 +62,6 @@ variant doc description {Enable documentation} {
     license_noconflict  asciidoctor
 }
 
-default_variants +doc
+default_variants    +doc
 
 test.run            yes

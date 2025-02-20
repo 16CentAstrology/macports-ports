@@ -5,12 +5,14 @@ PortSystem 1.0
 name                postgresql15-doc
 conflicts           postgresql96-doc postgresql10-doc postgresql11-doc postgresql12-doc \
     postgresql13-doc postgresql14-doc
-version             15.0
+version             15.10
+revision            0
 categories          databases
-platforms           darwin
+platforms           any
+supported_archs     noarch
 maintainers         {jwa @jyrkiwahlstedt}
 license             Permissive
-description         Documentation for the postgresql database BETA release.
+description         Documentation for the PostgreSQL database version 15
 long_description    PostgreSQL is Object-Relational Database Management System.\
                 It supports almost all SQL constructs, including transactions, \
                 subselects, and user-defined types and functions. Write-ahead \
@@ -22,9 +24,9 @@ master_sites        postgresql:source/v${version}
 distname            postgresql-${version}
 set rname           postgresql15
 
-checksums           rmd160  3a96ca80f6275d606a1eff1b2cae681bb0a6e1d5 \
-                    sha256  72ec74f4a7c16e684f43ea42e215497fcd4c55d028a68fb72e99e61ff40da4d6 \
-                    size    22403741
+checksums           rmd160  4201bb0fadd2010dce764795920930d5d3c622c0 \
+                    sha256  55abe738d441f0e58658b3ec6f88097a713b5e3b73139f6230d7b5c4c389e573 \
+                    size    23138615
 
 use_bzip2           yes
 dist_subdir         ${rname}
@@ -35,6 +37,7 @@ configure.args      --mandir=${prefix}/share/man \
                     --without-readline \
                     --without-zlib
 
+depends_build       port:docbook-xml-4.5 port:docbook-xsl-nons
 build.dir           ${worksrcpath}/doc
 build.type          gnu
 build.target

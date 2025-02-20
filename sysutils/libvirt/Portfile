@@ -2,19 +2,20 @@
 
 PortSystem          1.0
 PortGroup           compiler_blacklist_versions 1.0
-PortGroup           legacysupport 1.0
+PortGroup           legacysupport 1.1
 PortGroup           meson 1.0
 
-# O_CLOEXEC
-legacysupport.newest_darwin_requires_legacy 10
+# darwin <= 10: define O_CLOEXEC
+# darwin <= 12: auto-include <sys/socket.h> in <net/if.h>
+legacysupport.newest_darwin_requires_legacy 12
 
 # Remember to update libvirt and py-libvirt at the same time.
 name                libvirt
-version             9.0.0
+version             11.0.0
 revision            0
-checksums           rmd160  ecc9cbb589189d48c9d5b3826848fb851a8e6691 \
-                    sha256  deca5cff1b7baac297bca9663907c61f71a47183371dc7ac019c107806d5435a \
-                    size    9007104
+checksums           rmd160  bd75d7d7a1f41cc9dcb928e23c3ce67b0b9f61d1 \
+                    sha256  01a176ff4042ad58cf83c09fe0925d6bc8eed0ecce1e0ee19b8ef4c1ffa3806e \
+                    size    9700388
 
 categories          sysutils
 license             LGPL-2.1+
@@ -29,27 +30,40 @@ homepage            https://libvirt.org
 master_sites        ${homepage}/sources/
 use_xz              yes
 
-set python_branch   3.11
+set python_branch   3.13
 set python_version  [string map {. {}} ${python_branch}]
 
 depends_build-append \
+                    port:gettext \
                     port:gmake \
                     port:gsed \
                     port:grep \
                     port:bash-completion \
-                    port:pkgconfig \
+                    path:bin/pkg-config:pkgconfig \
                     port:python${python_version} \
                     port:py${python_version}-docutils \
                     port:perl5
 
 depends_lib         port:curl \
+                    port:gettext-runtime \
+                    port:json-c \
                     path:lib/pkgconfig/glib-2.0.pc:glib2 \
                     path:lib/pkgconfig/gnutls.pc:gnutls \
                     port:libiconv \
                     port:libxml2 \
                     port:readline \
-                    port:yajl \
                     port:zlib
+
+patchfiles          uint64_t.patch
+
+# error: 'struct stat' has no member named 'st_birthtimespec'; did you mean 'st_atimespec'?
+patchfiles-append   patch-st_birthtimespec.diff
+
+# Undefined symbols: "___gcc_personality_v0", "__Unwind_Resume"
+if {${os.platform} eq "darwin" && ${os.major} < 11} {
+    patchfiles-append \
+                    patch-fix-linking.diff
+}
 
 # error: You need at least XCode Clang v10.0 to compile libvirt
 # error: You need at least Clang v6.0 to compile libvirt
@@ -59,12 +73,13 @@ compiler.blacklist-append \
                     gcc-3.3 *gcc-4.* *gcc-5.* *gcc-6.* \
                     macports-clang-3.* macports-clang-5.0
 
-patchfiles-append   meson.build.patch
-
 # libvirt build scripts require python 3.x
 configure.python    ${prefix}/bin/python${python_branch}
 configure.perl      ${prefix}/bin/perl5
+
+# Some build scripts run "python3"
 configure.env       PATH=${frameworks_dir}/Python.framework/Versions/${python_branch}/bin:$env(PATH)
+build.env           {*}${configure.env}
 
 configure.args      -Dapparmor=disabled \
                     -Dattr=disabled \
@@ -93,6 +108,7 @@ configure.args      -Dapparmor=disabled \
                     -Dfuse=disabled \
                     -Dglusterfs=disabled \
                     -Dinit_script=none \
+                    -Djson_c=enabled \
                     -Dlibpcap=disabled \
                     -Dlibssh=disabled \
                     -Dlibssh2=disabled \
@@ -107,14 +123,7 @@ configure.args      -Dapparmor=disabled \
                     -Dselinux=disabled \
                     -Dsysctl_config=disabled \
                     -Dudev=disabled \
-                    -Dwireshark_dissector=disabled \
-                    -Dyajl=enabled
-
-# As of 5.10.0, pregenerated files are no longer included in the tarball,
-# and rpcgen on OS X 10.11 and earlier is not able to generate them; see:
-# https://bugzilla.redhat.com/show_bug.cgi?id=1785575
-depends_build-append \
-                    port:rpcgen-mt
+                    -Dwireshark_dissector=disabled
 
 variant fuse description {FUSE support} {
     depends_lib-append      port:osxfuse
@@ -132,7 +141,7 @@ variant sasl description {Use Cyrus SASL for authentication} {
 }
 
 variant qemu description {Enable the QEMU virtualization driver} {
-    depends_lib-append      port:qemu
+    depends_run-append      port:qemu
     configure.args-replace  -Ddriver_qemu=disabled -Ddriver_qemu=enabled
 }
 

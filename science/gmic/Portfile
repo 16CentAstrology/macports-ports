@@ -4,6 +4,11 @@ PortSystem          1.0
 
 PortGroup           compiler_blacklist_versions 1.0
 PortGroup           conflicts_build 1.0
+PortGroup           legacysupport 1.1
+
+# https://trac.macports.org/ticket/70676 
+# fatal error: use of undeclared identifier 'AT_FDCWD'
+legacysupport.newest_darwin_requires_legacy 13
 
 if {${subport} eq "gmic-gimp" || ${subport} eq "gmic-qt"} {
     PortGroup       cmake           1.1
@@ -11,12 +16,12 @@ if {${subport} eq "gmic-gimp" || ${subport} eq "gmic-qt"} {
     PortGroup       active_variants 1.1
 } else {
     PortGroup       makefile        1.0
-    
+
     patchfiles      patch-src-Makefile.diff
 }
 
 name                gmic
-version             3.2.0
+version             3.5.2
 revision            0
 license             CeCILL
 categories          science graphics
@@ -34,13 +39,9 @@ long_description    G'MIC stands for GREYC's Magic Image Converter. It is \
 homepage            https://gmic.eu
 master_sites        https://gmic.eu/files/source/
 
-checksums           rmd160  ab3e85d7f352b5c6addb2f5987388916ac0e8c8d \
-                    sha256  8db3ba8ae003c4946a26d643b8173f7aa49e9c84f2ee1f74140165d3f20d3116 \
-                    size    10933655
-
-# gmic 3.2.0 fails due to old header files
-# See: https://github.com/GreycLab/gmic/issues/429
-conflicts_build     ${subport}
+checksums           rmd160  712e7ab3a244244dda88f9e2d988a2432c762f99 \
+                    sha256  5893b6e87a52792e12af2b51121465d6202a2310c2a751c5c9785910ff55dc14 \
+                    size    19404342
 
 distfiles           ${name}_${version}${extract.suffix}
 
@@ -49,6 +50,7 @@ depends_lib         port:curl \
                     port:fftw-3 \
                     port:GraphicsMagick \
                     port:ilmbase \
+                    port:imath \
                     port:libheif \
                     path:include/turbojpeg.h:libjpeg-turbo \
                     port:libpng \
@@ -124,6 +126,11 @@ if {${subport} eq ${name}} {
     build.args-append           NO_STDLIB=Yes \
                                 OPT_CFLAGS=""
 
+    if {${os.platform} eq "darwin" && ${os.major} < 11} {
+        build.args-replace      OPT_CFLAGS="" OPT_CFLAGS="-I${prefix}/include/LegacySupport"
+        build.args-append       OPT_LIBS="-L${prefix}/lib -lMacportsLegacySupport"
+    }
+
     post-destroot {
         delete ${destroot}${prefix}/include/gmic_libc.h
         delete ${destroot}/plug-ins
@@ -175,6 +182,11 @@ if {${subport} eq ${name}} {
                                 OPT_CFLAGS="" \
                                 SOVERSION=${soversion}
 
+    if {${os.platform} eq "darwin" && ${os.major} < 11} {
+        build.args-replace      OPT_CFLAGS="" OPT_CFLAGS="-I${prefix}/include/LegacySupport"
+        build.args-append       OPT_LIBS="-L${prefix}/lib -lMacportsLegacySupport"
+    }
+
     destroot {
         xinstall -m 0644 ${worksrcpath}/src/gmic_libc.h                 ${destroot}${prefix}/include
         xinstall -m 0644 ${worksrcpath}/src/libcgmic.a                  ${destroot}${prefix}/lib
@@ -218,6 +230,11 @@ if {${subport} eq ${name}} {
                                 OPT_CFLAGS="" \
                                 SOVERSION=${soversion}
 
+    if {${os.platform} eq "darwin" && ${os.major} < 11} {
+        build.args-replace      OPT_CFLAGS="" OPT_CFLAGS="-I${prefix}/include/LegacySupport"
+        build.args-append       OPT_LIBS="-L${prefix}/lib -lMacportsLegacySupport"
+    }
+
     destroot {
         xinstall -m 0644 ${worksrcpath}/src/gmic.h                      ${destroot}${prefix}/include
         xinstall -m 0644 ${worksrcpath}/src/libgmic.a                   ${destroot}${prefix}/lib
@@ -235,7 +252,12 @@ if {${subport} eq ${name}} {
         cmake.build_type        Release
     }
 
+    qt5.min_version             5.11
+
     cmake.source_dir            ${worksrcpath}/gmic-qt
+
+    patchfiles-append           patch-qt-CMakeLists.txt.diff \
+                                patch-gmic-qt-src-FilterSelector-FiltersModelReader.cpp.diff
 
     configure.args-append       -DENABLE_DYNAMIC_LINKING=ON \
                                 -DENABLE_LTO=OFF \
@@ -252,16 +274,9 @@ if {${subport} eq ${name}} {
 
     require_active_variants     ${name} x11
 
-    if {${os.major} < 12} {
-        pre-fetch {
-            ui_error "${subport} @${version} requires at least OS X 10.8 Mountain Lion"
-            return -code error "incompatible OS X version"
-        }
-        known_fail  yes
-    }
+    platforms {darwin >= 12}
 
-    if {${os.major} < 17} {
-        # cmake test for openmp can't be disabled by switch
+    if {${os.platform} eq "darwin" && ${os.major} < 17} {
         patchfiles-append       patch-gmic-qt-CMakeLists.txt.diff
     }
 

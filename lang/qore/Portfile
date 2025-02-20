@@ -3,7 +3,7 @@
 PortSystem          1.0
 
 PortGroup           github 1.0
-github.setup        qorelanguage qore 1.13.0 release-
+github.setup        qorelanguage qore 1.19.1 release-
 github.tarball_from releases
 
 PortGroup           cmake 1.1
@@ -16,9 +16,9 @@ description         multi-threaded embeddable scripting language
 long_description    Qore is a scripting language designed for multi-threading and SMP scalability
 homepage            http://qore.org
 
-checksums           rmd160 7c38a892d7f3ca497be4a2701441d8c93d91f11f \
-                    sha256 5d6a20d58836e5f6b8c93b2aa14c0f1c16b2ca9e98316e6ea0b8e33a03f8b9b7 \
-                    size 40892169
+checksums           rmd160 33595406c8b0052875075a13093955907471e8d8 \
+                    sha256 f2902317bfe77da1015b114fd7c35ee8ac06d60bc0cc22dd36f8ac6bc9b642ec \
+                    size 50034482
 
 compiler.cxx_standard  2011
 
@@ -39,3 +39,8 @@ compiler.thread_local_storage yes
 
 configure.args-append -DSINGLE_COMPILATION_UNIT=1
 
+# check_function_exists doesn't catch tbb's function, enforce it
+configure.args-append \
+                    -DCMAKE_INCLUDE_PATH="${prefix}/include\;${prefix}/libexec/tbb/include" \
+                    -DCMAKE_LIBRARY_PATH="${prefix}/lib\;${prefix}/libexec/tbb/lib" \
+                    -DHAVE_TBBMALLOC=ON

@@ -3,9 +3,9 @@
 PortSystem              1.0
 PortGroup               golang 1.0
 
-go.setup                github.com/git-lfs/git-lfs 3.3.0 v
+go.setup                github.com/git-lfs/git-lfs 3.6.1 v
 revision                0
-maintainers             {raimue @raimue} {judaew @judaew} \
+maintainers             {judaew @judaew} \
                         openmaintainer
 categories              devel
 
@@ -14,12 +14,12 @@ long_description        {*}${description} is an extension for versioning large f
 homepage                https://git-lfs.github.com/
 license                 MIT
 
-checksums               rmd160  794aed10c6035dd6211dfe0286fd04245b8fd951 \
-                        sha256  d806504013620f7dcd2b742377896433793e5ba885f72dd730e7cba80f2f19f6 \
-                        size    656141
+checksums               rmd160  935eb5223f35dc16da2c2e3ee6ddfa173efd8e2f \
+                        sha256  a7a15089389b6ead44d4d6517a904ce5c19fd23d1ac52cda521d1da8ce765812 \
+                        size    696262
 
 depends_build-append    port:asciidoctor \
-                        port:rb31-ronn-ng
+                        port:rb33-ronn-ng
 depends_run             port:git
 
 if {${os.platform} eq "darwin" && ${os.major} < 16} {
@@ -36,8 +36,7 @@ use_configure no
 build.cmd               make
 build.target            bin/git-lfs man
 build.args              RONN=${prefix}/bin/ronn-3.1
-build.env-delete        GOPROXY=off \
-                        GO111MODULE=off
+go.offline_build no
 
 destroot {
     set bindir ${destroot}${prefix}/bin

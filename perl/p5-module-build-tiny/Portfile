@@ -4,25 +4,27 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Module-Build-Tiny 0.039
-revision            1
-platforms           darwin
+perl5.setup         Module-Build-Tiny 0.051
+revision            0
 maintainers         nomaintainer
 license             {Artistic-1 GPL}
-
 description         Module::Build::Tiny - A tiny replacement for Module::Build
-
 long_description    Many Perl distributions use a Build.PL file instead of a Makefile.PL \
                     file to drive distribution configuration, build, test and installation. \
                     Traditionally, Build.PL uses Module::Build as the underlying build system. \
                     This module provides a simple, lightweight, drop-in replacement.
 
-checksums           rmd160  ed351a2e2fad790df701b031b66d26eb16779cc7 \
-                    sha256  7d580ff6ace0cbe555bf36b86dc8ea232581530cbeaaea09bccb57b55797f11c
+platforms           {darwin any}
+supported_archs     noarch
+
+checksums           rmd160  6defbc37aa18db056eba54b3c2f9214d53c4df43 \
+                    sha256  74fdce35e8cd4d787bc2d4fc1d43a291b7bbced4e94dc5fc592bd81ca93a98e9 \
+                    size    22872
 
 if {${perl5.major} != ""} {
     depends_lib-append \
         port:p${perl5.major}-cpan-meta \
+        port:p${perl5.major}-cpan-requirements-dynamic \
         port:p${perl5.major}-extutils-config \
         port:p${perl5.major}-extutils-helpers \
         port:p${perl5.major}-extutils-install \

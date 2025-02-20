@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-control
-version             0.9.1
+version             0.10.1
 revision            0
 
 categories-append   science
@@ -21,36 +21,28 @@ long_description    \
 
 homepage            https://python-control.readthedocs.io
 
-checksums           rmd160  4f2dd54a4f58d14e02b807a5ab28219249bb4492 \
-                    sha256  8c9084bf386eafcf5d74008f780fae6dec68d243d18a380c866ac10a3549f8d3 \
-                    size    357890
+checksums           rmd160  30a4f0a483c86724dc7a0b2cf773bbc2ffa811e7 \
+                    sha256  3bba142c9274d896efda8c9a21aaf61dd38d673d6d40714a7989d143428e738c \
+                    size    9474344
 
-python.versions     37 38 39 310
+python.versions     310 311 312
 
 if {${name} ne ${subport}} {
     depends_build-append \
-                    port:py${python.version}-setuptools
+                    port:py${python.version}-setuptools_scm
 
     depends_lib-append \
                     port:py${python.version}-matplotlib \
                     port:py${python.version}-numpy \
                     port:py${python.version}-scipy
 
-    depends_test-append \
-                    port:py${python.version}-pytest
-
     test.run        yes
-    test.cmd        py.test-${python.branch}
-    test.target
-    test.env        PYTHONPATH=${worksrcpath}/build/lib
 
     post-destroot {
         xinstall -d ${destroot}${prefix}/share/doc/${subport}
-        xinstall -m 0644 -W ${worksrcpath} ChangeLog LICENSE Pending \
+        xinstall -m 0644 -W ${worksrcpath} ChangeLog LICENSE \
             README.rst ${destroot}${prefix}/share/doc/${subport}
         xinstall -m 0644 {*}[glob ${worksrcpath}/examples/*] \
             ${destroot}${prefix}/share/doc/${subport}/examples
     }
-
-    livecheck.type  none
 }

@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           github   1.0
 PortGroup           makefile 1.0
 
-github.setup        liquidaty zsv 0.3.5-alpha v
+github.setup        liquidaty zsv 0.3.8-alpha v
 github.tarball_from archive
 revision            0
 
@@ -23,9 +23,9 @@ license             MIT
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  6c7238be02474853f172a3dbadaf19ddbf2aa9d4 \
-                    sha256  1dbd1ae470ee54c2f22a106f229878a6956e217a85c21523a2367fdf034f0c3c \
-                    size    7447653
+checksums           rmd160  ec6010586a393075f5c8f9c5d13271c9e6193f0e \
+                    sha256  79c89e2b4617624661804a7785ea7f61078215180a6fe6b48d96dd0cc204aa4c \
+                    size    7610803
 
 patchfiles-append   patch-app-Makefile-destdir.diff \
                     patch-src-Makefile-destdir.diff
@@ -35,6 +35,9 @@ depends_build-append \
 
 depends_lib-append  port:jq \
                     port:ncurses
+
+# cc1: error: unrecognized command line option "-std=gnu11"
+compiler.c_standard 2011
 
 configure.args-append \
                     --arch=none \

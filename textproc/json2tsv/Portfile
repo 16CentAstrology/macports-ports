@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           makefile 1.0
 
 name                json2tsv
-version             1.0
+version             1.2
 revision            0
 license             MIT
 
@@ -17,9 +17,9 @@ homepage            https://codemadness.org/json2tsv.html
 
 master_sites        https://codemadness.org/releases/${name}/
 
-checksums           rmd160  8c27844d009f343d2aa82139a5de7edab8df1a5c \
-                    sha256  04e6a60d6b33603a8a19d28e94038b63b17d49c65a0495cd761cf7f22616de9b \
-                    size    8551
+checksums           rmd160  9daba7f0ad78ad05151a3e18880089c96a94d014 \
+                    sha256  113e5a7aeb295e7f8135f231cad900091f99aebd6c98316f761d377e9b50fd84 \
+                    size    8685
 
 makefile.override   PREFIX
 

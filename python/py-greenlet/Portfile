@@ -1,14 +1,15 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
+PortGroup           compiler_blacklist_versions 1.0
 PortGroup           python 1.0
 
 name                py-greenlet
-version             2.0.1
+version             3.1.1
 categories-append   devel
 license             MIT PSF
 
-python.versions     27 35 36 37 38 39 310 311
+python.versions     27 35 36 37 38 39 310 311 312 313
 python.pep517       yes
 
 maintainers         {stromnov @stromnov} openmaintainer
@@ -43,24 +44,35 @@ long_description    The \"greenlet\" package is a spin-off of \
 
 homepage            https://github.com/python-greenlet/greenlet
 
-checksums           rmd160  70626ccf2defca82b086e72aa9c68b125a09f337 \
-                    sha256  42e602564460da0e8ee67cb6d7236363ee5e131aa15943b6670e44e5c2ed0f67 \
-                    size    163824
+checksums           rmd160  25d00933b37ab10ea7e95723689125f27ab953b9 \
+                    sha256  4ce3ac6cdb6adf7946475d7ef31777c26d94bccc377e070a7986bd2d5c515467 \
+                    size    186022
 
 if {${name} ne ${subport}} {
     if {${python.version} < 37} {
+        version             2.0.2
+        checksums           rmd160  260d2414cd1be4c7af131f482a4c82b6762d7f87 \
+                            sha256  e7c8dc13af7db097bed64a051d2dd49e9f0af495c26995c00a9ee842690d34c0 \
+                            size    164980
+
+        patchfiles-append   patch-powerpc-2.0.2.diff
+
         python.pep517       no
         depends_build-append \
                             port:py${python.version}-setuptools
     }
+
+    # cc1plus: error: unrecognized command line option "-std=gnu++11"
+    compiler.cxx_standard 2011
+    # Fails to build with Xcode compilers of 10.11 and earlier.
+    compiler.blacklist-append {clang < 900}
 
     pre-test {
         test.env    PYTHONPATH=[glob -nocomplain ${worksrcpath}/build/lib*]
     }
 
     test.run            yes
-    test.cmd            python${python.branch}
-    test.target         -m unittest discover greenlet.tests
+    python.test_framework unittest
 
     livecheck.type      none
 }

@@ -5,11 +5,12 @@ PortGroup           github 1.0
 PortGroup           python 1.0
 
 github.setup        pytorch audio 0.12.0 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 revision            0
 name                py-torchaudio
 
 categories-append   audio
-platforms           darwin
 license             BSD
 maintainers         nomaintainer
 fetch.type          git
@@ -119,7 +120,7 @@ checksums-append \
                     sha256  d8688496ea40fb61787500e863cc63c9afcbc524468cedeb478068924eb54932 \
                     size    1547173
 
-python.versions     37 38 39 310
+python.versions     39 310
 
 if {${name} ne ${subport}} {
     depends_build-append \

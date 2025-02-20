@@ -6,7 +6,7 @@ PortGroup       active_variants 1.1
 PortGroup       compiler_blacklist_versions 1.0
 
 version         1.69.0
-revision        8
+revision        11
 
 set branch      [join [lrange [split ${version} .] 0 1] .]
 set tag         [string map {. {}} ${branch}]
@@ -32,7 +32,7 @@ long_description \
     which work well with the C++ Standard Library.
 
 homepage        http://www.boost.org
-master_sites    https://boostorg.jfrog.io/artifactory/main/release/${version}/source/
+master_sites    https://archives.boost.io/release/${version}/source
 set distver     [join [split ${version} .] _]
 distname        boost_${distver}
 use_bzip2       yes
@@ -112,8 +112,9 @@ compiler.blacklist-append {clang > 1100}
 # Further: Building Boost using C++11 compliance does not seem to then
 # require ports depending on Boost to also require C++11 compliance,
 # and requiring it does make such building easier for those ports.
-configure.cxxflags-append -std=gnu++11
-compiler.cxx_standard   2011
+configure.cxxflags-append -std=gnu++17
+# ICU requires C++17
+compiler.cxx_standard   2017
 
 # It turns out that ccache and distcc can produce boost libraries that, although they
 # compile without warning, have all sorts of runtime errors especially with pointer corruption.
@@ -134,7 +135,7 @@ if {[string match *gcc* ${configure.compiler}]} {
 # makecontext/swapcontext introduced in 10.6
 # In 10.6.x Rosetta they do not work: https://trac.macports.org/ticket/64978
 platform darwin {
-    if {${os.major} < 10 || (${os.major} == 10 && ${build_arch} eq "ppc")} {
+    if {${os.major} < 10 || (${os.major} == 10 && ${configure.build_arch} eq "ppc")} {
         configure.args-append   --without-libraries=context \
                                 --without-libraries=coroutine
     }
@@ -364,22 +365,22 @@ if {[mpi_variant_isset]} {
 livecheck.type  none
 
 if {!${universal_possible} || ![variant_isset universal]} {
-    # Honour 'build_arch', if not universal as per #28327
-    if {[lsearch ${build_arch} ppc*] != -1} {
+    # Honour 'configure.build_arch', if not universal as per #28327
+    if {[lsearch ${configure.build_arch} ppc*] != -1} {
         build.args-append   architecture=power
         if {${os.arch} ne "powerpc"} {
             build.args-append   --disable-long-double
         }
     } else {
-        if {[lsearch ${build_arch} *86*] != -1} {
+        if {[lsearch ${configure.build_arch} *86*] != -1} {
             build.args-append   architecture=x86
         } else {
             pre-fetch {
-                error "Current value of 'build_arch' is not supported."
+                error "Current value of 'configure.build_arch' is not supported."
             }
         }
     }
-    if {[lsearch ${build_arch} *64] != -1} {
+    if {[lsearch ${configure.build_arch} *64] != -1} {
         build.args-append   address-model=64
     } else {
         build.args-append   address-model=32

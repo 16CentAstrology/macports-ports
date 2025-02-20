@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/arduino/arduino-cli 0.29.0
+go.setup            github.com/arduino/arduino-cli 1.1.1 v
 revision            0
 
 categories          devel electronics
@@ -14,15 +14,16 @@ description         Arduino command line tool
 long_description    \
     Arduino CLI is an all-in-one solution that provides Boards/Library \
     Managers, sketch builder, board detection, uploader, and many other tools \
-    needed to use any Arduino compatible board and platform.
+    needed to use any Arduino compatible board and platform from command line \
+    or machine interfaces.
 homepage            https://arduino.github.io/arduino-cli
 
-checksums           rmd160  40a269f88a667c6ff40513ad29a2264a868247cd \
-                    sha256  3b8fe7543f111b22cce269bcca0312a965f38e256d5499bd2dcda8f069732206 \
-                    size    14214301
+checksums           rmd160  27a683a138e6e6ce33c17d2718e1defacb7aa78d \
+                    sha256  02d2a0adaefe13c82289a279d0addc071d9bb7b91a0ae65869796a3569ab4ac2 \
+                    size    10136227
 
 # FIXME: This port currently can't be built without allowing go mod to fetch
-build.env-delete    GOPROXY=off GO111MODULE=off
+go.offline_build no
 
 # Suppress build date for reproducible builds
 # Switch to SOURCE_DATE_EPOCH approach in the future

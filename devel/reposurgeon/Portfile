@@ -3,10 +3,11 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            gitlab.com/esr/reposurgeon 4.34
+go.setup            gitlab.com/esr/reposurgeon 5.2
+go.offline_build    no
 revision            0
 
-homepage            http://www.catb.org/esr/reposurgeon
+homepage            https://www.catb.org/esr/reposurgeon
 
 description         \
     A tool for editing version-control repositories and translating among \
@@ -27,16 +28,14 @@ license             BSD
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  cb889b8b6c6ea07b231bec080e9bfdcf00e6ab77 \
-                    sha256  5ddb684ecf8b90e645c9066d580e5c763d5ac5891875f819ddb05ca94c9a38e6 \
-                    size    1597775
+checksums           rmd160  08b6dbc579fbd1cb67b581481f4f38a75ecabd47 \
+                    sha256  7e7460b2bfb541759ee31cb21f6a82a37eabd86dc80d4159f678ec1aca5d9d15 \
+                    size    1595332
 
 depends_build-append \
                     port:gawk \
                     port:asciidoctor
 
-# Allow Go to fetch dependencies at build time
-build.env-delete    GO111MODULE=off GOPROXY=off
 build.cmd           make
 build.target        all
 

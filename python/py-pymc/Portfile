@@ -2,12 +2,10 @@
 
 PortSystem          1.0
 PortGroup           python 1.0
-PortGroup           github 1.0
 
-github.setup        pymc-devs pymc 4.4.0 v
-github.tarball_from archive
-revision            0
 name                py-pymc
+version             5.20.1
+revision            0
 
 supported_archs     noarch
 platforms           {darwin any}
@@ -22,28 +20,31 @@ long_description    PyMC (formerly PyMC3) is a Python package for Bayesian \
                     Its flexibility and extensibility make it applicable to a \
                     large suite of problems.
 
-checksums           rmd160  0be2b7b6ee654341d2262d46413959792ca0af78 \
-                    sha256  fadd03765c892e240c6db24a3b588e64e9d837e422b13e4d1bf53a531069539f \
-                    size    6741411
+checksums           rmd160  086ecb6cbaadef83edd4df04a9aa61bd40434af5 \
+                    sha256  fb5f20d196a1b34eb193a855c611887b2e7b98d3af37d8573a33d112e2278eac \
+                    size    503181
 
-python.versions     38 39 310
+python.versions     310 311 312
 
 if {${name} ne ${subport}} {
     conflicts   py${python.version}-pymc3
 
+    depends_build-append \
+                    port:py${python.version}-versioneer
+
     depends_lib-append \
-                    port:py${python.version}-aeppl \
-                    port:py${python.version}-aesara \
                     port:py${python.version}-arviz \
                     port:py${python.version}-cachetools \
                     port:py${python.version}-cloudpickle \
                     port:py${python.version}-fastprogress \
                     port:py${python.version}-numpy \
+                    port:py${python.version}-pandas \
+                    port:py${python.version}-pytensor \
                     port:py${python.version}-scipy \
                     port:py${python.version}-typing_extensions
 
-    depends_test-append \
-                    port:py${python.version}-pytest
+    if {${python.version} < 311} {
+        depends_lib-append \
+                    port:py${python.version}-tomli
+    }
 }
-
-github.livecheck.regex  {([0-9.]+)}

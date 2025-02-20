@@ -6,18 +6,18 @@ PortGroup           compilers 1.0
 PortGroup           github 1.0
 PortGroup           linear_algebra 1.0
 
-github.setup        jchristopherson linalg 0434bc8dba254e021643c8992a57868b7511e7bb
-version             1.7.1
-revision            1
+github.setup        jchristopherson linalg 1.8.2 v
+revision            0
 categories          math science
 license             GPL-3
 maintainers         {@barracuda156 gmail.com:vital.had} openmaintainer
 description         Linear algebra library that provides a user-friendly interface \
                     to several BLAS and LAPACK routines
 long_description    {*}${description}
-checksums           rmd160  0382c5c36e26de70bfb6e3334a240fdf82c770ab \
-                    sha256  321bae3508d190a14263144b4d3c25bf856a4380438c49e8dd2c4451d83ccb66 \
-                    size    829618
+checksums           rmd160  439503fdecdbd215b7d34be7d9d322b4f32af76f \
+                    sha256  c3ce0752dea700f02020e07b2fe485b6ce10859da10adeb3bfa64d08b4ac8dea \
+                    size    2303950
+github.tarball_from archive
 
 depends_lib-append  port:qrupdate
 

@@ -3,9 +3,7 @@
 PortSystem          1.0
 PortGroup           fortran 1.0
 
-# Release tarball is incomplete
-github.setup        perazz fitpack c07267ae0c8f070432e4a76b4654e3a9f80db13a
-version             0.0.1
+github.setup        perazz fitpack 0.2.0
 revision            0
 categories-append   math
 license             BSD
@@ -15,9 +13,10 @@ long_description    This is a modern Fortran translation of the FITPACK package 
                     The functions are modernized and translated from the original Fortran 77 code FITPACK by Paul Dierckx. \
                     The starting code used the double precision version of FITPACK distributed with scipy. \
                     An object-oriented interface wrapper is also being built.
-checksums           rmd160  b1b8beac25895b5a74e9310bdabc56600c40eca4 \
-                    sha256  591f264abf5f3b9903c0a580a870c43783d8d776e3b67d4a18b316c396b23143 \
-                    size    197057
+checksums           rmd160  840725a13aa7a4b3b76b3df4ecaedc62e02fb085 \
+                    sha256  0a3ff76a29bc0493c212c2ee4a016340af6a32933e5b29480b5dba851bf7135a \
+                    size    214508
+github.tarball_from archive
 
 post-destroot {
     set docdir ${prefix}/share/doc/${name}

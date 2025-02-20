@@ -5,7 +5,7 @@ PortGroup           python 1.0
 PortGroup           select 1.0
 
 name                py-fonttools
-version             4.38.0
+version             4.56.0
 revision            0
 
 description         XML<->TrueType/OpenType Converter
@@ -20,18 +20,15 @@ categories-append   print
 license             MIT
 maintainers         {amake @amake} openmaintainer
 
-checksums           rmd160  d980b05830a6cf0810505c99a8eb7d22b1bb8821 \
-                    sha256  2bb244009f9bf3fa100fc3ead6aeb99febe5985fa20afbfbaa2f8946c2fbdaf1 \
-                    size    5071980
+checksums           rmd160  09f646eac53841cd61d7e26c935be721b888067a \
+                    sha256  a114d1567e1a1586b7e9e7fc2ff686ca542a82769a296cef131e4c4af51e58f4 \
+                    size    3462892
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    use_zip         yes
-
     depends_build-append \
-                    port:py${python.version}-cython \
-                    port:py${python.version}-setuptools
+                    port:py${python.version}-cython
 
     depends_run-append \
                     port:${python.rootname}_select
@@ -52,13 +49,16 @@ if {${name} ne ${subport}} {
     }
 
     variant unicode description {Install dependencies for up-to-date Unicode support} {
-        # Whether this is needed depends on the Python runtime version: Python 3.9
-        # includes Unicode 13.0 data, so unicodedata2 v13.0.0 is not needed in that
-        # case, while older Pythons would benefit from having it.
         depends_run-append  port:py${python.version}-unicodedata2
     }
 
-    # TODO: `interpolatable` extra: requires scipy and munkres (not yet in MacPorts)
+    variant graphite description {Install dependencies for graphite type tables} {
+        depends_run-append  port:py${python.version}-lz4
+    }
+
+    variant interpolatable description {Install dependencies for Assignment problem} {
+        depends_run-append  port:py${python.version}-scipy
+    }
 
     variant plot description {Install dependencies for plot visualizations} {
         depends_run-append  port:py${python.version}-matplotlib
@@ -68,7 +68,15 @@ if {${name} ne ${subport}} {
         depends_run-append  port:py${python.version}-sympy
     }
 
-    # TODO: `type1` extra: requires xattr (not yet in MacPorts)
+    variant type1 description {Install dependencies for Type 1 font support} {
+        depends_run-append  port:py${python.version}-xattr
+    }
+
+    # TODO: `pathops` extra: requires skia-pathops (not yet in MacPorts)
+
+    # TODO: `repacker` extra: requires uharfbuzz (not yet in MacPorts)
+
+    # Non-"extras" variants:
 
     variant cocoa description {Install dependencies for Cocoa glyph drawing} {
         depends_run-append  port:py${python.version}-pyobjc

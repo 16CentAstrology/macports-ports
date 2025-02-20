@@ -7,11 +7,10 @@ PortGroup           legacysupport 1.0
 legacysupport.newest_darwin_requires_legacy 15
 
 name                rpki-client
-version             8.2
+version             9.4
 revision            0
 
 categories          net
-platforms           darwin
 license             ISC
 maintainers         {@artkiver gmail.com:artkiver} openmaintainer
 
@@ -26,15 +25,17 @@ homepage            https://www.rpki-client.org/index.html
 master_sites        https://cdn.openbsd.org/pub/OpenBSD/rpki-client/ \
                     https://ftp.openbsd.org/pub/OpenBSD/rpki-client/
 
-checksums           rmd160 a8c0d3783e765a5bea2d7f6652d015da4690a5f6 \
-                    sha256 dc0d19679b57ae657b92d21730b1678823974d43300faa8c24ee155c1e2b1d64 \
-                    size   475141
+checksums           rmd160 e66f01e447a54de15f5ffceee3e3bed1cfa15aea \
+                    sha256 f3bd2cda5517826b717c574f122ee075eb35866b923b558de6a2720517f0bb6a \
+                    size   569250
 
 depends_lib         port:expat
 
+configure.args      --disable-silent-rules
+
 variant libressl conflicts openssl description {use LibreSSL} {
     depends_lib-append  path:lib/libtls.dylib:libressl
-    configure.args-append --without-libretls
+    configure.args-append --without-libtls
 }
 
 variant openssl conflicts libressl description {use OpenSSL} {

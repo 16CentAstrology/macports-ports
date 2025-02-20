@@ -4,9 +4,10 @@ PortSystem          1.0
 PortGroup           compilers 1.0
 PortGroup           github 1.0
 
-github.setup        nco nco 5.1.4
-revision            1
-platforms           darwin
+github.setup        nco nco 5.3.1
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
+revision            0
 maintainers         {takeshi @tenomoto} \
                     {me.com:remko.scharroo @remkos} \
                     openmaintainer
@@ -21,9 +22,9 @@ if {${os.major} > 12} {
     compilers.setup -clang33 -clang34
 }
 
-checksums           rmd160  e739fead0522aca07111988a9cb7c8bdae76e9eb \
-                    sha256  99fe7bea1e7ba3b433876725d1e4c1908ec73ec944fabb5570b78c02ea7e0bdc \
-                    size    6454205
+checksums           rmd160  e43524a5dd26d70ccc2f28713e33e870858ac5f7 \
+                    sha256  e7d95ce692a4b9e1286610fbc00fb6a09d993a1f6a7b3b26fda45cae21e338d9 \
+                    size    6860305
 
 homepage            http://nco.sourceforge.net/
 long_description \
@@ -37,15 +38,9 @@ long_description \
 
 depends_lib         port:curl \
                     port:gettext \
-                    port:libiconv \
-                    port:libxml2 \
                     port:netcdf \
-                    path:lib/libssl.dylib:openssl \
                     port:udunits2 \
-                    port:zlib \
-                    port:gsl \
-                    port:hdf5 \
-                    port:xercesc3
+                    port:gsl
 depends_build       port:antlr \
                     port:bison \
                     port:m4 \
@@ -57,7 +52,6 @@ configure.env       HAVE_ANTLR=yes ANTLR_ROOT=${prefix} \
 configure.cppflags-append   -I${prefix}/include/udunits2 \
                             -I${prefix}/include \
                             -DENABLE_NETCDF4
-configure.ldflags-append    -lxerces-c
 configure.args      --disable-dependency-tracking \
                     --mandir=${prefix}/share/man  \
                     --disable-shared              \

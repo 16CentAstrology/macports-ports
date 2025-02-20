@@ -2,23 +2,22 @@
 
 PortSystem          1.0
 PortGroup           fortran 1.0
-# PortGroup           linear_algebra 1.0
 
-github.setup        jacobwilliams nlesolver-fortran 1.1.1
+github.setup        jacobwilliams nlesolver-fortran 2.2.0
 name                fortran-nlesolver
 revision            0
-categories          fortran math
+categories-append   math
 license             BSD
 maintainers         {@barracuda156 gmail.com:vital.had} openmaintainer
 description         Nonlinear equation solver with modern Fortran
 long_description    Basic Newton–Raphson type nonlinear equation solver \
                     for dense systems with m functions of n input variables.
-checksums           rmd160  e59b18920e347cd59a1dca9c807db5b64829d84e \
-                    sha256  82cc2ec0c347aa9b10bc71317978490eab43f5e284c9c5a380d02ba2b197272a \
-                    size    32068
+checksums           rmd160  607dd4b9092355b1f8fa313dbb2be4613bc17d46 \
+                    sha256  ef22a1351259430ea0e524812f7d0308b3fd310eeb2bed594905929ac3ce2e7b \
+                    size    36544
+github.tarball_from archive
 
-depends_lib-append  port:fmin \
-                    port:vecLibFort
+depends_lib-append  port:vecLibFort
 
 build.cmd-append    --link-flag="-L${prefix}/lib -lvecLibFort"
 

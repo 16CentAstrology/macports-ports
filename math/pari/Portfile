@@ -3,13 +3,11 @@
 PortSystem          1.0
 PortGroup           muniversal 1.0
 PortGroup           compiler_blacklist_versions 1.0
-PortGroup           xcode_workaround 1.0
 
 name                pari
-version             2.13.4
+version             2.17.0
 revision            0
 categories          math
-platforms           darwin
 license             GPL-2+
 maintainers         {gmail.com:watsonbladd @wbl} openmaintainer
 
@@ -22,9 +20,9 @@ long_description    PARI/GP is a widely used computer algebra system designed \
 homepage            https://pari.math.u-bordeaux.fr/
 master_sites        ${homepage}pub/pari/unix/
 
-checksums           rmd160  6808d70d6ebff88bd054edcc428d948ac24122d5 \
-                    sha256  bcde9eceae1592814381c1697cdb7063567b6504201b1be47bb58920f3bce185 \
-                    size    4772735
+checksums           rmd160  78d1611172282144f8de308e01bfee97839c4eae \
+                    sha256  e723e7cef18d08c6ece2283af9a9b4d56077c22b4fce998faaa588d389b1aea8 \
+                    size    5317997
 
 depends_lib         port:gmp \
                     port:ncurses \
@@ -38,7 +36,8 @@ platform darwin 8 {
 # llvm-gcc produces incorrect code, ticket #33024
 compiler.blacklist-append llvm-gcc-4.2
 
-xcode_workaround.type avoid_xcode_compiler
+# See: https://trac.macports.org/ticket/59295
+compiler.blacklist-append {clang}
 
 configure.cmd       ./Configure
 
@@ -71,8 +70,6 @@ post-patch {
     if {![variant_isset doc]} {
         reinplace "s/\\(doc all:\\).*/\\1/" \
             ${worksrcpath}/config/DOC_Make.SH
-        reinplace "/INSTALL_DATA.*\\.\\(dvi\\|ps\\)/d" \
-            ${worksrcpath}/config/Makefile.SH
     }
 }
 

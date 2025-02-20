@@ -4,40 +4,25 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-prompt_toolkit
-version             3.0.33
+version             3.0.48
 revision            0
 
 license             BSD
 platforms           {darwin any}
 supported_archs     noarch
-maintainers         {@xeron gmail.com:xeron.oskom} openmaintainer
+maintainers         nomaintainer
 description         Library for building powerful interactive command lines in Python
 long_description    {*}${description}
 
-python.versions     27 37 38 39 310 311
+python.versions     39 310 311 312 313
 
 homepage            https://github.com/prompt-toolkit/python-prompt-toolkit
 
-checksums           rmd160  b22274dbee6b6239d5cd2ac0f2fcae9c7c926668 \
-                    sha256  535c29c31216c77302877d5120aef6c94ff573748a5b5ca5b1b1f76f5e700c73 \
-                    size    420748
+checksums           rmd160  85bbee28ec93b8df2228a02e60980616b55323c5 \
+                    sha256  d6623ab0477a80df74e646bdbc93621143f5caf104206aa29294d53de1a03d90 \
+                    size    424684
 
 if {${name} ne ${subport}} {
-    if {${python.version} eq 27} {
-        version     1.0.18
-        revision    0
-        checksums   rmd160  c0907914130f16c24cd543ef3bbcea655bca8968 \
-                    sha256  dd4fca02c8069497ad931a2d09914c6b0d1b50151ce876bc15bde4c747090126 \
-                    size    242335
-
-        depends_lib-append \
-                    port:py${python.version}-pygments \
-                    port:py${python.version}-six
-    }
-
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     depends_lib-append \
                     port:py${python.version}-wcwidth
 

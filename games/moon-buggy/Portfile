@@ -4,6 +4,8 @@ PortSystem              1.0
 PortGroup               github 1.0
 
 github.setup            seehuhn moon-buggy c6a7f2d6fcb478c688f7b3cf702dd43e39fad05c
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from     tarball
 version                 20170822
 revision                0
 license                 GPL-3
@@ -19,6 +21,7 @@ checksums               rmd160  f18e6001d5bb7791a549aaf4bf4de72b68c08f2e \
                         sha256  badcd033cd9568d850c911cf2fbdcec07214eb4a6b1b9bf5f90435e7eb88a0cf \
                         size    94306
 
+depends_build-append    bin:makeinfo:texinfo
 depends_lib-append      port:ncurses
 
 patchfiles-append       Makefile.am.patch \

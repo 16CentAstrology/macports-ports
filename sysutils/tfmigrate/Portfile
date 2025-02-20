@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/minamijoyo/tfmigrate 0.3.10 v
+go.setup            github.com/minamijoyo/tfmigrate 0.4.1 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -17,12 +18,9 @@ license             MIT
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  869231dbcfb6a8bfa327f66aff37769a377655bc \
-                    sha256  8595bbce061943b6c16d63c4410944e99158e3dc460f88194a3c8f1b91222da9 \
-                    size    86013
-
-# Allow Go to fetch dependencies at build time
-build.env-delete    GO111MODULE=off GOPROXY=off
+checksums           rmd160  e7db8f5128dd27d95691372cdf16c18064cf7298 \
+                    sha256  fa7e5b45609c1d60140157a17ac4d5ff311311582f110c8a3d0e9a2cd50ceba6 \
+                    size    93242
 
 build.cmd           make
 build.target        build
@@ -35,3 +33,6 @@ patch {
 destroot {
     xinstall -m 0755 ${worksrcpath}/bin/${name} ${destroot}${prefix}/bin/
 }
+
+github.livecheck.regex \
+                    {([0-9.]+)}

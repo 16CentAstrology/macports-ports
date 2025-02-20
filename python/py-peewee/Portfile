@@ -4,10 +4,10 @@ PortSystem 1.0
 PortGroup python 1.0
 
 name                py-peewee
-version             3.15.4
+version             3.17.9
 license             MIT
 platforms           darwin
-maintainers         {toby @tobypeterson} openmaintainer
+maintainers         nomaintainer
 description         a small, expressive orm -- supports postgresql, mysql and sqlite
 long_description    Peewee is a simple and small ORM. It has few (but expressive) \
                     concepts, making it easy to learn and intuitive to use.
@@ -16,11 +16,11 @@ homepage            https://github.com/coleifer/peewee/
 master_sites        pypi:p/peewee
 distname            peewee-${version}
 
-checksums           rmd160  595ccc9ad7f6bdb31890eedd9e2a9c9d96da4b6a \
-                    sha256  2581520c8dfbacd9d580c2719ae259f0637a9e46eda47dfc0ce01864c6366205 \
-                    size    860903
+checksums           rmd160  78f6ca9108d6a3c2e178802dbfdf062910efeafa \
+                    sha256  fe15cd001758e324c8e3ca8c8ed900e7397c2907291789e1efc383e66b9bc7a8 \
+                    size    3026085
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
     depends_build-append    port:py${python.version}-setuptools \

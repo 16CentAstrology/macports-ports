@@ -4,12 +4,12 @@ PortSystem                  1.0
 PortGroup                   github 1.0
 PortGroup                   legacysupport 1.1
 
-github.setup                strukturag libde265 1.0.9 v
+github.setup                strukturag libde265 1.0.15 v
 revision                    0
 
-checksums                   rmd160  2c1e1ce1abe2a00b366cf9fd1d1d1d867c87c1b6 \
-                            sha256  29bc6b64bf658d81a4446a3f98e0e4636fd4fd3d971b072d440cef987d5439de \
-                            size    845520
+checksums                   rmd160  5872a6bfd974ad2eab1bf74d9bf68e09e19a98f9 \
+                            sha256  00251986c29d34d3af7117ed05874950c875dd9292d016be29d3b3762666511d \
+                            size    846016
 
 categories                  multimedia
 license                     LGPL-3+

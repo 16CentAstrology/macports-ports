@@ -6,7 +6,9 @@ PortGroup               github 1.0
 
 epoch                   5
 github.setup            textmate textmate 2.0.23 v
-revision                0
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from     tarball
+revision                3
 
 maintainers             {cal @neverpanic} openmaintainer
 name                    textmate2
@@ -16,7 +18,7 @@ description             \
     TextMate brings Apple's approach to operating systems into the world of text editors. By \
     bridging UNIX underpinnings and GUI, TextMate cherry-picks the best of both worlds to the \
     benefit of expert scripters and novice users alike.
-long_description        ${description}\
+long_description        {*}${description}\
     TextMate is well-known for its large number of bundles adding support, snippets, completions \
     and commands for a huge number of file types.
 
@@ -56,7 +58,8 @@ configure.cxx_stdlib    libc++
 # Patch needed during build for download of bundles; will revert later and
 # rebuild
 patchfiles              patch-Frameworks__io__src__path.cc-use-home-from-env.diff \
-                        patch-Applications__TextMate__src__RMateServer.mm-non-objc-ptr-cast-with-arc.diff
+                        patch-Applications__TextMate__src__RMateServer.mm-non-objc-ptr-cast-with-arc.diff \
+                        0001-Avoid-clang-15-crash-by-using-correct-array-size.patch
 
 pre-configure {
     copy ${filespath}/local.rave ${worksrcpath}

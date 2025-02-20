@@ -4,13 +4,15 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-imageio-ffmpeg
-version             0.4.7
-platforms           darwin
+version             0.5.1
+revision            0
+
+platforms           {darwin any}
+supported_archs     noarch
 license             BSD
 maintainers         nomaintainer
 
 description         FFMPEG wrapper for Python
-
 long_description    The purpose of this project is to provide a simple \
                     and reliable ffmpeg wrapper for working with video \
                     files. It implements two simple generator \
@@ -22,23 +24,17 @@ long_description    The purpose of this project is to provide a simple \
 
 homepage            https://github.com/imageio/imageio-ffmpeg
 
-checksums           rmd160  28a0dc363efd7442473dd1bdfb61360794ad1709 \
-                    sha256  7a08838f97f363e37ca41821b864fd3fdc99ab1fe2421040c78eb5f56a9e723e \
-                    size    16874
+checksums           rmd160  b558b3957237fc2f798b1b0331e7decb1d0d7585 \
+                    sha256  0ed7a9b31f560b0c9d929c5291cd430edeb9bed3ce9a497480e536dd4326484c \
+                    size    17704
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-pip \
-                    port:py${python.version}-setuptools
-
     post-destroot {
         set docdir ${prefix}/share/doc/${subport}
         xinstall -d ${destroot}${docdir}
         xinstall -m 0644 -W ${worksrcpath} LICENSE \
             ${destroot}${docdir}
     }
-
-    livecheck.type  none
 }

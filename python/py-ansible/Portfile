@@ -4,23 +4,22 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-ansible
-version             7.1.0
+version             11.1.0
 revision            0
 license             GPL-3+
 
 categories-append   sysutils
 supported_archs     noarch
+platforms           {darwin any}
 
 maintainers         {adfernandes @adfernandes} {gmail.com:pedro.salgado @steenzout} openmaintainer
 
 homepage            https://github.com/ansible/ansible
 description         SSH-based configuration management and deployment system
 
-checksums           rmd160  36add58d481384e693ade2827596f08eb978869d \
-                    sha256  1e47238c4aa9e68c0c5367a3fd707ba6c3949b4aaf912b06440ad78dd2bf018d \
-                    size    36277542
-
-conflicts           ansible
+checksums           rmd160  0a2f65660e4ddb0330e0780f8d07c75e61a70505 \
+                    sha256  d01b425990d960d2a33fc378e1b73dbca1c0e28bc22f4056ab6b3c8e9ae74fba \
+                    size    41299850
 
 long_description \
     Ansible is a radically simple model-driven configuration \
@@ -30,7 +29,7 @@ long_description \
     be written in any language and are transferred to managed machines \
     automatically.
 
-python.versions     39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
     patch {

@@ -1,13 +1,12 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
-PortSystem 1.0
+PortSystem          1.0
 PortGroup           cmake 1.1
 
 name                nusmv
 version             2.6.0
 revision            1
 categories          devel math
-platforms           darwin
 maintainers         nomaintainer
 license             LGPL-2.1
 conflicts           libcudd
@@ -37,7 +36,7 @@ checksums           ${nusmv_distfile} \
                     size    77725
 
 depends_build-append \
-                    port:pkgconfig
+                    path:bin/pkg-config:pkgconfig
 
 depends_lib         port:libxml2 \
                     port:readline
@@ -50,8 +49,21 @@ post-extract {
 universal_variant   no
 cmake.source_dir    ${worksrcpath}/NuSMV
 
+if {${os.platform} eq "darwin" && \
+    (${os.major} > 10 && ${os.major} < 21)} {
+    configure.python /usr/bin/python
+} else {
+    set python_version 2.7
+    depends_build-append port:python[string map {. {}} ${python_version}]
+    configure.python ${prefix}/bin/python${python_version}
+}
+
 configure.args      -DDOXYGEN_EXECUTABLE= \
-                    -DPDFLATEX_COMPILER=
+                    -DPDFLATEX_COMPILER= \
+                    -DPYTHON_EXECUTABLE=${configure.python}
+
+# make[1]: *** read jobs pipe: Resource temporarily unavailable. Stop.
+use_parallel_build  no
 
 livecheck.type      regex
 livecheck.url       ${homepage}

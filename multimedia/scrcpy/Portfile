@@ -4,9 +4,14 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           meson 1.0
 PortGroup           compiler_blacklist_versions 1.0
+PortGroup           legacysupport 1.1
 
-github.setup        Genymobile scrcpy 1.25 v
+# needed for clock_gettime and static_assert to work on older OS X versions
+legacysupport.newest_darwin_requires_legacy 15
+
+github.setup        Genymobile scrcpy 3.1 v
 revision            0
+github.tarball_from archive
 
 categories          multimedia
 platforms           darwin
@@ -24,13 +29,13 @@ extract.only        ${distfiles}
 distfiles-append    ${name}-server-v${version}:bootstrap
 
 checksums           ${distname}${extract.suffix} \
-                    rmd160  f44a661318638456ea2477adde079d873c35d35f \
-                    sha256  78d7b2dcecc527dec3e391a6ca022a411a1f7b9b582875aaf329f22e489cb521 \
-                    size    345630 \
+                    rmd160  c14ed61ed903f250a6600176e024259fcce7b622 \
+                    sha256  beaa5050a3c45faa77cedc70ad13d88ef26b74d29d52f512b7708671e037d24d \
+                    size    459749 \
                     ${name}-server-v${version} \
-                    rmd160  ece066a6d2a86cc1daac5d4eba6367af8c4ad539 \
-                    sha256  ce0306c7bbd06ae72f6d06f7ec0ee33774995a65de71e0a83813ecb67aec9bdb \
-                    size    42151
+                    rmd160  557c6120412ea0c841920e9cb4f6a6f255a7e200 \
+                    sha256  958f0944a62f23b1f33a16e9eb14844c1a04b882ca175a738c16d23cb22b86c0 \
+                    size    90640
 
 depends_build-append \
                     port:pkgconfig
@@ -50,11 +55,4 @@ configure.args-append \
 compiler.c_standard 2011
 # Work around cfm: fatal error: 'stdatomic.h' file not found
 # https://trac.macports.org/ticket/60429
-compiler.blacklist-append {clang < 700}
-
-destroot {
-    xinstall -m 755 -d ${destroot}${prefix}/share/${name}
-
-    xinstall -m 644 ${workpath}/build/server/${name}-server ${destroot}${prefix}/share/${name}
-    xinstall -m 755 ${workpath}/build/app/${name} ${destroot}${prefix}/bin
-}
+compiler.blacklist-append {clang < 701}

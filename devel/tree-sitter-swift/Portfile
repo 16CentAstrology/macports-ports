@@ -4,7 +4,9 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           tree_sitter 1.0
 
-github.setup        alex-pinkus tree-sitter-swift 0.3.4
+github.setup        alex-pinkus tree-sitter-swift 0.7.0
+
+github.tarball_from archive
 revision            0
 
 description         A tree-sitter parser for Swift
@@ -15,9 +17,9 @@ categories          devel
 license             MIT
 maintainers         {amake @amake} openmaintainer
 
-checksums           rmd160  016ce35ea6aa4ae1d7a1e1af5f010a58f3e4a1e2 \
-                    sha256  07a8ae4e5ca22d57e30feb5cdb2b54fda15077e5c13773a2ea4b609b1dbcbda2 \
-                    size    73758
+checksums           rmd160  8928e36ebee2f15fa6dcac28d1cfe2fbb26f6d94 \
+                    sha256  37b447ede9e0b2d95a8a960b40e575fc43c17d02d18b11c74df873be2869067c \
+                    size    99334
 
 worksrcdir          ${worksrcdir}/src
 
@@ -26,3 +28,5 @@ depends_build-append    port:tree-sitter-cli
 pre-build {
     system -W ${worksrcpath}/.. "${prefix}/bin/tree-sitter generate"
 }
+
+github.livecheck.regex {([0-9.-]+)}

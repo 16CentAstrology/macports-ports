@@ -3,7 +3,7 @@
 PortSystem          1.0
 
 name                add
-version             20221104
+version             20240110
 revision            0
 categories          math
 license             BSD
@@ -18,9 +18,9 @@ master_sites        https://invisible-island.net/archives/${name}/ \
                     https://invisible-mirror.net/archives/${name}/
 extract.suffix      .tgz
 
-checksums           rmd160  7846d07ed89a52f1ff40eaeca5ac871748a31cbf \
-                    sha256  c19e8e6872d19b688e88864fbd996aa48addd1dbca94f32276c95eb6d4e59bd6 \
-                    size    178815
+checksums           rmd160  9a46b04b25ba3b75d748e70e27208e6eb94e8964 \
+                    sha256  038c814e6349f29595357e05e7059f730ba4513138d11f4bcd8f3dcb3a045e8b \
+                    size    180324
 
 depends_lib         port:ncurses
 

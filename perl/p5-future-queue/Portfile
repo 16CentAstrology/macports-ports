@@ -4,19 +4,19 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Future-Queue 0.50 ../../authors/id/P/PE/PEVANS
+perl5.setup         Future-Queue 0.52 ../../authors/id/P/PE/PEVANS
 revision            0
 license             {Artistic-1 GPL}
 maintainers         {devans @dbevans} openmaintainer
 description         Future::Queue - a FIFO queue of values that uses Futures
-long_description    ${description}
+long_description    {*}${description}
 
 platforms           {darwin any}
 supported_archs     noarch
 
-checksums           rmd160  bb5039f0ccf9b4b6325b1b8b01a701949ed00203 \
-                    sha256  e66e9b532f9b3d5a771158938a067049d0b7de0a57a40784bb49c873645e7d58 \
-                    size    13549
+checksums           rmd160  e454f7fb1046b20aef496392fc4f9ef9f835e195 \
+                    sha256  e98da929654bccb64592ac6355b7a7ef9ef9302abc8cd3a6c1dfd6003a57ee05 \
+                    size    14601
 
 if {${perl5.major} != ""} {
     depends_build-append \

@@ -4,12 +4,13 @@ PortSystem          1.0
 PortGroup           java 1.0
 
 name                asciidoctorj
-version             2.5.7
+version             2.5.13
 revision            0
 
 categories          textproc java
 license             Apache-2
 supported_archs     noarch
+platforms           any
 maintainers         {judaew @judaew} openmaintainer
 
 description         \
@@ -23,9 +24,9 @@ master_sites        https://repo1.maven.org/maven2/org/asciidoctor/asciidoctorj/
 distname            ${name}-${version}-bin
 worksrcdir          ${name}-${version}
 
-checksums           rmd160  a8a51b2880bd3ea8ccd3200ea9d414242a7875d1 \
-                    sha256  e25292735620cbb31af11e2fc730b52d9dac35a68f2f2f7ca4ee5aef0dfb7c37 \
-                    size    55974784
+checksums           rmd160  20f4dcde05685429397501cc6c2a0f61483a7cfe \
+                    sha256  67b420378c2887fdb330de2eb2d614a249224532eccc26c6f2ebe8330f878c38 \
+                    size    66698631
 
 java.version        1.8+
 java.fallback       openjdk11

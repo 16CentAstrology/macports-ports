@@ -6,7 +6,21 @@ PortGroup           github 1.0
 PortGroup           openssl 1.0
 
 github.setup        simsong tcpflow 1.6.1 tcpflow-
-revision            0
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
+revision            2
+
+conflicts           ${name}-devel
+
+subport ${name}-devel {
+    github.setup    simsong tcpflow 467b380642e8e126d1ef5ddf30638deffb6fb2ad
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
+    version         20240919
+    revision        0
+
+    conflicts       ${name}
+}
 
 categories          net security
 platforms           darwin freebsd
@@ -48,7 +62,17 @@ post-fetch {
     system -W ${worksrcpath} "git submodule update --init"
 }
 
-patchfiles          patch-configure.ac.diff
+patchfiles          
+
+if {${subport} eq "${name}"} {
+    patchfiles-append \
+                    patch-configure.ac.diff \
+                    patch-fix-includes.diff
+} else {
+    patchfiles-append \
+                    patch-configure.ac-devel.diff \
+                    patch-fix-macOS-build.diff
+}
 
 compiler.cxx_standard 2017
 

@@ -4,8 +4,9 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-josepy
-version             1.13.0
+version             2.0.0
 revision            0
+epoch               1
 categories-append   security
 license             Apache-2
 maintainers         {mps @Schamschula} openmaintainer
@@ -15,12 +16,15 @@ long_description    {*}${description}
 supported_archs     noarch
 platforms           {darwin any}
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
-checksums           rmd160  00b3e1b73d12a768527e8f40ce31dd10d3bc08c7 \
-                    sha256  8931daf38f8a4c85274a0e8b7cb25addfd8d1f28f9fb8fbed053dd51aec75dc9 \
-                    size    59045
+python.pep517_backend   poetry
+
+checksums           rmd160  5b999de9bb7ce497d6ed828532fdb3621a696deb \
+                    sha256  e7d7acd2fe77435cda76092abe4950bb47b597243a8fb733088615fa6de9ec40 \
+                    size    55767
 
 if {${name} ne ${subport}} {
-    depends_lib-append  port:py${python.version}-setuptools
+    depends_lib-append \
+            port:py${python.version}-cryptography
 }

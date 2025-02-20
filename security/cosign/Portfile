@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/sigstore/cosign 1.13.1 v
+go.setup            github.com/sigstore/cosign 2.4.1 v
 revision            0
 
 categories          security
@@ -15,12 +15,12 @@ long_description    \
     Container Signing, Verification and Storage in an OCI registry. Cosign \
     aims to make signatures invisible infrastructure.
 
-checksums           rmd160  563ad13de319c1bd61ad4f76bb072a33aab77569 \
-                    sha256  d6e7129bc36222fee94b3a3e081db81bd03d2c293cf8b978eab2e2181c9fe2d6 \
-                    size    6654850
+checksums           rmd160  e537a2cdff9bc0c692ccdd6da48a115ff5e1fe69 \
+                    sha256  c575cf4331fa53cdc0b7da769f10743dbf3a0db33b99b3ed2d2576d7d109af88 \
+                    size    868472
 
 # FIXME: This port currently can't be built without allowing go mod to fetch
-build.env-delete    GOPROXY=off GO111MODULE=off
+go.offline_build no
 
 build.cmd           make
 build.pre_args      GIT_VERSION="${version}" \
@@ -32,8 +32,7 @@ destroot {
 
     xinstall -d ${destroot}${prefix}/share/doc/${name}
     xinstall -m 0644 -W ${worksrcpath} \
-        CHANGELOG.md COPYRIGHT.txt EXAMPLES.md FUN.md \
-        KEYLESS.md KMS.md LICENSE TOKENS.md USAGE.md \
+        CHANGELOG.md COPYRIGHT.txt LICENSE \
         ${destroot}${prefix}/share/doc/${name}
 }
 

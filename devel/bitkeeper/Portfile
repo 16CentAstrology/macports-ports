@@ -4,11 +4,12 @@ PortSystem          1.0
 PortGroup           github 1.0
 
 github.setup        bitkeeper-scm bitkeeper 994fb651a4045b221e33703fc3d665c3a34784e1
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 # commit contains build fixes
 version             7.3.3
 revision            1
 categories          devel
-platforms           darwin
 supported_archs     x86_64
 license             Apache-2
 maintainers         {l2dy @l2dy} openmaintainer
@@ -24,7 +25,8 @@ checksums           rmd160  95409bbe4a4ea4f358cc717459094eb9dec7a95c \
                     sha256  c9fc0fe380f3816aa1f063213eb7bc27f18285e3367c2144b091ed89a1f6daf0 \
                     size    29060773
 
-depends_build       port:pkgconfig
+depends_build       port:groff \
+                    port:pkgconfig
 
 depends_lib         port:libtomcrypt \
                     port:libtommath \

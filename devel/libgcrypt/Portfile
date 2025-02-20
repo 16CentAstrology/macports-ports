@@ -2,11 +2,12 @@
 
 PortSystem      1.0
 PortGroup       compiler_blacklist_versions 1.0
+PortGroup       gnu_info 1.0
 PortGroup       legacysupport 1.1
 PortGroup       muniversal 1.0
 
 name            libgcrypt
-version         1.10.1
+version         1.11.0
 revision        1
 categories      devel security
 # libs are LGPL, executables and docs are GPL
@@ -24,13 +25,21 @@ homepage        https://www.gnupg.org/
 master_sites    gnupg
 use_bzip2       yes
 
-checksums       rmd160  ceb52963dd4695eef261985b31fd397b809d472e \
-                sha256  ef14ae546b0084cd84259f61a55e07a38c3b53afc0f546bffcef2f01baffe9de \
-                size    3778457
+checksums       rmd160  6f9bd06fa04fdcb397a349a4ecdc6fcc25ac1bb5 \
+                sha256  09120c9867ce7f2081d6aaa1775386b98c2f2f246135761aae47d81f58685b9c \
+                size    4180345
 
 depends_lib     port:libgpg-error
 
 configure.args  --disable-asm
+
+# libgcrypt detects GNU grep in $prefix/bin/ggrep when it is installed and uses
+# it in its libgcrypt-config file; If GNU grep is later uninstalled, building
+# against libgcrypt will fail. This can either be fixed by not relying on
+# $prefix/bin/ggrep, or by declaring a runtime dependency on the grep port.
+# This does the former.
+configure.args-append \
+                GREP="/usr/bin/grep"
 
 # Build fix for compilers that default to c99 (clang)
 configure.cflags-append "-std=gnu89"
@@ -99,6 +108,10 @@ post-destroot {
 
 test.run        yes
 test.target     check
+
+gnu_info.files  ${prefix}/share/info/gcrypt.info \
+                ${prefix}/share/info/gcrypt.info-1 \
+                ${prefix}/share/info/gcrypt.info-2
 
 livecheck.type  regex
 livecheck.url   https://gnupg.org/ftp/gcrypt/${name}/

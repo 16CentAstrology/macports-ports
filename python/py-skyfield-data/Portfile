@@ -4,8 +4,8 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-skyfield-data
-version             4.0.0
-revision            1
+version             6.0.0
+revision            0
 categories          python
 license             MIT
 maintainers         {mps @Schamschula} openmaintainer
@@ -15,11 +15,11 @@ supported_archs     noarch
 platforms           {darwin any}
 homepage            https://github.com/brunobord/skyfield-data
 
-checksums           rmd160  6cf301af2cebe80931fddfa96d373376d7ffabe0 \
-                    sha256  128d407e43a04be66c44b03914f9147b5e65b96078db776e6a4f5538ab0b74bf \
-                    size    16917344
+checksums           rmd160  039e05aff64057f09f6e94d510f652c3271abb5e \
+                    sha256  4e4f059c91f712b2d81d87288df04511a8154adb0044ebfc11365a689a53bcac \
+                    size    16961564
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312
 
 if {${name} ne ${subport}} {
     depends_build-append \

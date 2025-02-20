@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/derailed/k9s 0.27.0 v
+go.setup            github.com/derailed/k9s 0.40.3 v
 github.tarball_from archive
 revision            0
 
@@ -25,14 +25,14 @@ maintainers         {breun.nl:nils @breun} \
                     {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  53f99b0ea6fef9413d6a30b515fb29cfefaabd8e \
-                    sha256  fc70078f7eea82cef72d13bf11f5de99069abfddcd4b9eb14f694ba204155dd7 \
-                    size    6392992
+checksums           rmd160  82ec002a63bc949889c9c7c36245bbfedd73cf23 \
+                    sha256  81159b9232859eff41e90b529550b38f39b1416ca1a317a829984c789df21abe \
+                    size    6781466
 
 # FIXME: This port currently can't be built without allowing go mod to fetch
 # dependencies during the build phase. See
 # https://trac.macports.org/ticket/61192
-build.env-delete    GOPROXY=off GO111MODULE=off
+go.offline_build no
 
 build.cmd           make
 build.pre_args-append \

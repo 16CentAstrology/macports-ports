@@ -9,8 +9,8 @@ PortGroup       legacysupport 1.0
 PortGroup       muniversal 1.0
 
 name            gnutls
-version         3.6.16
-revision        4
+version         3.7.11
+revision        1
 categories      devel security
 # yes, some of the libs are GPL only
 license         LGPL-2.1+ GPL-3+
@@ -23,53 +23,31 @@ long_description \
                 Lesser General Public License (LGPL).
 homepage        http://www.gnutls.org/
 
-checksums       rmd160  d6bc8751c569db6033234c810b45eb661f77b4b4 \
-                sha256  1b79b381ac283d8b054368b335c408fedcb9b7144e0c07f531e3537d4328f3b3 \
-                size    5639992
+checksums       rmd160  b8a3b948b2cfd504f72e04a31fce31a79b4316b1 \
+                sha256  90e337504031ef7d3077ab1a52ca8bac9b2f72bc454c95365a1cd1e0e81e06e9 \
+                size    6406420
 
 subport ${name} {
     conflicts   ${name}-devel
 
-    if {${os.platform} eq "darwin" && ${os.major} > 19 && ${os.arch} eq "arm"} {
-        depends_build-append    port:libtool
-
-        # See: https://gitlab.com/gnutls/gnutls/-/issues/1317
-        patchfiles-append       patch-lib-accelerated-aarch64-Makefile.am.diff
-
-        use_autoreconf          yes
-        autoreconf.args         --install --verbose --force
-        configure.checks.implicit_function_declaration.whitelist-append strchr
-
-        pre-configure {
-            xinstall -m 644 -W ${prefix}/share/libtool/build-aux config.guess config.sub ${worksrcpath}
-        }
-    }
+    patchfiles  patch-lib-system-certs.c.old.diff
 }
 
 subport ${name}-devel {
     conflicts   ${name}
-    
-    version     3.7.8
-    revision    1
 
-    checksums   rmd160  e2ff056cda2293287ca28a2e0665daa22f951860 \
-                sha256  c58ad39af0670efe6a8aee5e3a8b2331a1200418b64b7c51977fb396d4617114 \
-                size    6029220
+    version     3.8.9
+    revision    0
 
-    # Note: configure script detects zstd, but flags it as missing anyway
-    configure.args-append \
-                --disable-dependency-tracking \
-                --disable-heartbeat-support \
-                --without-brotli \
-                --without-zstd
+    checksums   rmd160  4c8333aa2bd9d611a134ed39c0130782abdb5995 \
+                sha256  69e113d802d1670c4d5ac1b99040b1f2d5c7c05daec5003813c049b5184820ed \
+                size    6847364
 
-    variant brotli description {Build brotli support} {
-        depends_lib-append \
-                port:brotli
-                
-        configure.args-delete \
-                --without-brotli 
-    }
+   depends_lib-append \
+                port:brotli \
+                port:zstd
+
+    patchfiles  patch-lib-system-certs.c.diff
 }
 
 if {${build_arch} ne "ppc" || ${build_arch} ne "ppc64"} {
@@ -95,7 +73,6 @@ conflicts_build autogen
 
 depends_build-append \
                 port:gettext \
-                port:gtk-doc \
                 port:pkgconfig
 
 depends_lib-append \
@@ -108,7 +85,7 @@ depends_lib-append \
                 port:nettle \
                 port:zlib
 
-patchfiles      patch-lib-system-certs.c.diff \
+patchfiles-append \
                 implicit.patch
 
 post-patch {
@@ -117,16 +94,52 @@ post-patch {
 }
 
 configure.args-append \
-                --disable-guile \
+                --disable-dependency-tracking \
+                --disable-doc \
+                --disable-heartbeat-support \
                 --disable-libdane \
                 --disable-silent-rules \
                 --disable-static \
-                --enable-local-libopts \
+                --enable-manpages \
                 --enable-openssl-compatibility \
                 --with-p11-kit \
                 --with-system-priority-file="${prefix}/etc/gnutls/default-priorities" \
                 --with-default-trust-store-pkcs11=pkcs11: \
                 ac_cv_prog_AWK=/usr/bin/awk
+
+subport ${name} {
+    # Note: configure script detects zstd, but flags it as missing anyway
+    # the guile variant is only available for gnutls
+    configure.args-append \
+                --without-brotli \
+                --disable-guile \
+                --without-zstd \
+
+    variant brotli description {Build brotli support} {
+        depends_lib-append \
+                port:brotli
+
+        configure.args-delete \
+                --without-brotli
+    }
+
+    variant guile description {Build guile-2.2 bindings} {
+    # there currently is a build issue with the guile variant
+    # the workaround is to first install guile w/o guile and then with +guile
+        depends_lib-append      port:guile-2.2
+        configure.args-replace  --disable-guile --enable-guile
+        # It should not be this hard :/
+        configure.env-append    guile_snarf=${prefix}/bin/guile-snarf-2.2
+        configure.env-append    GUILD=${prefix}/bin/guild-2.2
+        configure.env-append    GUILE=${prefix}/bin/guile-2.2
+        configure.env-append    GUILE_CONFIG=${prefix}/bin/guile-config-2.2
+        configure.env-append    GUILE_TOOLS=${prefix}/bin/guile-tools-2.2
+        configure.env-append    GUILE_EFFECTIVE_VERSION=2.2
+    }
+}
+
+# https://trac.macports.org/wiki/WimplicitFunctionDeclaration#strchr
+configure.checks.implicit_function_declaration.whitelist-append strchr
 
 compiler.thread_local_storage yes
 
@@ -150,6 +163,14 @@ variant dane description {Build libdane using unbound libraries} {
     configure.args-delete   --disable-libdane
 }
 
+variant docs description {Install supplemental developer documentation} {
+    depends_build-append \
+                port:gtk-doc
+
+    configure.args-delete \
+                --disable-doc
+}
+
 # as of r120660 (#43881) unbound installs its root key file at ${prefix}/var/run/unbound/root.key
 # the following may be superfluous
 
@@ -164,13 +185,6 @@ if {[variant_isset dane] && ![file exists ${prefix}/var/run/unbound/root.key]} {
 *** to generate or update it.
 ***
 "
-}
-
-variant guile description {Build guile bindings} {
-# there currently is a build issue with the guile variant
-# the workaround is to first install guile w/o guile and then with +guile
-    depends_lib-append      port:guile
-    configure.args-replace  --disable-guile --enable-guile
 }
 
 if {${universal_possible} && [variant_isset universal]} {

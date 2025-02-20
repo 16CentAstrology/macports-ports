@@ -10,7 +10,6 @@ if { ${os.platform} eq "darwin" && ${os.major} >= 20 && ${build_arch} eq "x86_64
 
 }
 
-PortGroup           xcodeversion 1.0
 PortGroup           gitlab 1.0
 PortGroup           legacysupport 1.1
 
@@ -37,14 +36,12 @@ homepage            https://cmake.org
 platforms           darwin freebsd
 gitlab.instance     https://gitlab.kitware.com
 
-gitlab.setup        cmake   cmake e2be23a2b39f4380f32fe65ba770addc154579c7
-version             20230119-3.25.2-[string range ${gitlab.version} 0 7]
-checksums           rmd160  e1b90c8d5f2ba6a9a2126dfc8f8dc740c186e7da \
-                    sha256  dc59648f4867623d2ee1229adbd0545e9a3b821f3dfcbf3277b0f7f1741764bf \
-                    size    8068040
+gitlab.setup        cmake   cmake 41abd532b64f178017ed4ffdbdb5af42d9056a8d
+version             20241219-3.31.3-[string range ${gitlab.version} 0 7]
+checksums           rmd160  8459340608370d5809bf705bcad6e49098a92a4c \
+                    sha256  a1560568c1c2a3593acc723cfc19399912c360f182dc6543939cdc41506efd9a \
+                    size    8931779
 revision            0
-
-# switched from "3.23.0" to "date-ver-hash"
 epoch               1
 
 dist_subdir         ${my_name}
@@ -70,7 +67,6 @@ long_description ${base_long_description} \
     The ${subport} release port is updated roughly every few months.
 
 patchfiles-append \
-    patch-Modules-noArchCheck.diff \
     patch-CMakeFindFrameworks.cmake.diff \
     patch-Source_Modules_FindLibUV.cmake.diff \
     patch-fix_cxx14_17_checks.diff \
@@ -79,7 +75,14 @@ patchfiles-append \
     patch-fix-clock_gettime-test.diff \
     patch-qt5gui.diff \
     patch-cmake-cmInstallRuntime-initializer-fix.diff \
-    patch-uv_spawn.diff
+    patch-libuv-legacy-systems.diff \
+    patch-cmakeroot-with-app.diff \
+    patch-remove-homebrew-references.diff
+
+platform darwin 8 {
+    # Tiger doesn't have _DARWIN_C_SOURCE macro so have to disable _POSIX_C_SOURCE instead
+    patchfiles-append patch-cmake-3290-posixcsource.diff
+}
 
 depends_lib-append \
     port:curl \
@@ -87,8 +90,7 @@ depends_lib-append \
     port:zlib \
     port:bzip2 \
     port:libarchive \
-    port:ncurses \
-    port:libuv
+    port:ncurses
 
 # configure is just a shell script that passes directly to bootstrap
 configure.cmd ./bootstrap
@@ -136,6 +138,23 @@ platform darwin {
         configure.cxxflags-append \
             -D_DARWIN_C_SOURCE
     }
+
+    if { ${os.major} == 8 } {
+        # prevent conflicting opentransport header from being pulled in
+        configure.cxxflags-append -D__OPENTRANSPORTPROVIDERS__
+    }
+
+}
+
+if {[string match *gcc* ${configure.compiler}]} {
+    # Utilities/cmlibuv/src/unix/fs.c:562:57: error: passing argument 4 of 'scandir'
+    # from incompatible pointer type [-Wincompatible-pointer-types]
+    configure.cflags-append \
+        -Wno-error=incompatible-pointer-types
+
+    # https://trac.macports.org/ticket/67943
+    configure.ldflags-append \
+        -latomic
 }
 
 # jsoncpp 1.0+ requires CMake for building; circular dependencies
@@ -152,7 +171,9 @@ configure.args-append \
     --system-libs \
     --no-qt-gui \
     --no-system-jsoncpp \
-    --no-system-librhash
+    --no-system-librhash \
+    --no-system-libuv \
+    --no-system-cppdap
 
 configure.universal_args
 
@@ -184,7 +205,8 @@ post-patch {
     # patch PREFIX
     reinplace "s|__PREFIX__|${prefix}|g" \
         ${worksrcpath}/macports.cmake \
-        ${worksrcpath}/Modules/Platform/Darwin.cmake
+        ${worksrcpath}/Modules/Platform/Darwin.cmake \
+        ${worksrcpath}/Source/cmSystemTools.cxx
 
     # patch FRAMEWORKS
     reinplace "s|__FRAMEWORKS_DIR__|${frameworks_dir}|g" \
@@ -256,14 +278,17 @@ subport ${subport_docs} {
     description \
         CMake Documentation
     long_description \
-        "${description}"
+        {*}${description}
+
+    platforms       any
+    supported_archs noarch
 
     post-patch {
         reinplace "s|__PYTHON_VERSION_WITH_DOT__|${PYTHON_VERSION_WITH_DOT}|g" ${worksrcpath}/macports.cmake
     }
 
     # Supported pythons
-    set python_versions {35 36 37 38 39}
+    set python_versions {38 39 310 311 312}
 
     # declare all +python* variants, with conflicts
     foreach pyver ${python_versions} {
@@ -297,7 +322,7 @@ subport ${subport_docs} {
     # set default +python* variant if none were already selected
     if {!${python_isset}} {
         set python_isset true
-        default_variants +python39
+        default_variants +python312
     }
 
     # make sure one of the +python* variants is set
@@ -349,14 +374,23 @@ subport ${subport_docs} {
             ui_info "${subport}: deleting dir: ${d}"
             delete ${d}
         }
+
+        # installed by the cmake-gui port
+        delete ${destroot}${prefix}/share/doc/cmake
+
     }
 }
 
 if {${subport} eq ${name}} {
     notes "\
-        The CMake Gui and Docs are now provided as subports '${subport_gui}' and '${subport_docs}', respectively.
+        The CMake GUI and Docs are now provided as subports '${subport_gui}' and '${subport_docs}', respectively.
     "
-}
 
-# Ignore RC versions
-gitlab.livecheck.regex  {([0-9.]+)}
+    test.run                yes
+    test.target             test
+
+    # Ignore RC versions
+    gitlab.livecheck.regex  {([0-9.]+)}
+} else {
+    livecheck.type          none
+}

@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/infracost/infracost 0.10.16 v
+go.setup            github.com/infracost/infracost 0.10.39 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -22,12 +23,9 @@ license             Apache-2
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  e859ccc2938b2cf7cc876a13d0802442b6a02626 \
-                    sha256  414370ae48d95d3d9d46ef37a09e3d2d695b02497d970d1b74ea85e8c822ca3c \
-                    size    1531470
-
-# Allow Go to fetch deps at build time
-build.env-delete    GO111MODULE=off GOPROXY=off
+checksums           rmd160  8d6700eee6793aa54236d557e508e8143c20c036 \
+                    sha256  9d32bdbc0fee88d327046cbd39c3fd8f2991a06f571b1f416d429849f5dfc985 \
+                    size    1765244
 
 build.cmd           make
 build.pre_args      VERSION=v${version}
@@ -50,4 +48,7 @@ destroot {
     xinstall -m 0755 \
         ${worksrcpath}/build/${name}-darwin-${goarch} \
         ${destroot}${prefix}/bin/${name}
+
+    xinstall -d ${destroot}${prefix}/share/${name}
+    copy ${worksrcpath}/examples ${destroot}${prefix}/share/${name}/
 }

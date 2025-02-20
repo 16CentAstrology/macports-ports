@@ -3,7 +3,7 @@
 PortSystem          1.0
 
 name                dart-sdk
-version             2.19.0
+version             3.7.0
 categories          lang
 license             BSD
 maintainers         {amake @amake} openmaintainer
@@ -12,7 +12,7 @@ long_description    Dart is an open-source, scalable programming language, \
                     with robust libraries and runtimes, for building web, \
                     server, and mobile apps.
 
-platforms           darwin
+platforms           {darwin any}
 supported_archs     x86_64 arm64
 
 homepage            https://dart.dev/
@@ -25,14 +25,14 @@ worksrcdir          ${name}
 
 if {${configure.build_arch} eq "x86_64"} {
     distname     dartsdk-macos-x64-release
-    checksums    rmd160  c7008a185db43b9dd955f4d25b788e4b248c1f64 \
-                 sha256  2163b8a6bd5be8d54036335204a357f9568068b6276dccf7b7c22a732bc973c1 \
-                 size    217745406
+    checksums    rmd160  a8a8a756152ad764f7dbf0166c92e93aa44ebc67 \
+                 sha256  d601c9da420552dc6deba1992d07aad9637b970077d58c5cda895baebc83d7f5 \
+                 size    216502720
 } elseif {${configure.build_arch} eq "arm64"} {
     distname     dartsdk-macos-arm64-release
-    checksums    rmd160  1ff99484b268a05ab04d63e47f310dd5c1ec7cab \
-                 sha256  69d0611f528d77aa2a090d34021511f8bf4c441a96e0fcecfc046a2bce5c0ac5 \
-                 size    201019646
+    checksums    rmd160  6d8226030008aa3ae002efcf90b3c99c2eebfeea \
+                 sha256  9bfd7c74ebc5f30b5832dfcf4f47e5a3260f2e9b98743506c67ad02b3b6964bb \
+                 size    214701365
 }
 
 use_configure       no

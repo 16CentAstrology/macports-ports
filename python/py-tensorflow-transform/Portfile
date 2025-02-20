@@ -5,6 +5,8 @@ PortGroup           github 1.0
 PortGroup           python 1.0
 
 github.setup        tensorflow transform 0.28.0 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 revision            0
 name                py-${github.author}-${github.project}
 
@@ -22,7 +24,7 @@ checksums           rmd160  d44dc16ce2555ac6e6820eb05b43057a19fb80da \
                     sha256  116037bc29c4d58ccab4e27d967fbbfc99588f32c0ffa6e1345b6dd846a9cbb8 \
                     size    343167
 
-python.versions     37 38 39
+python.versions     39
 
 if {${name} ne ${subport}} {
     depends_build-append \

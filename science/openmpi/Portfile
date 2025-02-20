@@ -20,12 +20,11 @@ PortGroup           mpiutil 1.0
 #===============================================================================
 
 name                openmpi
-version             4.1.4
-revision            0
+version             5.0.6
+revision            1
 
 license             BSD
 categories          science parallel net
-platforms           darwin
 maintainers         {mascguy @mascguy}
 
 description         Message Passing Interface (MPI) Library
@@ -42,15 +41,14 @@ set branch          [join [lrange [split ${version} .] 0 1] .]
 set subdir          ompi/v${branch}/downloads/
 master_sites        https://www.open-mpi.org/software/${subdir}
 
-checksums           rmd160  b156f9f4084bb29b5835384ed82cb7c45d8ce22c \
-                    sha256  92912e175fd1234368c8730c03f4996fe5942e7479bb1d10059405e7f2b3930d \
-                    size    10042839
+checksums           rmd160  f6a36485831acce449c434ab8b3c65c715c70fb3 \
+                    sha256  bd4183fcbc43477c254799b429df1a6e576c042e74a2d2f8b37d537b2ff98157 \
+                    size    30331784
 
 use_bzip2           yes
 
-livecheck.type      regex
-livecheck.url       https://www.open-mpi.org/
-livecheck.regex     Open MPI v(\[0-9\.\]+) released
+# Disable livecheck for all subports; only enabled for main port, at end of portfile
+livecheck.type      none
 
 #-------------------------------------------------------------------------------
 # Target Compiler Logic
@@ -72,10 +70,17 @@ dict set clist gcc7    {macports-gcc-7}
 dict set clist gcc10   {macports-gcc-10}
 dict set clist gcc11   {macports-gcc-11}
 dict set clist gcc12   {macports-gcc-12}
+dict set clist gcc13   {macports-gcc-13}
+dict set clist gcc14   {macports-gcc-14}
 dict set clist clang11 {macports-clang-11}
 dict set clist clang12 {macports-clang-12}
 dict set clist clang13 {macports-clang-13}
 dict set clist clang14 {macports-clang-14}
+dict set clist clang15 {macports-clang-15}
+dict set clist clang16 {macports-clang-16}
+dict set clist clang17 {macports-clang-17}
+dict set clist clang18 {macports-clang-18}
+dict set clist clang19 {macports-clang-19}
 
 # Only enable Xcode clang builds for MacOS 10.7 and later
 if { ${os.major} >= 11 } {
@@ -102,14 +107,6 @@ if { ${os.major} >= 10 && ${os.major} <= 14 } {
         gcc9
 }
 
-# Clang 15 only available on 10.7 and later
-if {${os.major} >= 11} {
-    dict set clist clang15 {macports-clang-15}
-} else {
-    lappend clist_unsupported \
-        clang15
-}
-
 #-------------------------------------------------------------------------------
 # Subport Creation/Validation
 #-------------------------------------------------------------------------------
@@ -130,6 +127,10 @@ set subport_enabled \
 #-------------------------------------------------------------------------------
 # General Subport Logic
 #-------------------------------------------------------------------------------
+
+if {[string match {*-clang1[3-6]} ${subport}]} {
+    platforms {darwin >= 11}
+}
 
 if {${subport_enabled}} {
     PortGroup select 1.0
@@ -168,13 +169,13 @@ if {${subport_enabled}} {
     # Starting with Clang 8.0, version was included in other standard header files (https://reviews.llvm.org/D51955).
     # With a case-insensitive file system, VERSION is used instead of version.
     # This is an ugly workaround.
-    patchfiles-append   patch-configure.diff
+#    patchfiles-append   patch-configure.diff
 
     configure.dir       ${workpath}/build
     configure.cmd       ${worksrcpath}/configure
     configure.args      --disable-mpi-fortran \
-                        --enable-mpi-cxx \
                         "FFLAGS='' F77=''"
+#    configure.args-append --enable-mpi-cxx
 
     # remove -arch from ldflags, ticket #22833
     configure.ld_archflags
@@ -191,7 +192,6 @@ if {${subport_enabled}} {
 
     select.group                mpi
     select.file                 ${filespath}/portselect/${name}-${cname}
-    livecheck.type              none
 
     if {${cname} ne "mp"} {
         set compiler            [dict get ${clist} ${cname}]
@@ -206,6 +206,7 @@ if {${subport_enabled}} {
     }
 
     configure.args-append   \
+        --disable-silent-rules \
         --bindir=${prefix}/libexec/${name}-${cname} \
         --libdir=${prefix}/lib/${name}-${cname} \
         --sysconfdir=${prefix}/etc/${name}-${cname} \
@@ -389,4 +390,8 @@ if {${subport_enabled}} {
     PortGroup               stub 1.0
 
     depends_lib-append      port:${name}-default
+
+    livecheck.type          regex
+    livecheck.url           https://www.open-mpi.org/
+    livecheck.regex         Open MPI v(\[0-9\.\]+) released
 }

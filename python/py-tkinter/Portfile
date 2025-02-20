@@ -15,7 +15,7 @@ long_description \
 
 homepage        https://docs.python.org/library/tkinter.html
 
-python.versions 26 27 32 33 34 35 36 37 38 39 310 311
+python.versions 26 27 32 33 34 35 36 37 38 39 310 311 312
 
 set extract_files [list Modules/_tkinter.c Modules/tkappinit.c]
 set module_name tkinter
@@ -88,48 +88,66 @@ subport py36-tkinter {
 }
 subport py37-tkinter {
     maintainers {jmr @jmroot}
-    version     3.7.16
+    version     3.7.17
     revision    0
     homepage    https://docs.python.org/release/${version}/library/tkinter.html
-    checksums   md5 df3b8ad6e2ab8f198d65ecf68816bf42 \
-                rmd160 e731263101e091914068e41e94cb7b5e2148b416 \
-                sha256 8338f0c2222d847e904c955369155dc1beeeed806e8d5ef04b00ef4787238bfd
+    checksums   md5 dd94cab4541b57b88cf3dab32d6336e3 \
+                rmd160 4dc4fb8286e8550da79a610ecb3a161757cf0886 \
+                sha256 7911051ed0422fd54b8f59ffc030f7cf2ae30e0f61bda191800bb040dce4f9d2
 }
 subport py38-tkinter {
     maintainers nomaintainer
-    version     3.8.16
+    version     3.8.20
     revision    0
     homepage    https://docs.python.org/release/${version}/library/tkinter.html
-    checksums   md5 621ac153586a3152e2ab7d3a8614df9a \
-                rmd160 25947fe421ca5a3d6d0b6edbd7233ef3700119b6 \
-                sha256 d85dbb3774132473d8081dcb158f34a10ccad7a90b96c7e50ea4bb61f5ce4562
+    checksums   md5 745478c81d6382cf46b5e7ad89e56008 \
+                rmd160 1d03db4e018f2133f2b279a3a44f0c7c759c50cf \
+                sha256 6fb89a7124201c61125c0ab4cf7f6894df339a40c02833bfd28ab4d7691fafb4
 }
 subport py39-tkinter {
     maintainers {jmr @jmroot}
-    version     3.9.16
+    version     3.9.21
     revision    0
     homepage    https://docs.python.org/release/${version}/library/tkinter.html
-    checksums   md5 5738c204eecc375e29751cb2176fc9cc \
-                rmd160 2620290222929bb5eebacaf0eda8fffd4b4b9266 \
-                sha256 22dddc099246dd2760665561e8adb7394ea0cc43a72684c6480f9380f7786439
+    checksums   md5 e8ab0f9a295f12428310f409abd79e9c \
+                rmd160 7f33e270e3c57f3af432303c0e903a3408a35444 \
+                sha256 3126f59592c9b0d798584755f2bf7b081fa1ca35ce7a6fea980108d752a05bb1
 }
 subport py310-tkinter {
     maintainers {jmr @jmroot}
-    version     3.10.9
+    version     3.10.16
     revision    0
     homepage    https://docs.python.org/release/${version}/library/tkinter.html
-    checksums   md5 dc8c0f274b28ee9e95923d20cfc364c9 \
-                rmd160 af6e8731453b8b63a48a424a710a1475ab9c3ab7 \
-                sha256 5ae03e308260164baba39921fdb4dbf8e6d03d8235a939d4582b33f0b5e46a83
+    checksums   md5 97b3ee1740f32a92905dd0a99dcb04d5 \
+                rmd160 484e369963b307c1cb6eb357a1736cd3f112c13a \
+                sha256 bfb249609990220491a1b92850a07135ed0831e41738cf681d63cf01b2a8fbd1
 }
 subport py311-tkinter {
     maintainers {jmr @jmroot}
-    version     3.11.1
+    version     3.11.11
     revision    0
     homepage    https://docs.python.org/release/${version}/library/tkinter.html
-    checksums   md5 4efe92adf28875c77d3b9b2e8d3bc44a \
-                rmd160 b229782369ad5e8b9c73354911dd1346eb70c43e \
-                sha256 85879192f2cffd56cb16c092905949ebf3e5e394b7f764723529637901dfb58f
+    checksums   md5 3e497037b170fe4be5f462c4964596f2 \
+                rmd160 f855fd3d01fa8e1cb6839985280a8b6db1954242 \
+                sha256 2a9920c7a0cd236de33644ed980a13cbbc21058bfdc528febb6081575ed73be3
+}
+subport py312-tkinter {
+    maintainers {jmr @jmroot}
+    version     3.12.9
+    revision    0
+    homepage    https://docs.python.org/release/${version}/library/tkinter.html
+    checksums   md5 880942124f7d5c01e7b65cbad62dc873 \
+                rmd160 121aa158e340e0a0061dc39614fccad014a6a6cd \
+                sha256 7220835d9f90b37c006e9842a8dff4580aaca4318674f947302b8d28f3f81112
+}
+subport py313-tkinter {
+    maintainers {jmr @jmroot}
+    version     3.13.2
+    revision    0
+    homepage    https://docs.python.org/release/${version}/library/tkinter.html
+    checksums   md5 4c2d9202ab4db02c9d0999b14655dfe5 \
+                rmd160 a8313c1cd989d2ff5a9007d48dc15875c0fa2ef0 \
+                sha256 d984bcc57cd67caab26f7def42e523b1c015bbc5dc07836cf4f0b63fa159eb56
 }
 
 master_sites    https://www.python.org/ftp/python/${version}/
@@ -143,6 +161,13 @@ if {${name} ne ${subport}} {
     dist_subdir python${python.version}
 
     worksrcdir  ${worksrcdir}/Modules
+
+    if {${python.version} >= 312} {
+        compiler.c_standard 2011
+        set extra_cflags \"-std=c11\"
+    } else {
+        set extra_cflags ""
+    }
 
     if {${python.version} >= 37} {
         python.pep517   yes
@@ -180,6 +205,8 @@ if {${name} ne ${subport}} {
         reinplace "s|__PREFIX__|${prefix}|" ${worksrcpath}/setup.py
         reinplace "s|__TK-VERSION__|8.6|" ${worksrcpath}/setup.py
         if {[file exists ${worksrcpath}/pyproject.toml]} {
+            reinplace "s|__EXTRA_CFLAGS__|${extra_cflags}|" ${worksrcpath}/setup.py
+            reinplace "s|__PYTHON_INCDIR__|${python.include}|" ${worksrcpath}/setup.py
             reinplace "s|__MODULE_NAME__|${module_name}|" ${worksrcpath}/pyproject.toml
             reinplace "s|__VERSION__|${version}|" ${worksrcpath}/pyproject.toml
         } else {

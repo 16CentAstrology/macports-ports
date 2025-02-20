@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           R 1.0
 
-R.setup             github r-lib ps 1.7.2 v
+R.setup             github r-lib ps 1.8.1 v
 revision            0
 categories-append   sysutils
 maintainers         {@barracuda156 gmail.com:vital.had} openmaintainer
@@ -12,12 +12,31 @@ description         R package to query, list and manipulate system processes
 long_description    ps implements an API to query and manipulate system processes. \
                     Most of its code is based on the psutil Python package.
 homepage            https://ps.r-lib.org
-checksums           rmd160  5812db339dbceccc75b2fff17737b4df6cba099b \
-                    sha256  bd872ec2b8ba863c4f18d179653256cc9e4a66bc1ef5162afd912a92dea20c6e \
-                    size    131072
+checksums           rmd160  f6b45bd45ceb3f8c087dbb1f396e918e4be9da43 \
+                    sha256  944f05c8e0d09d1c67eda14d8974b1f128ff714079453bda1c228ca407b9de56 \
+                    size    169437
+github.tarball_from archive
 
-patch.pre_args      -p1
-patchfiles          0001-api-macos.c-fix-missing-stdbool.patch
+if {[string match *gcc* ${configure.compiler}]} {
+    # gcc requires specific ObjC standard to compile this code:
+    patchfiles-append \
+                    0001-arch-macos-apps.m-fix-compilation-with-gcc.patch
+}
 
 configure.env-append \
                     RBIN=${r.cmd}
+
+depends_test-append port:R-callr \
+                    port:R-covr \
+                    port:R-curl \
+                    port:R-pillar \
+                    port:R-pingr \
+                    port:R-processx \
+                    port:R-R6 \
+                    port:R-rlang \
+                    port:R-testthat \
+                    port:R-webfakes \
+                    port:R-withr
+
+# FIXME: some tests fail on older macOS: https://github.com/r-lib/ps/issues/137
+test.run            yes

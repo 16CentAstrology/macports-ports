@@ -3,9 +3,11 @@
 PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           python 1.0
-PortGroup           gpg_verify 1.0
 
-github.setup        kovidgoyal kitty 0.26.5 v
+# TODO: Test port on the macOS 10.12 - macOS 10.15. Because kitty replaces the
+# librsync with libxxhash, new versions can work
+# correctly again.
+github.setup        kovidgoyal kitty 0.39.1 v
 github.tarball_from releases
 revision            0
 
@@ -21,9 +23,9 @@ homepage            https://sw.kovidgoyal.net/kitty/
 use_xz              yes
 
 checksums           ${distfiles} \
-                    rmd160  cef101eb7c55b9ba9b44ede6279c80307ab94c4d \
-                    sha256  5544a580314fec7711187ce28162909b5ecff6780071444fe96fb97f8be5c9ad \
-                    size    4749988
+                    rmd160  3d850097e56100e7362cea2433502e620d46c7ad \
+                    sha256  4baa2a59de7569b3b34f44ea8536c53d312aa76d1347121a2d6557abfde21325 \
+                    size    8942308
 
 if {${os.major} <= 15} {
     # See https://github.com/kovidgoyal/kitty/issues/2700
@@ -43,21 +45,25 @@ if {${os.major} <= 15} {
 }
 
 patchfiles-append   patch-kitty-no-deprecated-declarations.diff
+patchfiles-append   patch-kitty-incorrect-prefix-in-arm-neon-vshrn-intrinsic.diff
 
 python.default_version \
-                    310
+                    313
 
 depends_build-append \
                     path:lib/pkgconfig/librsvg-2.0.pc:librsvg \
+                    port:go \
                     port:ncurses \
                     port:optipng \
-                    port:pkgconfig
+                    port:pkgconfig \
+                    port:ttf-nerd-fonts-symbols
 
 depends_lib-append  \
                     path:lib/pkgconfig/harfbuzz.pc:harfbuzz \
                     port:lcms2 \
                     port:libpng \
-                    port:librsync \
+                    port:simde \
+                    port:xxhashlib \
                     port:zlib
 
 build.cmd           "${python.bin} setup.py"
@@ -68,6 +74,8 @@ build.args-append   --ignore-compiler-warnings \
 compiler.c_standard 2011
 
 pre-build {
+    ln -s ${prefix}/share/fonts/ttf-nerd-fonts-symbols/ \
+        ${worksrcpath}/fonts
     system -W ${worksrcpath} "${python.bin} logo/make.py"
 }
 
@@ -82,20 +90,35 @@ destroot {
         ${destroot}${terminfo_path}
 
     # add shell completion files
+    set shell-integration \
+        ${applications_dir}/kitty.app/Contents/Resources/kitty/shell-integration
+
     set bash_complete ${prefix}/share/bash-completion/completions
     xinstall -d ${destroot}${bash_complete}
-    exec ${python.bin} ${worksrcpath}/__main__.py + complete setup bash >> \
+    ln -s ${shell-integration}/bash/kitty.bash \
         ${destroot}${bash_complete}/kitty
 
     set zsh_complete ${prefix}/share/zsh/site-functions
     xinstall -d ${destroot}${zsh_complete}
-    exec ${python.bin} ${worksrcpath}/__main__.py + complete setup zsh >> \
+    ln -s ${shell-integration}/zsh/completions/_kitty \
         ${destroot}${zsh_complete}/_kitty
 
     set fish_complete ${prefix}/share/fish/vendor_completions.d
     xinstall -d ${destroot}${fish_complete}
-    exec ${python.bin} ${worksrcpath}/__main__.py + complete setup fish >> \
+    ln -s ${shell-integration}/fish/vendor_completions.d/kitty.fish \
         ${destroot}${fish_complete}/kitty.fish
+    ln -s ${shell-integration}/fish/vendor_completions.d/kitten.fish \
+        ${destroot}${fish_complete}/kitten.fish
+}
+
+post-destroot {
+    platform darwin {
+        if {${os.major} >= 22} {
+            system -W ${destroot}${applications_dir} "/usr/bin/codesign --force -s - kitty.app/Contents/MacOS/kitten"
+            system -W ${destroot}${applications_dir} "/usr/bin/codesign --force -s- kitty.app/Contents/MacOS/kitty"
+            system -W ${destroot}${applications_dir} "/usr/bin/codesign --force -s - kitty.app"
+        }
+    }
 }
 
 # SSL error on running "kitty +kitten themes"

@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-soupsieve
-version             2.3.2.post1
+version             2.6
 revision            0
 license             MIT
 maintainers         {mps @Schamschula} openmaintainer
@@ -18,15 +18,13 @@ supported_archs     noarch
 platforms           {darwin any}
 homepage            https://github.com/facelessuser/soupsieve
 
-checksums           rmd160  8d249df63c5ed6e229cced47bdff774021c9179a \
-                    sha256  fc53893b3da2c33de295667a0e19f078c14bf86544af307354de5fcf12a3f30d \
-                    size    102814
+checksums           rmd160  065e2b00d97983c8a44cccaa071ad271154ebd19 \
+                    sha256  e2e68417777af359ec65daac1057404a3c8a5455bb8abc36f1a9866ab1a51abb \
+                    size    101569
 
-python.versions     36 37 38 39 310 311
-
+python.versions     36 37 38 39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    python.pep517           yes
     python.pep517_backend   hatch
 
     if {${python.version} == 36} {

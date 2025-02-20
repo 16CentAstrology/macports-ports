@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-pypdf
-version             3.2.1
+version             5.3.0
 revision            0
 
 categories-append   devel
@@ -23,16 +23,15 @@ long_description    A Pure-Python PDF toolkit. It is capable of \
 
 homepage            https://github.com/py-pdf/pypdf
 
-checksums           rmd160  2822d24fcdfc82c7664df845011fc596703ae76b \
-                    sha256  ac6bcd4492b55c95f58f7e3a6e8e113588244bdfb21c8ee60da6db399725b8dd \
-                    size    234580
+checksums           rmd160  a43b13075402e51e7f54eff50e936adb0c55cfbc \
+                    sha256  08393660dfea25b27ec6fe863fb2f2248e6270da5103fae49e9dea8178741951 \
+                    size    5024226
 
-python.versions     37 38 39 310 311
-python.pep517       yes
+python.versions     39 310 311 312 313
 python.pep517_backend   flit
 
 if {${name} ne ${subport}} {
-    if {${python.version} < 310} {
+    if {${python.version} < 311} {
         depends_lib-append \
                     port:py${python.version}-typing_extensions
     }
@@ -42,4 +41,12 @@ if {${name} ne ${subport}} {
         xinstall -m 0644 -W ${worksrcpath} CHANGELOG.md LICENSE README.md \
             ${destroot}${prefix}/share/doc/${subport}
     }
+
+    depends_test-append \
+                    port:py${python.version}-pytest-timeout \
+                    port:py${python.version}-yaml
+    test.run        yes
+
+    # Don't run tests that rely on test data not included in the distfile.
+    test.args       -o addopts="-m 'not enable_socket and not samples'"
 }

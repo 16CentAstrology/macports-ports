@@ -6,11 +6,10 @@ PortGroup           python 1.0
 name                py-awscrt
 # This is only used by awscli2. Bump when Amazon bumps
 # their pinned version in awscli2's setup.cfg.
-version             0.16.4
+version             0.23.8
 revision            0
 
 categories-append   devel
-platforms           darwin
 maintainers         {gmail.com:davidgilman1 @dgilman} openmaintainer
 license             Apache-2
 
@@ -19,23 +18,25 @@ long_description    {*}${description}
 
 homepage            https://aws.amazon.com/cli/
 
-checksums           rmd160  857913e0858f5f396c065b91e20ebab8cdbb231e \
-                    sha256  65f7e7555aa2ede7e49eab5b24561299faddadf899e0b5b7f17e54d34a95188c \
-                    size    21852447
+checksums           rmd160  475537bce85d14c773cad867a6109048ba24577d \
+                    sha256  cba55f3ee80ea3192a0a24e84caad778570250800a59d29ef9efbcd4d1612f2f \
+                    size    77078798
 
-python.versions     38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    if {${os.platform} eq "darwin" && ${os.major} <= 15} {
+    if {${os.platform} eq "darwin" && ${os.major} <= 18} {
         known_fail      yes
         pre-fetch {
-            ui_error "${name} @${version} requires macOS 10.12 or later."
+            ui_error "${name} @${version} requires macOS 10.15 or later."
             return -code error "incompatible macOS version"
         }
     }
 
     depends_build-append \
-                        path:bin/cmake:cmake
+                        path:bin/cmake:cmake \
+                        port:py${python.version}-wheel
+
     depends_lib-append  port:py${python.version}-setuptools
 
     livecheck.type      none

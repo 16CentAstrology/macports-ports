@@ -5,7 +5,7 @@ PortGroup           python 1.0
 PortGroup           select 1.0
 
 name                py-awscli
-version             1.27.56
+version             1.35.17
 revision            0
 
 categories          python devel
@@ -19,11 +19,11 @@ long_description    {*}${description}
 
 homepage            https://aws.amazon.com/cli/
 
-checksums           rmd160  e02e7f7b4c231df4ad08fb7509356527a95f6f3a \
-                    sha256  58fd7122547db71646c053c914bd4f9b673356dd8c9520ae6d35560a8aec208b \
-                    size    1632740
+checksums           rmd160  d77ebe21e571f9dbe3c3f918eee90bdd513e318c \
+                    sha256  9469a1924c6987dd0553ad0d0fd2a37717d0f7b55104e99f5789d3678c9706c4 \
+                    size    1825595
 
-python.versions     39 310 311
+python.versions     39 310 311 312
 
 if {${name} ne ${subport}} {
     conflicts           py${python.version}-awscli2
@@ -81,7 +81,7 @@ port select --set ${select.group} [file tail ${select.file}]
 If you use a plugin in your ~/.aws/config, it must be installed. For example,
 Wasabi for S3 uses the awscli_plugin_endpoint plugin. Just install it:
 
-port install py${python.version}-awscli_plugin_endpoint
+port install py${python.version}-awscli-plugin-endpoint
 
 If your plugin is not in MacPorts, you can install it using the
 py${python.version}-pip port, for example:

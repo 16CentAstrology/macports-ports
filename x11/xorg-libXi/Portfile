@@ -3,7 +3,7 @@
 PortSystem      1.0
 
 name            xorg-libXi
-version         1.7.10
+version         1.8.2
 revision        0
 categories      x11 devel
 license         X11
@@ -16,11 +16,11 @@ master_sites     xorg:individual/lib/
 
 distname        libXi-${version}
 
-checksums       rmd160  28fa5b4378ba4cc2ffcfd6bdea073a1b28ecf817 \
-                sha256  36a30d8f6383a72e7ce060298b4b181fd298bc3a135c8e201b7ca847f5f81061 \
-                size    484519
+checksums       rmd160  c56ee569b79b7f46250110e7d8251fcea154d5a3 \
+                sha256  d0e0555e53d6e2114eabfa44226ba162d2708501a25e18d99cfb35c094c6c104 \
+                size    405200
 
-use_bzip2   yes
+use_xz          yes
 
 # this port repeatedly fails to build parallel on Tiger
 platform darwin 8 {

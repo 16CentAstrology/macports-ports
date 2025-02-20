@@ -3,8 +3,9 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        kspalaiologos bzip3 1.2.1
+github.setup        kspalaiologos bzip3 1.5.1
 github.tarball_from releases
+revision            0
 categories          archivers
 license             LGPL-3+
 
@@ -13,9 +14,9 @@ maintainers         {@sech1p gmail.com:sech1piam} openmaintainer
 description         A better and stronger spiritual successor to BZip2.
 long_description    {*}${description}
 
-checksums           rmd160  3940e049433a348ccc9fe4f0fcc3fe76cbae37ad \
-                    sha256  bba90d867f53efa4291de1df9c22da1578e1a93ca819e0fc68881da6fcc4149d \
-                    size    399621
+checksums           rmd160  2e7462f044a04d6cc251c9521ad218c50d11bc99 \
+                    sha256  cc7cacda6d15f24d3fe73fd87b895d5fd2c0f8b6dd0630ae4993aa45c4853c3b \
+                    size    413067
 
 configure.args      --disable-silent-rules
 

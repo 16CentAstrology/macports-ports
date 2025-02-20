@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                pipenv
-version             2022.12.19
+version             2024.4.0
 revision            0
 categories-append   devel
 platforms           {darwin any}
@@ -30,29 +30,29 @@ long_description    {*}${description} \
                     produce deterministic builds.
 
 homepage            https://pipenv.pypa.io/en/latest/
-master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
-distname            ${python.rootname}-${version}
+checksums           rmd160  1469fdf3bf1e53ed0977a316b7d6328751ab0436 \
+                    sha256  87b82407a9e2de3cf32a742c131708d7460d5985076c6a9b3c11d774d2929fb1 \
+                    size    4614739
 
-checksums           rmd160  fea387e0799b8e43f66dc673bb61a1da408be233 \
-                    sha256  56a0e9305912293a8205e23b836b4abb9bca912fd5ef131214cdcdbc1861a1cc \
-                    size    4763988
+python.default_version 312
 
-python.default_version 311
-
-depends_lib-append \
-    port:py${python.version}-certifi \
-    port:py${python.version}-setuptools \
-    port:py${python.version}-virtualenv \
-    port:py${python.version}-virtualenv-clone
+depends_lib-append port:py${python.version}-certifi \
+                   port:py${python.version}-packaging \
+                   port:py${python.version}-setuptools \
+                   port:py${python.version}-virtualenv
 
 post-destroot {
-    xinstall -m 644 \
+    xinstall -m 0644 \
         ${destroot}${python.pkgd}/${name}/${name}.1 \
         ${destroot}${prefix}/share/man/man1
+
+    delete ${destroot}${python.pkgd}/docs
+    delete ${destroot}${python.pkgd}/examples
 }
 
 test.run            yes
+python.test_framework
 test.cmd            pipenv
 test.target         install
 test.args           pip

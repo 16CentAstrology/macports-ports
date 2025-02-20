@@ -4,13 +4,14 @@ PortSystem          1.0
 
 set my_name         gnupg
 name                ${my_name}2
-version             2.4.0
+version             2.4.7
+revision            0
 
 # Putting the SHA1 hash because that is published on the website
-checksums           rmd160  2591b5806a878bd6bb1d39c00df0eb1057d3b45b \
-                    sha1    63dde155a8df0d5e1987efa5fc17438beca83ac1 \
-                    sha256  1d79158dd01d992431dd2e3facb89fdac97127f89784ea2cb610c600fb0c1483 \
-                    size    7666935
+checksums           rmd160  bdc1884629c651e74bdd02d8f2cb8e746f030e83 \
+                    sha1    2d510a1a7294f2f9ef3f2e280c93c3ad9b0cdb68 \
+                    sha256  7b24706e4da7e0e3b06ca068231027401f238102c41c909631349dcc3b85eb46 \
+                    size    8010244
 
 # https://trac.macports.org/ticket/63552
 epoch               1
@@ -26,7 +27,6 @@ long_description    GnuPG is a complete and free replacement for PGP. Because   
                     without any restrictions. GnuPG is a RFC4880 (OpenPGP)          \
                     compliant application.
 homepage            https://www.gnupg.org
-conflicts           ${my_name}1
 distname            ${my_name}-${version}
 master_sites        ${my_name}:${my_name}
 
@@ -58,7 +58,7 @@ platform darwin {
 compiler.c_standard 2011
 
 depends_build       port:gettext \
-                    port:pkgconfig
+                    path:bin/pkg-config:pkgconfig
 
 depends_lib         port:libiconv           \
                     port:gettext-runtime    \

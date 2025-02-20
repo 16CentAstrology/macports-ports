@@ -4,13 +4,12 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-debugpy
-version             1.6.6
+version             1.8.12
 revision            0
 categories-append   devel
 license             MIT
 
-python.versions     37 38 39 310 311
-python.pep517       yes
+python.versions     39 310 311 312 313
 
 maintainers         {stromnov @stromnov} openmaintainer
 
@@ -19,13 +18,11 @@ long_description    {*}${description}
 
 homepage            https://aka.ms/debugpy
 
-checksums           rmd160  7f02b7b9dc992b203cc76245148da9b3d7083d1b \
-                    sha256  b9c2130e1c632540fbf9c2c88341493797ddf58016e7cba02e311de9b0a96b67 \
-                    size    4666432
+checksums           rmd160  e21b39f325e6fdfb06dd5d56fec583b602fdf1aa \
+                    sha256  646530b04f45c830ceae8e491ca1c9320a2d2f0efea3141487c82130aba70dce \
+                    size    1641122
 
 if {${name} ne ${subport}} {
-    use_zip             yes
-
     depends_build-append \
                         port:py${python.version}-cython
 }

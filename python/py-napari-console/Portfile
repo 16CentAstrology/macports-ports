@@ -4,7 +4,8 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-napari-console
-version             0.0.7
+python.rootname     napari_console
+version             0.1.3
 revision            0
 license             BSD
 maintainers         {mps @Schamschula} openmaintainer
@@ -14,14 +15,13 @@ supported_archs     noarch
 platforms           {darwin any}
 homepage            https://github.com/napari/napari-console
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312 313
 
-checksums           rmd160  8ee24c865cafb67a736608c6838732e82c00dfc9 \
-                    sha256  b6a5d71691827992ab7765ead52bd6d5b648b4a69eb3535f4e6524c37054c6a4 \
-                    size    17617
+checksums           rmd160  f43a1dacbaa7930b3fb94cf82416a59b191fbb67 \
+                    sha256  ba4f7e1cdca65a7924631372a5e58884e2e35a2b9092c79b98acb9c2dfe1254f \
+                    size    20010
 
 if {${name} ne ${subport}} {
-    python.pep517   yes
     depends_build-append  \
                     port:py${python.version}-setuptools_scm
 

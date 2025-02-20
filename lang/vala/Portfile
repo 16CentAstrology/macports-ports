@@ -3,15 +3,13 @@
 PortSystem          1.0
 
 name                vala
-set my_name         vala
 conflicts           vala-devel
-version             0.56.3
-revision            1
+set my_name         vala
+version             0.56.17
+revision            2
 
 categories          lang
-platforms           darwin
 license             LGPL-2.1+
-
 maintainers         {mascguy @mascguy} openmaintainer
 
 description         Compiler for the GObject type system
@@ -19,7 +17,6 @@ long_description    Vala is a new programming language that aims to bring modern
                     language features to GNOME developers without imposing any additional \
                     runtime requirements and without using a different ABI compared to \
                     applications and libraries written in C.
-
 homepage            https://wiki.gnome.org/Projects/Vala
 
 set branch          [join [lrange [split ${version} .] 0 1] .]
@@ -28,22 +25,49 @@ dist_subdir         ${my_name}
 distname            ${my_name}-${version}
 use_xz              yes
 
-checksums           rmd160  0fda7c9aed686fdb0901208ecbc3ca3cb9758c82 \
-                    sha256  e1066221bf7b89cb1fa7327a3888645cb33b604de3bf45aa81132fd040b699bf \
-                    size    3969676
+checksums           rmd160  577e43908f8f73da39854c65cbd3e8900b0e4c63 \
+                    sha256  26100c4e4ef0049c619275f140d97cf565883d00c7543c82bcce5a426934ed6a \
+                    size    4016576
 
-depends_build       port:pkgconfig \
+if { [string match *clang* ${configure.compiler}] } {
+    # Quiet warnings
+    configure.cflags-append \
+                    -Wno-deprecated-declarations \
+                    -Wno-incompatible-pointer-types-discards-qualifiers \
+                    -Wno-error=unknown-warning-option \
+                    -Wno-unknown-warning-option
+}
+
+depends_build-append \
                     port:bison \
+                    port:docbook-xml \
+                    port:docbook-xsl-nons \
                     port:flex \
                     port:gettext \
                     port:help2man \
-                    port:libxslt
+                    port:libxslt \
+                    port:pkgconfig
 
-depends_lib         path:lib/pkgconfig/glib-2.0.pc:glib2 \
-                    path:bin/dot:graphviz \
-                    port:gettext-runtime
+depends_lib-append \
+                    port:gettext-runtime \
+                    path:lib/pkgconfig/glib-2.0.pc:glib2 \
+                    path:lib/pkgconfig/gobject-introspection-1.0.pc:gobject-introspection
 
-configure.args      --disable-silent-rules
+configure.args-append \
+                    --disable-silent-rules \
+                    --disable-valadoc
+
+variant valadoc description {Install valadoc and documentation} {
+    # valadoc links aaginst libraries installed by graphviz
+    depends_lib-append \
+                    path:bin/dot:graphviz
+
+    configure.args-delete \
+                    --disable-valadoc
+}
+
+default_variants-append \
+                    +valadoc
 
 test.run            yes
 

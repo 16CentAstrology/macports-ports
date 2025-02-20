@@ -4,24 +4,24 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-psygnal
-version             0.7.0
+version             0.12.0
 revision            0
-categories          python
 license             BSD
+platforms           {darwin any}
+supported_archs     noarch
 maintainers         {mps @Schamschula} openmaintainer
 description         Pure python implementation of Qt-style Signals
 long_description    {*}${description}, with (optional) signature and type checking, and \
                     support for threading.
 homepage            https://github.com/tlambert03/psygnal
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
-checksums           rmd160  47c5ef05bb8c8ac6fd9d19e3813b574196a2acbe \
-                    sha256  0963f77508126d35dcf7ce3933d0fde5b8e01230360bcf0ce1306eb40eb32e28 \
-                    size    61894
+checksums           rmd160  cbde467e1d3be9f31aa1fd4ca5fff17eff432a4d \
+                    sha256  8d2a99803f3152c469d3642d36c04d680213a20e114245558e026695adf9a9c2 \
+                    size    104400
 
 if {${name} ne ${subport}} {
-    python.pep517           yes
     python.pep517_backend   hatch
 
     depends_build-append \
@@ -30,9 +30,4 @@ if {${name} ne ${subport}} {
     depends_lib-append  \
                     port:py${python.version}-mypy_extensions \
                     port:py${python.version}-typing_extensions
-
-    if {${python.version} eq 37} {
-        depends_lib-append  \
-                    port:py${python.version}-importlib-metadata
-    }
 }

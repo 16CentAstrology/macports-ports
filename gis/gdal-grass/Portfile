@@ -1,65 +1,35 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=2:ts=2:sts=2
 
 PortSystem          1.0
+PortGroup           cmake  1.1
 
 name                gdal-grass
+
+# Due to upstream reset of version numbering after split from GDAL source repo,
+# do not (re-)publish 1.4.3_0, 2.1.0_0, 2.1.0_1, 2.2.0_0, 2.2.0_1, or 2.2.0_2
+version             1.0.3
+revision            0
+epoch               1
+
 categories          gis
-version             2.2.0
-revision            2
-maintainers         {vince @Veence}
-description         This plugin allows GDAL to read GRASS files
-long_description    This plugin allows GDAL to read GRASS files
-
-homepage            http://grass.osgeo.org/
 license             MIT
+maintainers         {yahoo.com:n_larsson @nilason} {vince @Veence} openmaintainer
 
-platforms           darwin
+description         GRASS Drivers for GDAL and OGR
+long_description    This plugin allows GDAL to read GRASS raster and vector files.
+
+homepage            https://github.com/OSGeo/gdal-grass
+master_sites        https://download.osgeo.org/gdal-grass/
 
 depends_lib         port:gdal \
-                    port:grass7
+                    port:grass
 
-master_sites        http://download.osgeo.org/gdal/${version}
+checksums           rmd160  3b5251029254b72215614df2e0690f0e9fa87ffc \
+                    sha256  eb000f9b953f3f2dc399e833969a2bc7f8f4637791add43240b69f77f382a71f \
+                    size    344478
 
-checksums           md5     c8f2c9f0243ce651404f68d16fa9b499 \
-                    rmd160  733e8918561d3d5aead3ce2d98a41c9b636e32f5 \
-                    sha256  0eb2b541e87db4c0d1b3cdc61512b88631e6f7d39db5986eeb773aada0a7995f \
-                    size    54973
+compiler.cxx_standard  2011
 
-use_configure       yes
-
-configure.args-append   --with-gdal=${prefix}/bin/gdal-config
-configure.args-append   --with-grass=${prefix}/share/grass-7.4.0
-
-variant postgresql10 conflicts postgresql96 postgresql95 description {Enable PostgreSQL 10 support} {
-  depends_build-append  port:postgresql10
-  configure.args-append --with-postgres-includes=${prefix}/include/postgresql10
-}
-
-variant postgresql96 conflicts postgresql10 postgresql95 description {Enable PostgreSQL 9.6 support} {
-  depends_build-append  port:postgresql96
-  configure.args-append --with-postgres-includes=${prefix}/include/postgresql96
-}
-
-variant postgresql95 conflicts postgresql10 postgresql96 description {Enable PostgreSQL 9.5 support} {
-  depends_build-append  port:postgresql95
-  configure.args-append --with-postgres-includes=${prefix}/include/postgresql95
-}
-
-post-configure {
-    if {[variant_exists universal] && [variant_isset universal]} {
-        # Enforce universal flags
-        reinplace -E "s|^(CXXFLAGS.*)|\\1 ${configure.universal_cxxflags}|" \
-            ${worksrcpath}/Makefile
-        reinplace -E "s|^(LD_SHARED.*)|\\1 ${configure.universal_cxxflags}|" \
-            ${worksrcpath}/Makefile
-    }
-
-    # Fixes destroot issues
-    reinplace -E "s|^(GRASSTABLES_DIR\[^/]*)(.*)|\\1${destroot}\\2|" \
-        ${worksrcpath}/Makefile
-    reinplace -E "s|^(AUTOLOAD_DIR\[^/]*)(.*)|\\1${destroot}\\2|" \
-        ${worksrcpath}/Makefile
-    reinplace "s|mkdir|mkdir -p|" ${worksrcpath}/Makefile
-}
-
-build.target
+livecheck.type      regex
+livecheck.url       [lindex ${master_sites} 0]
+livecheck.regex     ${name}-(\\d+(?:\\.\\d+)*)[quotemeta ${extract.suffix}]

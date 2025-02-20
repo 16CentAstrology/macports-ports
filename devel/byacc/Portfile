@@ -3,7 +3,7 @@
 PortSystem 1.0
 
 name            byacc
-version         20221229
+version         20241231
 categories      devel
 maintainers     {toby @tobypeterson}
 license         public-domain
@@ -20,9 +20,9 @@ master_sites    https://invisible-island.net/archives/${name}/ \
                 https://invisible-mirror.net/archives/${name}/
 extract.suffix  .tgz
 
-checksums       rmd160  816113fb555ae8f0db672ffceaa4046c11df09be \
-                sha256  1316c6f790fafa6688427f1ff91267b61d8b7873b443c620eef69a6eff0503bc \
-                size    897125
+checksums       rmd160  614a251a654ea018501ae5e7992aa465aefef59d \
+                sha256  192c2fae048d4e7f514ba451627f9c4e612765099f819c19191f9fde3e609673 \
+                size    912384
 
 configure.args  --mandir=${prefix}/share/man \
                 --program-prefix=b

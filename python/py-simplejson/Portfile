@@ -4,14 +4,12 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-simplejson
-version             3.18.1
+version             3.19.3
 revision            0
 categories-append   www
-platforms           darwin
 license             MIT
 
-python.versions     27 35 36 37 38 39 310 311
-python.pep517       yes
+python.versions     27 39 310 311 312 313
 
 maintainers         {stromnov @stromnov} openmaintainer
 
@@ -23,31 +21,20 @@ long_description    simplejson is a simple, fast, complete, correct and \
                     includes an optional C extension for a serious speed \
                     boost.
 
-homepage            http://simplejson.readthedocs.org/
+homepage            https://simplejson.readthedocs.org/
 
-checksums           rmd160  8faeb0b8624af95b5797f2aae98e6155a8409194 \
-                    sha256  746086e3ef6d74b53599df31b491d88a355abf2e31c837137dd90f8c4561cafa \
-                    size    83603
+checksums           rmd160  ed30718e54d554cb05ad2a66bc9087398f77d21a \
+                    sha256  8e086896c36210ab6050f2f9f095a5f1e03c83fa0e7f296d6cba425411364680 \
+                    size    85237
 
 if {${name} ne ${subport}} {
-    if {${python.version} < 37} {
-        python.pep517   no
-    }
-
     post-destroot {
         set docdir ${destroot}${prefix}/share/doc/${subport}
         xinstall -d ${docdir}
-        xinstall -m 644 -W ${worksrcpath} \
+        xinstall -m 0644 -W ${worksrcpath} \
             CHANGES.txt README.rst index.rst \
             ${docdir}
     }
 
-    pre-test {
-        test.env    PYTHONPATH=[glob -nocomplain ${worksrcpath}/build/lib*]
-
-    }
-
     test.run        yes
-
-    livecheck.type  none
 }

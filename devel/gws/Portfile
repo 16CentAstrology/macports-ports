@@ -4,10 +4,12 @@ PortSystem          1.0
 PortGroup           github 1.0
 
 github.setup        StreakyCobra gws 0.1.16
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 categories          devel sysutils
-platforms           darwin
-maintainers         {raimue @raimue} \
-                    openmaintainer
+platforms           any
+supported_archs     noarch
+maintainers         nomaintainer
 license             MIT
 
 description         helper for git workspaces

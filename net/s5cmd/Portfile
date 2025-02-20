@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/peak/s5cmd 2.0.0 v
+go.setup            github.com/peak/s5cmd 2.3.0 v
 github.tarball_from archive
 revision            0
 
@@ -20,9 +20,9 @@ license             MIT
 maintainers         {gmail.com:smanojkarthick @manojkarthick} \
                     openmaintainer
 
-checksums           rmd160  aa814b4b726a44e43bfff416f787083d261a22a9 \
-                    sha256  016554a753830477c203d3ec11ad37eefce43ca7817856f861a173158c8f4a88 \
-                    size    2595427
+checksums           rmd160  ff62d564a63405fb1f3e825d9b81f2f530af1424 \
+                    sha256  6910763a7320010aa75fe9ef26f622e440c2bd6de41afdbfd64e78c158ca19d4 \
+                    size    3985656
 
 build.cmd           make
 build.pre_args-append \

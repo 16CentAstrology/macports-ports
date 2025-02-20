@@ -4,6 +4,8 @@ PortSystem          1.0
 PortGroup           github 1.0
 
 github.setup        scopatz nanorc 2020.10.10
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 
 checksums           rmd160  907c5f9cac9a3c8bafdf8ec8f60d6c4028a0b880 \
                     sha256  33a90657defa32ca7b1e91e0a67b67a4a63751973f7e70c1c638746162c1b3ea \
@@ -13,6 +15,8 @@ description         Improved Nano Syntax Highlighting Files
 long_description    Installs nanorc files that have improved definitions of syntax highlighting for various languages.
 categories          editors
 license             GPL-3
+platforms           any
+supported_archs     noarch
 maintainers         nomaintainer
 
 use_configure       no

@@ -39,7 +39,7 @@ if {$subport eq ${name}} {
     PortGroup           legacysupport 1.1
 
     github.setup        Warzone2100 ${name} 4.3.0
-    revision            0
+    revision            7
     github.tarball_from releases
     distname            ${name}_src
     use_xz              yes
@@ -53,7 +53,7 @@ if {$subport eq ${name}} {
     cmake.module_path-append \
         ${prefix}/lib/${port_libfmt}/cmake
 
-    depends_build-append    port:pkgconfig \
+    depends_build-append    path:bin/pkg-config:pkgconfig \
                             port:gettext \
                             port:asciidoctor
     depends_lib-append      port:libzip \
@@ -64,6 +64,7 @@ if {$subport eq ${name}} {
                             port:sqlitecpp \
                             port:re2 \
                             port:${port_libfmt} \
+                            port:discord-rpc \
                             port:libpng \
                             port:libsdl2 \
                             port:openal-soft \
@@ -91,8 +92,15 @@ if {$subport eq ${name}} {
     # the tools that warzone2100 is using during the build process.
     license_noconflict      asciidoctor
 
-    compiler.cxx_standard   2011
+    worksrcdir              ${name}
+
+    # re2 pulls in abseil, which needs C++17 now.
+    compiler.cxx_standard   2017
     compiler.thread_local_storage yes
+
+    patchfiles-append       patch-cxx17.diff \
+                            patch-context.h.diff \
+                            patch-std-apply.diff
 
     # Fix compile errors on macOS <= 10.10 due to files included from
     # /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1
@@ -100,10 +108,16 @@ if {$subport eq ${name}} {
     legacysupport.use_mp_libcxx yes
 
     post-patch {
+        # The source code resets the CMAKE_MODULE_PATH, instead of
+        # adding to the list. This causes CMake to not be able to
+        # find any packages that are available through MacPorts Cmake.
+        reinplace {s/^set.\(CMAKE_MODULE_PATH.*PROJECT_SOURCE_DIR.*cmake\)/list(PREPEND \1/} \
+            ${worksrcpath}/CMakeLists.txt
+
         # Prevent the upstream source from trying to compile these as
         # internal libraries, since we have made them available as
         # dependencies through MacPorts.
-        foreach dep [list utf8proc fmt SQLiteCpp] {
+        foreach dep [list utf8proc fmt discord-rpc SQLiteCpp] {
             reinplace -E \
                 "/add_subdirectory.$dep/,/set_property.*$dep/d" \
                 ${worksrcpath}/3rdparty/CMakeLists.txt
@@ -123,6 +137,22 @@ if {$subport eq ${name}} {
         reinplace {s/re2::re2/re2/} \
             ${worksrcpath}/src/CMakeLists.txt \
             ${worksrcpath}/lib/netplay/CMakeLists.txt
+
+        reinplace "/if.ENABLE_DISCORD/a\\
+            \\        find_package(DiscordRPC)\\
+        " \
+            ${worksrcpath}/3rdparty/CMakeLists.txt \
+            ${worksrcpath}/src/CMakeLists.txt \
+            ${worksrcpath}/src/integrations/CMakeLists.txt
+        reinplace {s/\(TARGET discord-rpc\)/DiscordRPC_FOUND OR \1/} \
+            ${worksrcpath}/src/CMakeLists.txt \
+            ${worksrcpath}/src/integrations/CMakeLists.txt
+        foreach re [list \
+            {/target_include_directories.*3rdparty/s/".*"/"${DiscordRPC_INCLUDE_DIR}"/} \
+            {/target_link_libraries.*discord-rpc/s/discord-rpc/"${DiscordRPC_LIBRARY}"/} \
+        ] {
+            reinplace $re ${worksrcpath}/src/integrations/CMakeLists.txt
+        }
 
         reinplace {/include_directories.*glm/d} \
             ${worksrcpath}/CMakeLists.txt
@@ -232,6 +262,8 @@ if {$subport eq "${name}-music"} {
     {
         github.setup    Warzone2100 data-music-opus \
                         81ae966cc68c242a1452ad1f168fb02bab82acea
+        # Change github.tarball_from to 'releases' or 'archive' next update
+        github.tarball_from tarball
         version         $subport_version
 
         checksums       rmd160  95f18b1b31f640842a1d085d22195f3354c6873e \
@@ -243,6 +275,8 @@ if {$subport eq "${name}-music"} {
     {
         github.setup    Warzone2100 data-music-opus-hq \
                         41dc5aac2afe5de04b2de2dc8cf699e8cbbae131
+        # Change github.tarball_from to 'releases' or 'archive' next update
+        github.tarball_from tarball
         version         $subport_version
 
         checksums       rmd160  7601e86b019e0895fd3a07cf5475b63ea239d0e8 \
@@ -250,8 +284,16 @@ if {$subport eq "${name}-music"} {
                         size    184129091
     }
 
-    default_variants    +high
+    if {![variant_isset standard]} {
+        default_variants    +high
+    }
 
+    pre-fetch {
+        if {![variant_isset high] && ![variant_isset standard]} {
+            ui_error "You must install this port with one of the audio quality variants selected!"
+            return -code error "No audio quality variant selected"
+        }
+    }
     use_configure no
     build {}
     destroot {
@@ -264,6 +306,7 @@ if {$subport eq "${name}-music"} {
 
 if {$subport eq "${name}-videos"} {
     version             0.0.0
+    revision            0
     platforms           any
     supported_archs     noarch
 

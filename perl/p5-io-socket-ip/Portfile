@@ -4,23 +4,26 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         IO-Socket-IP 0.41
+perl5.setup         IO-Socket-IP 0.43
+revision            0
 license             {Artistic-1 GPL}
 maintainers         nomaintainer
 description         IO::Socket::IP - Family-neutral IP socket supporting both IPv4 and IPv6
-long_description    ${description}
+long_description    {*}${description}
 
 platforms           {darwin any}
+supported_archs     noarch
 
-checksums           rmd160  07a3294b5cf616dfdb676fe469db51fff06e33b4 \
-                    sha256  849a45a238f8392588b97722c850382c4e6d157cd08a822ddcb9073c73bf1446 \
-                    size    44692
+checksums           rmd160  d6ec3b459fc6a697c9214ba2fc159d53f22186ad \
+                    sha256  ebf6217f48f537ae9a78126f0ecb4baa3d4820e3e26153ce250f3bffd05f6d0b \
+                    size    45682
 
 if {${perl5.major} != ""} {
-# use latest Socket for bugfixes not in core
+    depends_build-append \
+                    port:p${perl5.major}-test-simple
+
     depends_lib-append \
                     port:p${perl5.major}-socket
 
     perl5.use_module_build
-    supported_archs noarch
 }

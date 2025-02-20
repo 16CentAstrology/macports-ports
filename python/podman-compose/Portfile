@@ -4,11 +4,12 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                podman-compose
-version             1.0.3
+version             1.2.0
 revision            0
 
 categories-append   devel
 supported_archs     noarch
+platforms           {darwin any}
 license             GPL-2
 maintainers         {judaew @judaew} openmaintainer
 
@@ -18,31 +19,31 @@ description         a script to run docker-compose.yml using podman
 long_description    {*}${description}
 homepage            https://github.com/containers/podman-compose
 
-checksums           rmd160  dd21ace3714b9baa9113a9a48fded2ab65f1a2c8 \
-                    sha256  9c9fe8249136e45257662272ade33760613e2d9ca6153269e1e970400ea14675 \
-                    size    21424
+distname            podman_compose-${version}
 
-python.default_version 310
+checksums           rmd160  92043e12dafea0447fa91648847b1b698ae36a3f \
+                    sha256  e47665546598a48d83d30ca2709a679412824bbe84b93f61779bc863e1a6f060 \
+                    size    45753
 
-depends_build-append \
-                port:py${python.version}-setuptools
+python.default_version 312
 
-depends_run-append \
-                port:podman \
-                port:py${python.version}-python-dotenv \
-                port:py${python.version}-yaml
+depends_run-append  port:podman \
+                    port:py${python.version}-python-dotenv \
+                    port:py${python.version}-yaml
 
 subport podman-compose-devel {
     PortGroup           github 1.0
 
-    github.setup        containers podman-compose 08ffcf6126a3ae4016e3d81e963a3629e4b75986
+    github.setup        containers podman-compose eeefd37996029ad242edf0b75af34623242b02ea
+    # Change github.tarball_from to 'releases' or 'archive' next update
+    github.tarball_from tarball
     name                podman-compose-devel
-    version             2022-11-03
+    version             2024-08-03
     revision            0
 
     conflicts           podman-compose
 
-    checksums           rmd160  37bfd0230519b995623b4a468ad584543a502d71 \
-                        sha256  0693d4ae1cc555f100f720281166de3b4c35387247f70658950f4f54e35cb216 \
-                        size    56403
+    checksums           rmd160  1662bb579cf0f847619a3a0663aeb3dd9ffc501b \
+                        sha256  87a554a5282ba08e299afbf233a0439f46f031271204e542ff4bc6500b5548a4 \
+                        size    91142
 }

@@ -4,7 +4,8 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           tree_sitter 1.0
 
-github.setup        tree-sitter tree-sitter-c 0.20.2 v
+github.setup        tree-sitter tree-sitter-c 0.23.5 v
+github.tarball_from archive
 revision            0
 
 description         A tree-sitter parser for C
@@ -15,8 +16,11 @@ categories          devel
 license             MIT
 maintainers         {amake @amake} openmaintainer
 
-checksums           rmd160  a1744aff82b7fcfda88c65cbb2078c8f7650b0f9 \
-                    sha256  efa8ea9716a7bdaf2cf18b5f156c0212bb60d3bd8e904066271354dedd1fb5b5 \
-                    size    249719
+checksums           rmd160  09148298927d7b6da682f2cd30d2de7d89bca4d0 \
+                    sha256  f7e50412230150ce514efcccb962ff9b452d9f358e0a2c89f2a0a0256c2ec886 \
+                    size    378339
 
 worksrcdir          ${worksrcdir}/src
+
+# parser.c: error: ‘for’ loop initial declaration used outside C99 mode
+configure.cflags-append -std=c99

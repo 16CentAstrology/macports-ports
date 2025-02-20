@@ -3,11 +3,14 @@
 PortSystem              1.0
 PortGroup               github 1.0
 
-github.setup            tj git-extras 6.5.0
+github.setup            tj git-extras 7.3.0
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from     tarball
+revision                0
 
-checksums               rmd160  3f6d2a0216721c0cf3bf9cee6eea244d6eaf3728 \
-                        sha256  844cd29f20d1ee07b8822ec54a42199ac958bcdc2e02cf25b86ba20f66c88597 \
-                        size    167023
+checksums               rmd160  b5ba6814f21b801a58fd761713cb46d4b2cdc42c \
+                        sha256  df14bfc51064e2fc134e7828e7438a6f08ab90959ce0cae636dfa08ab558274c \
+                        size    186796
 
 maintainers             {grimreaper @grimreaper} openmaintainer
 platforms               any
@@ -20,6 +23,9 @@ long_description        {*}${description} -- repo summary, repl, changelog popul
 license                 MIT
 
 use_configure           no
+
+patch.pre_args-replace  -p0 -p1
+patchfiles-append       macports-release.patch
 
 build {}
 

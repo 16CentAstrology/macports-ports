@@ -3,8 +3,9 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/hairyhenderson/gomplate 3.11.3 v
-go.package          github.com/hairyhenderson/gomplate/v3
+go.setup            github.com/hairyhenderson/gomplate 4.3.0 v
+go.package          github.com/hairyhenderson/gomplate/v4
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -23,11 +24,9 @@ license             MIT
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  bfb7cf9afefdc13d4bb1817c96306fa22c7d5fdb \
-                    sha256  4f26895921e52e0515b273659508802676aafa4765cc3751c383b27eb0e9dca1 \
-                    size    560815
-
-build.env-delete    GO111MODULE=off GOPROXY=off
+checksums           rmd160  3dadb6907802ab8547d6ea64c35f30703ae7c65f \
+                    sha256  1e8b68867aab4831828dbf4a3f5065464d7b062d7f058d5143519f3720ccb53d \
+                    size    594494
 
 build.cmd           make
 build.pre_args-append \
@@ -37,3 +36,6 @@ build.args          build
 destroot {
     xinstall -m 0755 ${worksrcpath}/bin/${name} ${destroot}${prefix}/bin/
 }
+
+github.livecheck.regex \
+                    {([0-9.]+)}

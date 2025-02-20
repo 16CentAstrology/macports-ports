@@ -5,8 +5,8 @@ PortGroup           cmake 1.1
 PortGroup           github 1.0
 PortGroup           linear_algebra 1.0
 
-github.setup        igraph igraph 0.10.4
-revision            0
+github.setup        igraph igraph 0.10.15
+revision            1
 github.tarball_from releases
 
 categories          math science devel
@@ -17,16 +17,21 @@ long_description    igraph is a C library for network analysis and graph theory,
                     with an emphasis on efficiency, portability and ease of use.
 homepage            https://igraph.org
 
-platforms           darwin
 depends_lib         port:arpack \
                     port:glpk \
                     port:gmp \
-                    port:libxml2
+                    port:libxml2 \
+                    port:plfit
 
-checksums           rmd160  352d5881b55bd3c40084a45198981636b0b48f03 \
-                    sha256  aa5700b58c5f1e1de1f4637ab14df15c6b20e25e51d0f5a260921818e8f02afc \
-                    size    4279321
+checksums           rmd160  05e4a47bfd7d1041ade393755e338e724ca73ef1 \
+                    sha256  03ba01db0544c4e32e51ab66f2356a034394533f61b4e14d769b9bbf5ad5e52c \
+                    size    4439424
 
+# Testing notes:
+#
+# There is a bug in macOS 13.x to 14.0 that will cause the safelocale test to fail.
+# See https://stackoverflow.com/q/76133503/695132 and https://github.com/igraph/igraph/issues/2340
+# This is fixed in macOS 14.1.
 test.run            yes
 test.target         check
 
@@ -51,7 +56,7 @@ configure.args-append   -DUSE_CCACHE=OFF \
                         -DIGRAPH_USE_INTERNAL_GLPK=OFF \
                         -DIGRAPH_USE_INTERNAL_GMP=OFF \
                         -DIGRAPH_USE_INTERNAL_LAPACK=OFF \
-                        -DIGRAPH_USE_INTERNAL_PLFIT=ON \
+                        -DIGRAPH_USE_INTERNAL_PLFIT=OFF \
                         -DIGRAPH_OPENMP_SUPPORT=OFF \
                         -DIGRAPH_WARNINGS_AS_ERRORS=OFF
 
@@ -65,6 +70,9 @@ variant tls description {Build thread-safe version} {
     configure.args-append           -DIGRAPH_ENABLE_TLS=ON
 }
 
+# The openmp variant is not enabled by default because in MacPorts,
+# the compilers that support OpenMP won't support LTO (without workarounds).
+# Overall, igraph performance benefits more from LTO than OpenMP.
 variant openmp description {Enable OpenMP support} {
     # This compiler gives an invalid warning about uninitialized variables.
     # It is unclear if it also miscompiles the code.

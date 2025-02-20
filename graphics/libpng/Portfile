@@ -4,11 +4,11 @@ PortSystem              1.0
 PortGroup               muniversal 1.0
 
 name                    libpng
-version                 1.6.39
+version                 1.6.45
 revision                0
-checksums               rmd160  dc74406dc44f6b10f0c1cc37d47c965be0bc6d10 \
-                        sha256  1f4696ce70b4ee5f85f1e1623dc1229b210029fa4b7aee573df3e2ba7b036937 \
-                        size    1020552
+checksums               rmd160  baae0f93d6d132cfabb754bc4a0dde839e6755cb \
+                        sha256  926485350139ffb51ef69760db35f78846c805fef3d59bfdcb2fba704663f370 \
+                        size    1051268
 
 set branch              [join [lrange [split ${version} .] 0 1] ""]
 categories              graphics

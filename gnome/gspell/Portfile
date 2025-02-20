@@ -5,8 +5,8 @@ PortGroup           active_variants 1.1
 PortGroup           gobject_introspection 1.0
 
 name                gspell
-version             1.10.0
-revision            2
+version             1.12.2
+revision            1
 license             GPL-2
 set branch          [join [lrange [split ${version} .] 0 1] .]
 description         gspell - a spell-checking library for GTK+
@@ -14,20 +14,19 @@ long_description    gspell provides a flexible API to implement the spell checki
                     in a GTK+ application.
 maintainers         {devans @dbevans} openmaintainer
 categories          gnome
-platforms           darwin
-
 homepage            https://wiki.gnome.org/Projects/gspell
 master_sites        gnome:sources/${name}/${branch}/
 
 use_xz              yes
 
-checksums           rmd160  45826794bf5e6797ff455b38ca2666ade2b73ef8 \
-                    sha256  803bb884c0215d3fd22a85d7f30423aff88d9792f05a5199d8a489a2ffaae1da \
-                    size    432484
+checksums           rmd160  83204e9d5894e5970eed2fc34d804155b5891928 \
+                    sha256  b4e993bd827e4ceb6a770b1b5e8950fce3be9c8b2b0cbeb22fdf992808dd2139 \
+                    size    442824
 
 depends_build       port:pkgconfig \
                     port:gettext \
-                    port:gtk-doc
+                    port:gtk-doc \
+                    path:bin/vala:vala
 
 depends_lib         path:lib/pkgconfig/gdk-pixbuf-2.0.pc:gdk-pixbuf2 \
                     path:lib/pkgconfig/gtk+-3.0.pc:gtk3 \
@@ -36,8 +35,7 @@ depends_lib         path:lib/pkgconfig/gdk-pixbuf-2.0.pc:gdk-pixbuf2 \
                     port:libxml2 \
                     port:enchant2 \
                     path:lib/pkgconfig/icu-uc.pc:icu \
-                    port:iso-codes \
-                    path:bin/vala:vala
+                    port:iso-codes
 
 gobject_introspection yes
 

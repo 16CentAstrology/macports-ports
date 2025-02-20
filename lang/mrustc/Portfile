@@ -5,34 +5,38 @@ PortGroup           github 1.0
 PortGroup           legacysupport 1.1
 PortGroup           compiler_blacklist_versions 1.0
 
-github.setup        thepowersgang mrustc 1b1416bb2b44e2c331c7201833305cac29d571e8
+github.setup        thepowersgang mrustc 967eea07a3f6651ee617472a247512ef82a3304d
 
 set rust_version    1.54.0
 set rust_version_major [join [lrange [split ${rust_version} .-] 0 1] .]
 set rust_version_major_underscore [join [lrange [split ${rust_version} .-] 0 1] _]
 
 # subport mrustc-rust has its own versioning
-version             ${rust_version_major}-20221110
+version             ${rust_version_major}-20231219
 revision            0
 epoch               1
 
 categories          lang devel
 license             MIT
-maintainers         {@catap korins.ky:kirill} openmaintainer
+maintainers         nomaintainer
 description         Alternative implementation of Rust
 
 long_description    In-progress alternative rust compiler. Capable of building a \
                     fully-working copy of rustc, but not suitable for everyday use \
                     (due to inadequate error messages).
 
+# When updating to the next version, switch to "github.tarball_from archive" and
+# reevaluate whether setting worksrcdir is still necessary.
+worksrcdir          ${github.author}-${github.project}-[string range ${git.branch} 0 6]
+
 master_sites-append https://static.rust-lang.org/dist/:rust
 
 distfiles-append    rustc-${rust_version}-src.tar.gz:rust
 
 checksums           mrustc-${github.version}.tar.gz \
-                    rmd160  f6d266872d57de4dbb8a99e672f82e40c5fad682 \
-                    sha256  348d67de705ab1e0049602fac866f2d775ab699195f1b00406e00dcc8b4041f5 \
-                    size    1191744 \
+                    rmd160  f1cec542c40a14e72ffbf41310a79a1f21c086b0 \
+                    sha256  6be42ee0b274d4a4c2cc86d479ab2e30929fe1072fe0f9c267fdd378ff003c08 \
+                    size    1274527 \
                     rustc-${rust_version}-src.tar.gz \
                     rmd160  be2de16e2deaf91aee723e631a36f6de52636ddd \
                     sha256  ac8511633e9b5a65ad030a1a2e5bdaa841fdfe3132f2baaa52cc04e71c6c6976 \
@@ -93,11 +97,11 @@ post-extract {
 
 pre-patch {
     # Patch the Rust source code with the patch included with mrustc
-    system -W ${workpath}/rustc-${rust_version}-src "patch -p0 < ${worksrcpath}/rustc-${rust_version}-src.patch"
+    system -W ${workpath}/rustc-${rust_version}-src "patch -p0 < [shellescape ${worksrcpath}/rustc-${rust_version}-src.patch]"
 }
 
 patch.dir           ${workpath}/rustc-${rust_version}-src
-patch.pre_args      -p1
+patch.pre_args-replace  -p0 -p1
 
 # patches as git tree: https://github.com/catap/rust-legacy-bootstrap/tree/1.54.0
 patchfiles          0001-Introduced-support-of-MACPORTS_LEGACY_SUPPORT_.patch \

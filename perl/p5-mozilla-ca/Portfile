@@ -4,20 +4,16 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Mozilla-CA 20221114
+perl5.setup         Mozilla-CA 20250202
 revision            0
 license             {MPL-2 LGPL-2.1+} curl
 maintainers         nomaintainer
+description         Mozilla::CA - Mozilla's CA cert bundle in PEM format
+long_description    {*}${description}
 
 platforms           {darwin any}
 supported_archs     noarch
 
-description         Mozilla::CA - Mozilla's CA cert bundle in PEM format
-
-long_description    Mozilla::CA provides a copy of Mozilla\'s bundle of Certificate \
-                    Authority certificates in a form that can be consumed by modules and \
-                    libraries based on OpenSSL.
-
-checksums           rmd160  0ff2cf42b8a33b2e1d661e9e8e1d288c730fe8fa \
-                    sha256  701bea67be670add5a102f9f8c879402b4983096b1cb0e20dd47d52d7a10666b \
-                    size    142097
+checksums           rmd160  d8c228759d66122c1949d68f558cce63eda0ba4e \
+                    sha256  32d43ce8cb3b201813898f0c4c593a08df350c1e47484e043fc8adebbda60dbf \
+                    size    149880

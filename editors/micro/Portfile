@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/zyedidia/micro 2.0.11 v
+go.setup            github.com/zyedidia/micro 2.0.14 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -26,12 +27,9 @@ license             MIT
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  6e2e3655923b832255562e8c95badd92e47c1047 \
-                    sha256  1bb499edeaaadf1fe1791a49f96ab672c4e1add31ee125882ccd85a0fc8a4abe \
-                    size    549261
-
-# Allow Go to fetch dependencies at build time
-build.env-delete    GO111MODULE=off GOPROXY=off
+checksums           rmd160  4fdb8432926abc81484f154df105c4aca3f4ad18 \
+                    sha256  40177579beb3846461036387b649c629395584a4bbe970f61ba7591bd9c0185a \
+                    size    576800
 
 build.cmd           make
 build.target        build
@@ -45,3 +43,6 @@ post-extract {
 destroot {
     xinstall -m 0755 ${worksrcpath}/${name} ${destroot}${prefix}/bin/
 }
+
+github.livecheck.regex \
+                    {([0-9.]+)}

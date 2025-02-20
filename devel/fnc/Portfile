@@ -4,7 +4,7 @@ PortSystem      1.0
 PortGroup       makefile 1.0
 
 name            fnc
-version         0.13
+version         0.18
 revision        0
 categories      devel
 license         ISC
@@ -19,15 +19,19 @@ long_description        ${name} is an interactive text-based user interface \
                         level with an interactive stash command to prepare \
                         atomic commits.
 homepage        https://fnc.bsdbox.org
-master_sites    ${homepage}/tarball/${version}/
+master_sites    ${homepage}/tarball/${version}/ \
+                https://fnc.sh/tarball/${version}/
 
-checksums       rmd160  903d5f4f5894211a4c2b984d0b2ce0365c8e6e0d \
-                sha256  257d7dd4bdd0ba166f620253603d74cb728869d3e6859b1c90b96227359dca88 \
-                size    3103502
+checksums       rmd160  0f5cdcdb679f4949e442c7e3f95fc6f2f7a6fb69 \
+                sha256  9e94beb0ec45d12ffd4ee163b441657afd07a483ac68feb399c7e8a4f3547a19 \
+                size    3244426
 
 build.type      bsd
 
-depends_lib-append      port:zlib
+patchfiles      libf-Werror-include-ncursesw.diff
+
+depends_lib-append      port:zlib \
+                        port:ncurses
 
 destroot {
     xinstall -m 755 ${worksrcpath}/src/${name} ${destroot}${prefix}/bin/${name}

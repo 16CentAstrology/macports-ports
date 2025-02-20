@@ -3,7 +3,9 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/cue-lang/cue 0.4.3 v
+go.setup            github.com/cue-lang/cue 0.12.0 v
+go.offline_build    no
+github.tarball_from archive
 go.package          cuelang.org/go
 revision            0
 
@@ -21,22 +23,21 @@ license             Apache-2
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-fetch.type          git
+checksums           rmd160  2217aec5deac25a472e97b57a4a85862a5d1cc1d \
+                    sha256  ecb1909bbe4a59b965cd219cb53916b09097716928275bbb55b8a8e6cc495379 \
+                    size    2656463
 
-depends_build-append \
-                    port:goreleaser
-
-# Allow Go to download dependencies at build time
-build.env-delete    GO111MODULE=off GOPROXY=off
-
-build.cmd           goreleaser
-build.pre_args      build
-build.args          --single-target
+build.pre_args-append \
+    -ldflags=\"-X ${go.package}/cmd/cue/cmd.version=${version}\" \
+    -o ./_dist/${name}
+build.args          ./cmd/${name}
 
 github.livecheck.regex  {([0-9.]+)}
 
+pre-build {
+    file mkdir ${worksrcpath}/_dist
+}
+
 destroot {
-    xinstall -m 0755 \
-        [glob ${worksrcpath}/dist/cue_${goos}*/cue] \
-        ${destroot}${prefix}/bin/
+    xinstall -m 0755 ${worksrcpath}/_dist/${name} ${destroot}${prefix}/bin/
 }

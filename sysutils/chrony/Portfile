@@ -3,11 +3,11 @@
 PortSystem          1.0
 
 name                chrony
-version             4.3
+version             4.6.1
 revision            0
-checksums           rmd160  100c185534918495ab912a29a9dbad177e1d1711 \
-                    sha256  9d0da889a865f089a5a21610ffb6713e3c9438ce303a63b49c2fb6eaff5b8804 \
-                    size    593560
+checksums           rmd160  a1de97ca1eeeb0775658d55e8f0fc1e9730c76e6 \
+                    sha256  571ff73fbf0ae3097f0604eca2e00b1d8bb2e91affe1a3494785ff21d6199c5c \
+                    size    636076
 
 categories          sysutils net
 maintainers         nomaintainer
@@ -26,8 +26,8 @@ long_description    Chrony can synchronise the system clock with NTP servers, \
                     and systems that do not run continuosly, or run on a \
                     virtual machine.
 
-homepage            https://chrony.tuxfamily.org/
-master_sites        https://download.tuxfamily.org/chrony/
+homepage            https://chrony-project.org/
+master_sites        https://chrony-project.org/releases/
 
 depends_build       port:pkgconfig
 

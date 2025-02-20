@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-libtmux
-version             0.20.0
+version             0.37.0
 revision            0
 
 categories-append   devel
@@ -18,14 +18,12 @@ description         Python binding for tmux
 long_description    {*}${description}
 
 homepage            https://github.com/tmux-python/libtmux
-master_sites        pypi:l/${python.rootname}/
-distname            ${python.rootname}-${version}
 
-checksums           rmd160  bec00a6009fb729d772427a1af59bb523ee9c455 \
-                    sha256  5a4dcc01c52888970c0d515d63c7559b702055d3f53bec716c6a7de48fe88dd3 \
-                    size    235864
+checksums           rmd160  a9c742cc24234e0a3f800379f76fe553d2f6d115 \
+                    sha256  21955c5dce6332db41abad5e26ae8c4062ef2b9a89099bd57a36f52be1d5270f \
+                    size    256265
 
-python.versions     39 310 311
+python.versions     39 310 311 312
 python.pep517       yes
 python.pep517_backend poetry
 
@@ -43,8 +41,4 @@ if {${name} ne ${subport}} {
         xinstall -m 0644 -W ${worksrcpath} README.md LICENSE \
            CHANGES ${destroot}${docdir}
     }
-
-    livecheck.type  none
-} else {
-    livecheck.type  pypi
 }

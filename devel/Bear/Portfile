@@ -3,15 +3,23 @@
 PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           cmake 1.1
+PortGroup           legacysupport 1.1
 
-github.setup        rizsotto Bear 3.0.20
-checksums           rmd160  c9bf0be787686071310b766893d02e5708364053 \
-                    sha256  fd49d25a83fc8eba529132bb05da887b66c8831e38044262c60e14f49d72698c \
-                    size    125397
+# Needed for clock_gettime, std::filesystem
+legacysupport.newest_darwin_requires_legacy 19
+legacysupport.use_mp_libcxx                 yes
+
+github.setup        rizsotto Bear 3.1.5
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
+revision            0
+
+checksums           rmd160  15a2c3369693c1ec3b14f82cf483fbc0a214c100 \
+                    sha256  2b3ac2fe04f76999083db604fbe25743c95548ce73e3148036e50e80d3d1026b \
+                    size    152222
 
 maintainers         {cal @neverpanic} openmaintainer
 license             GPL-3+
-platforms           darwin
 
 categories          devel
 description         \
@@ -22,19 +30,25 @@ long_description    {*}${description} \
     available then it is easy to re-run the compilation with different \
     programs.
 
-patchfiles          patch-source-intercept-CMakeLists-txt.patch \
-                    patch-spdlog-header-only.diff
+patchfiles          patch-spdlog-header-only.diff
 
+set port_libfmt     libfmt9
 cmake.module_path-append \
-                    ${prefix}/lib/libfmt9/cmake
+                    ${prefix}/lib/${port_libfmt}/cmake
+
+# Cxx 2017 needed, as of latest 3.1.x releases
+compiler.cxx_standard 2017
 
 depends_build-append \
                     port:pkgconfig \
                     port:spdlog \
                     port:nlohmann-json \
 
-depends_lib-append  port:libfmt9 \
-                    port:grpc
+depends_lib-append  port:abseil \
+                    port:grpc \
+                    port:${port_libfmt} \
+                    port:protobuf3-cpp \
+                    port:re2
 
 configure.args-append \
                     -DENABLE_UNIT_TESTS=Off \

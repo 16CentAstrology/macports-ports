@@ -3,13 +3,28 @@
 PortSystem          1.0
 PortGroup           R 1.0
 
-R.setup             cran cran clue 0.3-63
+R.setup             cran r-project clue 0.3-66
 revision            0
 categories-append   math
 maintainers         nomaintainer
 license             GPL-2
 description         Cluster Ensembles
 long_description    {*}${description}
-checksums           rmd160  c6b6600492ba4a338c4380d40b7e1931ca6891b2 \
-                    sha256  d913283c258a74bfdf95fb4c82b55d548829b0d650ce6824689d853c96138030 \
-                    size    605028
+checksums           rmd160  b8dda47407d23943eaa3dede95a00a37d886925d \
+                    sha256  aa86dd58c05635eb394c9ede0dd15a4f24af4815f299451bbc7895c0f737c2fb \
+                    size    600305
+
+# Packages from Enhances group are optional; we only add those which we actually have.
+depends_test-append port:R-ape \
+                    port:R-e1071 \
+                    port:R-flexclust \
+                    port:R-flexmix \
+                    port:R-kernlab \
+                    port:R-lpSolve \
+                    port:R-mclust \
+                    port:R-modeltools \
+                    port:R-movMF \
+                    port:R-quadprog \
+                    port:R-relations
+
+test.run            yes

@@ -4,8 +4,9 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-app-model
-version             0.1.1
-revision            1
+python.rootname     app_model
+version             0.3.1
+revision            0
 categories          python
 license             BSD
 maintainers         {mps @Schamschula} openmaintainer
@@ -16,23 +17,23 @@ supported_archs     noarch
 platforms           {darwin any}
 homepage            https://pypi.org/project/app-model/
 
-distname            app-model-${version}
+checksums           rmd160  38b0db0a80207bcc9344593f81a9e95064749d91 \
+                    sha256  2c883fc2a229a23f7f6697fa4ca6fa981fdafca05f76812bfe71a1de9c229c7b \
+                    size    116810
 
-checksums           rmd160  811703bda7cd450c3f774e2b1afd963a20596e3d \
-                    sha256  40830455cb66441001ae25978698842eacf16e6ce1be7d737a0eaaad063de562 \
-                    size    73167
-
-python.versions     37 38 39 310
+python.versions     39 310 311 312
 
 if {${name} ne ${subport}} {
-    python.pep517   yes
+    python.pep517_backend \
+                    hatch
 
     depends_build-append \
-                    port:py${python.version}-setuptools_scm
+                    port:py${python.version}-hatch-vcs
 
     depends_lib-append  \
                     port:py${python.version}-in-n-out \
                     port:py${python.version}-psygnal \
                     port:py${python.version}-pydantic \
+                    port:py${python.version}-pydantic-compat \
                     port:py${python.version}-typing_extensions
 }

@@ -3,8 +3,9 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/apernet/hysteria 1.3.2 v
-set git-commit      dd4c17972fdfef7517c22d017ec922463fb94350
+go.setup            github.com/apernet/hysteria 2.6.1 app/v
+github.tarball_from tarball
+set git-commit      401ed5245d9bdfe0a35d629a8d977f256da07a75
 # This line is for displaying commit in CLI only
 revision            0
 categories          net
@@ -14,20 +15,19 @@ license             MIT
 description         network utility and proxy optimized for networks of poor quality
 long_description    Hysteria is a feature-packed network utility optimized for networks of poor quality \
                     (e.g. satellite connections, congested public Wi-Fi, cross-country connection) \
-                    powered by a custom version of QUIC protocol. 
+                    powered by a custom version of QUIC protocol.
 
-checksums           rmd160  a608fd7b6ff61f3ab8ee5cc56f4b21d8f55958ec \
-                    sha256  0329932c6d192c9ad4ba8c85972215a305612f89db956a64ff5025eb84652cfe \
-                    size    556173
+checksums           rmd160  77721f7d3b8b97bfcf5979967c24e34b556136ce \
+                    sha256  06af1a75d7b0ec7ee4d5829d872892064c7be30c020501dae973fe34dd3d4924 \
+                    size    4463229
 
 # Notes for updating this port:
 # Remember to update git commit hash
 
 set time [clock format [clock seconds] -format %Y-%m-%dT%H:%M:%S]
-build.args-append   -ldflags=\"-X 'main.appVersion=v${version}' -X 'main.appCommit=${git-commit}' -X 'main.appDate=${time}'\" -o ../hysteria ./cmd
+build.args-append   -ldflags=\"-X 'main.appVersion=v${version}' -X 'main.appCommit=${git-commit}' -X 'main.appDate=${time}'\" -o ../hysteria .
 # go2port no longer works since 1.3.1 as there's no go.mod at project root
-build.env-delete    GOPROXY=off \
-                    GO111MODULE=off
+go.offline_build    no
 build.dir           ${worksrcpath}/app
 
 destroot {
@@ -49,4 +49,4 @@ notes-append "
 "
 
 startupitem.create          yes
-startupitem.executable      ${prefix}/bin/hysteria -config ${prefix}/etc/hysteria/config.json
+startupitem.executable      ${prefix}/bin/hysteria --config ${prefix}/etc/hysteria/config.json
