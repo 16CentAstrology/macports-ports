@@ -5,7 +5,7 @@ PortGroup           python 1.0
 PortGroup           gitlab 1.0
 
 gitlab.instance     https://dev.gajim.org
-gitlab.setup        gajim python-nbxmpp 3.0.1 nbxmpp-
+gitlab.setup        gajim python-nbxmpp 5.0.4
 name                py-nbxmpp
 revision            0
 
@@ -20,17 +20,16 @@ long_description    The goal of this python library is to provide a way \
                     for python applications to use Jabber/XMPP networks in a non-blocking \
                     way. Originally, a fork of the xmpppy jabber python library.
 
-checksums           rmd160  069352f7ead2dd75a9c1ca6a9373572afeea4833 \
-                    sha256  ad5fca43c902d7ae2317a628062eda08ec0c1ebbbd3066e43cfbd536fa6fef64 \
-                    size    126138
+checksums           rmd160  f7b3f6926f1ae7cf3670721361a6f94bbd8b1844 \
+                    sha256  6b762bcf41b2711a0d7e108ad3a227906048edddb2740e04225ff4ae5eb7f1dd \
+                    size    143198
 
-python.versions     39 310
-python.pep517       yes
+python.versions     39 310 311 312
 
 if {${name} ne ${subport}} {
     depends_lib-append \
                     path:lib/pkgconfig/glib-2.0.pc:glib2 \
-                    port:libsoup \
+                    path:lib/pkgconfig/libsoup-3.0.pc:libsoup \
                     port:py${python.version}-gobject3
 
     depends_run-append \
@@ -38,8 +37,5 @@ if {${name} ne ${subport}} {
                     port:py${python.version}-precis-i18n
 
     test.run        yes
-    test.cmd        ${python.bin}
-    test.args       -m unittest
-    test.target
-    test.env        PYTHONPATH=${worksrcpath}/build/lib
+    python.test_framework unittest
 }

@@ -2,23 +2,29 @@
 
 PortSystem       1.0
 
-name             openjdk17-microsoft
+set feature 17
+name             openjdk${feature}-microsoft
 categories       java devel
 maintainers      {breun.nl:nils @breun} openmaintainer
-platforms        {darwin any}
+
+# JVMMinimumSystemVersion in Contents/Info.plist is set to macOS 10.12 for x86_64:
+# /usr/libexec/PlistBuddy -c "Print :JavaVM:JVMMinimumSystemVersion" Contents/Info.plist
+# Mapping to Darwin version: https://trac.macports.org/wiki/PortfileRecipes#compare-osx-darwin-version
+platforms        {darwin any >= 16 }
+
 # This port uses prebuilt binaries; 'NoMirror' makes sure MacPorts doesn't mirror/distribute these third-party binaries
 license          GPL-2 NoMirror
 # This port uses prebuilt binaries for a particular architecture; they are not universal binaries
 universal_variant no
 
-# https://docs.microsoft.com/en-us/java/openjdk/download#openjdk-17
+# https://learn.microsoft.com/java/openjdk/download#openjdk-17
 supported_archs  x86_64 arm64
 
-version      17.0.6
-set build    10
+version      ${feature}.0.14
+set build    7
 revision     0
 
-description  Microsoft Build of OpenJDK 17 (Long Term Support)
+description  Microsoft Build of OpenJDK ${feature} (Long Term Support)
 long_description The Microsoft Build of OpenJDK is a no-cost distribution of OpenJDK that's open source \
     and available for free for anyone to deploy anywhere.
 
@@ -26,14 +32,14 @@ master_sites https://aka.ms/download-jdk/
 
 if {${configure.build_arch} eq "x86_64"} {
     distname     microsoft-jdk-${version}-macOS-x64
-    checksums    rmd160  261645167231eb218701bff3d1737739fb04e89b \
-                 sha256  8dce6849b8bab15c636ae9071e3a7d6cb4951df210c6119233d9c2bd4b6edf16 \
-                 size    187604848
+    checksums    rmd160  f8f5c18e99c9bf5f81fc68bac979ba796d6260de \
+                 sha256  c0d677165073b08f765982d8bb20c08db03933c79ab269103150f88805c93e6e \
+                 size    187664597
 } elseif {${configure.build_arch} eq "arm64"} {
     distname     microsoft-jdk-${version}-macOS-aarch64
-    checksums    rmd160  6fd388010bddd3026e6fad9cdf7a8ceb15d72f1d \
-                 sha256  fcf089eb05cfe5684ed4b33edfb55696f5573c3508d4b2ecf745846e5fc78a9e \
-                 size    177759316
+    checksums    rmd160  6fa553461daa9ecfbf27bb184d168e2f712f0b57 \
+                 sha256  1c00394d83edb32275d98463d64184c33a4ee3ddd89aa5b0762289a9ab3277ec \
+                 size    185525741
 }
 
 worksrcdir   jdk-${version}+${build}
@@ -41,8 +47,8 @@ worksrcdir   jdk-${version}+${build}
 homepage     https://www.microsoft.com/openjdk
 
 livecheck.type      regex
-livecheck.url       https://docs.microsoft.com/en-us/java/openjdk/download
-livecheck.regex     microsoft-jdk-(17\.\[0-9\.\]+)-macOS-.*\.tar\.gz
+livecheck.url       https://learn.microsoft.com/java/openjdk/download
+livecheck.regex     microsoft-jdk-(${feature}\.\[0-9\.\]+)-macOS-.*\.tar\.gz
 
 use_configure    no
 build {}
@@ -75,17 +81,21 @@ test.args   -version
 # macOS Java tools expect to find Java virtual machines under /Library/Java/JavaVirtualMachines, which is not under ${prefix}.
 destroot.violate_mtree yes
 
-set target /Library/Java/JavaVirtualMachines/${name}
-set destroot_target ${destroot}${target}
+set jvms /Library/Java/JavaVirtualMachines
+set jdk ${jvms}/${name}
 
 destroot {
-    xinstall -m 755 -d ${destroot_target}
-    copy ${worksrcpath}/Contents ${destroot_target}
+    xinstall -m 755 -d ${destroot}${prefix}${jdk}
+    copy ${worksrcpath}/Contents ${destroot}${prefix}${jdk}
+
+    # macOS Java tools expect to find Java virtual machines under /Library/Java/JavaVirtualMachines, so let's create a symlink there
+    xinstall -m 755 -d ${destroot}${jvms}
+    ln -s ${prefix}${jdk} ${destroot}${jdk}
 }
 
 notes "
 If you have more than one JDK installed you can make ${name} the default\
 by adding the following line to your shell profile:
 
-    export JAVA_HOME=${target}/Contents/Home
+    export JAVA_HOME=${jdk}/Contents/Home
 "

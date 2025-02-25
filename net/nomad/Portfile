@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/hashicorp/nomad 1.4.3 v
+go.setup            github.com/hashicorp/nomad 1.9.4 v
 revision            0
 
 homepage            https://www.nomadproject.io
@@ -21,7 +21,8 @@ long_description    \
 
 categories          net
 installs_libs       no
-license             MPL-2
+# Hasicorp Business Source License
+license             Commercial Permissive
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
@@ -43,4 +44,5 @@ destroot {
     xinstall -m 0755 ${workpath}/bin/${name} ${destroot}${prefix}/bin/${name}
 }
 
-github.livecheck.regex {([0-9.]+)}
+github.livecheck.regex \
+                    {([0-9.]+)}

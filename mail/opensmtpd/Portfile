@@ -1,16 +1,14 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
-PortGroup           legacysupport 1.0
-PortGroup           openssl 1.0
+PortGroup           legacysupport 1.1
 
 name                opensmtpd
-version             6.8.0p2
-revision            3
+version             7.6.0p1
+revision            0
 categories          mail
-platforms           darwin
 license             ISC
-maintainers         {@ryanakca debian.org:rak}
+maintainers         {@ryanakca debian.org:rak} {@artkiver gmail.com:artkiver}
 description         secure, reliable, lean, and easy-to configure SMTP server
 long_description    The OpenSMTPD server seeks to be \
                     \n* as secure as possible, and uses privilege separation to mitigate \
@@ -24,13 +22,14 @@ homepage            https://www.opensmtpd.org
 
 master_sites        https://opensmtpd.org/archives/
 
-checksums           rmd160  740a0904594f47caa1261b4be3bc7de8165678e7 \
-                    sha256  51bf05312fe56764748faab9e63170bfbb7c7d84a37c4117b62b2681eb3a4d17 \
-                    size    860189
+checksums           rmd160  07066cb639efbc2ef1374206171aafe57d9f8016 \
+                    sha256  b27c806982a6653a2637f810ae7a45372b9a7ff99350ee1003746503ff0e4a97 \
+                    size    933649
 
 depends_build       port:bison
 
-depends_lib         port:libevent
+depends_lib         port:libevent \
+                    path:lib/libssl.dylib:openssl
 
 startupitem.create      yes
 startupitem.executable  ${prefix}/sbin/smtpd -F
@@ -44,10 +43,7 @@ post-patch {
     reinplace "s|file:/etc/mail/aliases|file:${sysconfdir}/aliases|g" ${worksrcpath}/usr.sbin/smtpd/smtpd.conf
 }
 
-use_autoreconf      yes
-autoreconf.cmd      ./bootstrap
-
-
+ 
 depends_build-append \
                     port:autoconf \
                     port:automake \

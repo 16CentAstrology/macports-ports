@@ -5,7 +5,9 @@ PortGroup           python 1.0
 PortGroup           github 1.0
 
 name                py-cfn-lint
-github.setup        aws-cloudformation cfn-python-lint 0.72.9 v
+github.setup        aws-cloudformation cfn-python-lint 1.18.2 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 revision            0
 
 platforms           {darwin any}
@@ -13,12 +15,13 @@ supported_archs     noarch
 license             MIT
 maintainers         {judaew @judaew} openmaintainer
 
-description         Checks cloudformation for practices and behaviour that could potentially be improved
-long_description    ${description}
+description         Checks cloudformation for practices and behaviour that \
+                    could potentially be improved
+long_description    {*}${description}
 
-checksums           sha256  755a8689eff59a1cdcdef35a71ecd3d87330a8ecb394d3ab2f8f33ae5f48a30d \
-                    rmd160  d3db2385999b74299a7f11682a2c4b1c726ade63 \
-                    size    3238959
+checksums           sha256  97fa5160ff954122f70bfbdd26d50973de1209163842a3c37b6c45e76497a3d5 \
+                    rmd160  b418c51f770352b52607110841dd9058f287b2c9 \
+                    size    3072337
 
 python.versions     39 310 311
 
@@ -28,10 +31,6 @@ if {${name} ne ${subport}} {
             ${worksrcpath}/test/integration/__init__.py
     }
 
-    depends_lib-append \
-                    port:py${python.version}-setuptools
-
-    # These are in setup.py order
     depends_run-append \
                     port:py${python.version}-yaml \
                     port:py${python.version}-aws-sam-translator \
@@ -40,16 +39,14 @@ if {${name} ne ${subport}} {
                     port:py${python.version}-networkx \
                     port:py${python.version}-junit-xml \
                     port:py${python.version}-jschema_to_python \
-                    port:py${python.version}-sarif-om
+                    port:py${python.version}-sarif-om \
+                    port:py${python.version}-sympy \
+                    port:py${python.version}-regex
 
     depends_test-append \
-                    port:py${python.version}-mock \
-                    port:py${python.version}-pytest
+                    port:py${python.version}-mock
 
     test.run        yes
-    test.cmd        py.test-${python.branch}
-    test.target
-    test.env-append PYTHONPATH=build/lib
-
-    livecheck.type  none
 }
+
+github.livecheck.regex  {([0-9.]+)}

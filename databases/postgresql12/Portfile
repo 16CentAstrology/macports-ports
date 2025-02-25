@@ -1,19 +1,17 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem 1.0
-PortGroup select 1.0
 PortGroup compilers 1.0
 PortGroup compiler_blacklist_versions 1.0
 PortGroup muniversal 1.0
 
 #remember to update the -doc and -server as well
 name                postgresql12
-version             12.13
-revision            0
+version             12.22
+revision            1
 
 categories          databases
-platforms           darwin
-maintainers         {jwa @jyrkiwahlstedt}
+maintainers         nomaintainer
 license             Permissive
 description         The most advanced open-source database available anywhere.
 long_description    PostgreSQL is Object-Relational Database Management System.\
@@ -27,9 +25,9 @@ master_sites        http://ftp3.de.postgresql.org/pub/Mirrors/ftp.postgresql.org
             postgresql:source/v${version}/
 distname            postgresql-${version}
 
-checksums           rmd160  5c6bf4b91576529a8250a48072f3ac3d3318dac6 \
-                    sha256  b6c623046af4548f11a84b407934d675d11ed070c793d15b04683bf5f322e02d \
-                    size    21114311
+checksums           rmd160  226b447ba20a707773873a2a8afa9d19af8bbb0b \
+                    sha256  8df3c0474782589d3c6f374b5133b1bd14d168086edbc13c6e72e67dd4527a3b \
+                    size    21305304
 
 use_bzip2           yes
 
@@ -38,12 +36,18 @@ patchfiles-append   patch-no_doc.diff
 
 depends_lib         port:readline path:lib/libssl.dylib:openssl port:zlib port:libxml2 port:libxslt path:lib/pkgconfig/icu-uc.pc:icu path:lib/libgssapi_krb5.dylib:kerberos5
 depends_build       port:bison port:pkgconfig
-depends_run         port:postgresql_select
+depends_run         port:postgresql_select-12
 
 worksrcdir          postgresql-${version}
 
+if {${universal_possible} && [variant_isset universal]} {
+    set zicpath     ${worksrcpath}-${build_arch}/src/timezone/zic
+} else {
+    set zicpath     ${worksrcpath}/src/timezone/zic
+}
 set libdir          ${prefix}/lib/${name}
 configure.args      PG_SYSROOT=disabled \
+                    ZIC=${zicpath} \
                     --sysconfdir=${prefix}/etc/${name} \
                     --bindir=${libdir}/bin \
                     --libdir=${libdir} \
@@ -64,18 +68,14 @@ configure.args      PG_SYSROOT=disabled \
                     --with-uuid=e2fs \
                     --with-icu
 
-configure.ldflags-append    -headerpad_max_install_names
 configure.universal_args-delete --disable-dependency-tracking
 
 # building psql with clang from Xcode prior to 4.4 causes segfault on query; see #31717
 compiler.blacklist-append {clang < 421}
 compilers.choose          cc cxx
 compilers.setup           -gcc -fortran -clang33 -clang34 -clang37
-notes "To use the postgresql server, install the ${name}-server port"
+notes "To use the postgresql server as a startup item install the ${name}-server port."
 
-if {![info exists universal_possible]} {
-    set universal_possible [expr {${os.universal_supported} && [llength ${configure.universal_archs}] >= 2}]
-}
 if {${universal_possible} && [variant_isset universal]} {
     configure.cflags-append    -DAC_APPLE_UNIVERSAL_BUILD
 }
@@ -96,7 +96,9 @@ livecheck.regex    (12\\.\[.0-9\]+)
 livecheck.url       ${homepage}/ftp/source/
 
 post-destroot {
-    system "cd ${destroot}${prefix}/bin && ln -sf ${libdir}/bin/psql psql12"
+    ln -s ${libdir}/bin/psql ${destroot}${prefix}/bin/psql12
+    # delete buggy symlink - this can be removed 2025/02
+    file delete -force ${portdbpath}/psql12
 
     reinplace -E "s#^CFLAGS =#CFLAGS +=#g" \
         ${destroot}${prefix}/lib/${name}/pgxs/src/Makefile.global
@@ -121,9 +123,6 @@ if {!${universal_possible} || ![variant_isset universal]} {
         }
     }
 }
-
-select.group        postgresql
-select.file         ${filespath}/${name}
 
 variant python requires python27 description {add support for python} {
 }
@@ -165,4 +164,3 @@ variant llvm description {add support for JIT compilation} {
     configure.env-append    LLVM_CONFIG=${prefix}/libexec/llvm-${llvm_ver}/bin/llvm-config \
                             CLANG=${configure.cc}
 }
-

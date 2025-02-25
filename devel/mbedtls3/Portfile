@@ -2,10 +2,14 @@
 
 PortSystem          1.0
 PortGroup           cmake 1.1
-PortGroup           github 1.0
 PortGroup           compiler_blacklist_versions 1.0
+PortGroup           github 1.0
+PortGroup           legacysupport 1.1
 
-github.setup        ARMmbed mbedtls 3.3.0 mbedtls-
+# CLOCK_MONOTONIC
+legacysupport.newest_darwin_requires_legacy 15
+
+github.setup        Mbed-TLS mbedtls 3.6.2 mbedtls-
 name                mbedtls3
 revision            0
 
@@ -20,24 +24,26 @@ long_description    {*}${description}
 platforms           darwin
 
 homepage            https://tls.mbed.org
-github.tarball_from archive
+github.tarball_from releases
+# https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-3.6.1/mbedtls-3.6.1.tar.bz2
 
-checksums           rmd160  7bdbc3949dc40a92700de139ece0bd3620d6cb14 \
-                    sha256  a22ff38512697b9cd8472faa2ea2d35e320657f6d268def3a64765548b81c3ec \
-                    size    4582351
+use_bzip2           yes
 
-variant python38 conflicts python39 python310 python311 description {Use Python 3.8} {}
-variant python39 conflicts python38 python310 python311 description {Use Python 3.9} {}
-variant python310 conflicts python38 python39 python311 description {Use Python 3.10} {}
-variant python311 conflicts python38 python39 python310 description {Use Python 3.11} {}
+checksums           rmd160  83d3fc5aca55743890d66f5980c59be258565264 \
+                    sha256  8b54fb9bcf4d5a7078028e0520acddefb7900b3e66fec7f7175bb5b7d85ccdca \
+                    size    4979769
 
-set python.branch 3.10
+variant python38 conflicts python39 python310 python311 python312 description {Use Python 3.8} {}
+variant python39 conflicts python38 python310 python311 python312 description {Use Python 3.9} {}
+variant python310 conflicts python38 python39 python311 python312 description {Use Python 3.10} {}
+variant python311 conflicts python38 python39 python310 python312 description {Use Python 3.11} {}
+variant python312 conflicts python38 python39 python310 python311 description {Use Python 3.12} {}
 
-if {![variant_isset python38] && ![variant_isset python39] && ![variant_isset python311]} {
-    default_variants +python310
+if {![variant_isset python38] && ![variant_isset python39] && ![variant_isset python310] && ![variant_isset python311]} {
+    default_variants +python312
 }
 
-foreach pv {311 310 39 38} {
+foreach pv {312 311 310 39 38} {
     if {[variant_isset python${pv}]} {
         set python.branch "[string index ${pv} 0].[string range ${pv} 1 end]"
         depends_build-append \

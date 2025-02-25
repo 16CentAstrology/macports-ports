@@ -1,0 +1,28 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           golang 1.0
+
+go.setup            github.com/MHNightCat/superfile 1.1.7.1 v
+go.offline_build    no
+github.tarball_from archive
+revision            0
+
+description         Pretty fancy and modern terminal file manager
+long_description    {*}${description}
+
+categories          sysutils
+installs_libs       no
+license             MIT
+maintainers         {gmail.com:herby.gillot @herbygillot} \
+                    openmaintainer
+
+checksums           rmd160  62e0d773aabe04b8bb9ef93f545af06ad14a9a34 \
+                    sha256  93f130813f15dd232a91424cb1100f0dcac69c02d838014bbc6b6093a81cd369 \
+                    size    8216364
+
+build.args-append   -o ./spf
+
+destroot {
+    xinstall -m 0755 ${worksrcpath}/spf ${destroot}${prefix}/bin/
+}

@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-aiofiles
-version             22.1.0
+version             24.1.0
 revision            0
 
 supported_archs     noarch
@@ -17,10 +17,9 @@ long_description    {*}${description}
 
 homepage            https://github.com/Tinche/aiofiles
 
-checksums           rmd160  f73391eea9d66a9813b780c5322215e4ba753854 \
-                    sha256  9107f1ca0b2a5553987a94a3c9959fe5b491fdf731389aa5b7b1bd0733e32de6 \
-                    size    14669
+checksums           rmd160  a15d8ca9e4514fe6e836185d25a4e938f6db8255 \
+                    sha256  22a075c9e5a3810f0c2e48f3008c94d68c65d763b9b03857924c99e57355166c \
+                    size    30247
 
-python.versions     37 38 39 310
-python.pep517       yes
-python.pep517_backend poetry
+python.versions     39 310 311 312 313
+python.pep517_backend hatch

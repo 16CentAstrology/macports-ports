@@ -1,27 +1,24 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem              1.0
-PortGroup               active_variants 1.1
 
 name                    tkimg
-version                 1.4.14
-revision                0
+version                 1.4.16
+revision                1
 categories              graphics
 license                 Tcl/Tk
-maintainers             {mcalhoun @MarcusCalhoun-Lopez} openmaintainer
-homepage                http://tkimg.sourceforge.net
+maintainers             {mcalhoun @MarcusCalhoun-Lopez} {gmx.us:chrischavez @chrstphrchvz} openmaintainer
+homepage                https://tkimg.sourceforge.net
 description             adds a lot of image formats to Tcl/Tk
 long_description        The \"Img\" package adds a lot of image formats to Tcl/Tk.
 
-platforms               darwin
-
 master_sites            sourceforge:tkimg/tkimg/[join [lrange [split ${version} .] 0 1] .]/tkimg%20${version}
 distname                Img-${version}-Source
-worksrcdir              Img-${version}
+extract.rename          yes
 
-checksums               rmd160  f02804981502adaa4ffcd0cd6fc2129a88264efb \
-                        sha256  7510b1b819464f228d228a862e53d9e1d3b41c23013b73790a29f7e9165abb21 \
-                        size    9844859
+checksums               rmd160  6b4fb4bd3558990ffc8aa4bb30246973027b5a7c \
+                        sha256  d99af4835fe3e20960817c7a1b5235dcfaa97c642593cce50bdb64c5827cd321 \
+                        size    12129708
 
 # ensure tkimg works when tk is installed +quartz
 patchfiles-append       patch-quartz.diff
@@ -39,24 +36,33 @@ patchfiles-append       patch-quartz.diff
 depends_build-append    port:tcllib
 
 depends_lib-append      port:tcl \
-                        port:tk \
                         port:zlib
 
-configure.args-append   --with-tcl=${prefix}/lib \
-                        --with-tk=${prefix}/lib
+configure.args-append   --with-tcl=${prefix}/lib
 
 destroot.destdir        INSTALL_ROOT=${destroot}
 
-variant quartz conflicts x11 {
-    require_active_variants tk quartz
-}
+if {${os.platform} eq "darwin" && ${os.subplatform} eq "macosx"
+    && ${os.major} >= 10 && ![string match ppc* ${build_arch}]} {
 
-variant x11 conflicts quartz {
-    require_active_variants tk x11
-}
-
-if {![variant_isset x11] && ![variant_isset quartz]} {
+    variant quartz conflicts x11 {
+        depends_lib-append  port:tk-quartz
+        configure.args-append   --with-tk=${prefix}/lib/tk-quartz \
+                                --with-tkinclude=${prefix}/include/tk-quartz
+    }
+    if {![variant_isset x11]} {
+        default_variants +quartz
+    }
+    set x11conflicts quartz
+} else {
     default_variants +x11
+    set x11conflicts {}
+}
+
+variant x11 conflicts {*}${x11conflicts} {
+    depends_lib-append  port:tk-x11
+    configure.args-append   --with-tk=${prefix}/lib/tk-x11 \
+                            --with-tkinclude=${prefix}/include/tk-x11
 }
 
 livecheck.url           https://wiki.tcl-lang.org/page/Img

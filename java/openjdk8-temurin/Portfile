@@ -2,11 +2,16 @@
 
 PortSystem       1.0
 
-name             openjdk8-temurin
+set feature 8
+name             openjdk${feature}-temurin
 categories       java devel
 maintainers      {breun.nl:nils @breun} openmaintainer
-# See https://adoptium.net/supported_platforms.html
-platforms        {darwin any} {darwin >= 16}
+
+# JVMMinimumSystemVersion in Contents/Info.plist is set to macOS 10.6.0:
+# /usr/libexec/PlistBuddy -c "Print :JavaVM:JVMMinimumSystemVersion" Contents/Info.plist
+# Mapping to Darwin version: https://trac.macports.org/wiki/PortfileRecipes#compare-osx-darwin-version
+platforms        {darwin any >= 10 }
+
 # This port uses prebuilt binaries; 'NoMirror' makes sure MacPorts doesn't mirror/distribute these third-party binaries
 license          GPL-2 NoMirror
 # This port uses prebuilt binaries for a particular architecture; they are not universal binaries
@@ -15,26 +20,26 @@ universal_variant no
 # https://adoptium.net/temurin/releases/
 supported_archs  x86_64
 
-version      8u362
-set build    09
+version      ${feature}u442
+set build    06
 revision     0
 
-description  Eclipse Temurin, based on OpenJDK 8
+description  Eclipse Temurin, based on OpenJDK ${feature} (Long Term Support until at least November 2026)
 long_description Eclipse Temurin provides secure, TCK-tested and compliant, production-ready Java runtimes.
 
-master_sites https://github.com/adoptium/temurin8-binaries/releases/download/jdk${version}-b${build}/
-distname     OpenJDK8U-jdk_x64_mac_hotspot_${version}b${build}
+master_sites https://github.com/adoptium/temurin${feature}-binaries/releases/download/jdk${version}-b${build}/
+distname     OpenJDK${feature}U-jdk_x64_mac_hotspot_${version}b${build}
 worksrcdir   jdk${version}-b${build}
 
-checksums    rmd160  926d966ab7b961fe50f9949d53c11ff6624f5982 \
-             sha256  80996b72377990e2ec13f22e0a63c265640a4f53216596163a651e7e1bfe8319 \
-             size    107290360
+checksums    rmd160  bac02eaf33fe65fdc4a0c98decc55fbb9cf9e5a8 \
+             sha256  2f70725e032fe55629a2659d53646b14c538b12cdcedc2d3c9fa342e1b401cf1 \
+             size    109560420
 
 homepage     https://adoptium.net
 
 livecheck.type      regex
-livecheck.url       https://github.com/adoptium/temurin8-binaries/releases
-livecheck.regex     OpenJDK8U-jdk_x64_mac_hotspot_(8u\[0-9\]+)b\[0-9\]+\.tar\.gz
+livecheck.url       https://github.com/adoptium/temurin${feature}-binaries
+livecheck.regex     jdk(${feature}u\[0-9\]+)-b
 
 use_configure    no
 build {}

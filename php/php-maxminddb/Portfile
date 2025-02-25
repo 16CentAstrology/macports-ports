@@ -8,15 +8,15 @@ license                 Apache-2
 categories              php devel
 maintainers             {ryandesign @ryandesign} openmaintainer
 
-php.branches            7.2 7.3 7.4 8.0 8.1 8.2
+php.branches            7.2 7.3 7.4 8.0 8.1 8.2 8.3
 php.pecl                yes
 
-if {[vercmp ${php.branch} 7.2] >= 0} {
-    version             1.11.0
+if {[vercmp ${php.branch} >= 7.2]} {
+    version             1.12.0
     revision            0
-    checksums           rmd160  6ef7f9da37eb11744cf7a3ca5f43036df4589a45 \
-                        sha256  a57927e47341ee1d981ce11c09cd2d581366a18971e7c8b6b4aba86db6cf1c74 \
-                        size    16084
+    checksums           rmd160  5130272d5464cce218c9720cd41d01bce04f312e \
+                        sha256  54a5d13399690d4c8da026775031db5851dddd4a8b40bdfbfde2caddeffdadfc \
+                        size    16162
 }
 
 description             PHP API for reading MaxMind DB files

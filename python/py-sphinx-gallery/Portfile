@@ -2,12 +2,10 @@
 
 PortSystem          1.0
 PortGroup           python 1.0
-PortGroup           github 1.0
 
-github.setup        sphinx-gallery sphinx-gallery 0.11.1 v
-github.tarball_from archive
-revision            0
 name                py-sphinx-gallery
+version             0.19.0
+revision            0
 
 supported_archs     noarch
 platforms           {darwin any}
@@ -17,17 +15,22 @@ maintainers         {reneeotten @reneeotten} openmaintainer
 description         Extension for automatic generation of an example gallery
 long_description    {*}${description}
 
-checksums           rmd160  d16f920af68ccfce852aaea7d88cf1a09be02b90 \
-                    sha256  55fecce30db40d67aa67045e29fa70744fa590a22fe1c764051c093f195d0ddc \
-                    size    705520
+homepage            https://sphinx-gallery.github.io
 
-python.versions     37 38 39 310 311
+distname            sphinx_gallery-${version}
+
+checksums           rmd160  80af27f6c8b5c0bb00dbb65fee375ff31d366987 \
+                    sha256  8400cb5240ad642e28a612fdba0667f725d0505a9be0222d0243de60e8af2eb3 \
+                    size    471479
+
+python.versions     39 310 311 312 313
 
 if {${subport} ne ${name}} {
     depends_build-append \
-                    port:py${python.version}-setuptools
+                    port:py${python.version}-setuptools_scm
 
     depends_lib-append \
+                    port:py${python.version}-Pillow \
                     port:py${python.version}-sphinx
 
     post-destroot {

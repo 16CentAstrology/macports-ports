@@ -1,0 +1,46 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           golang 1.0
+
+go.setup            github.com/hickford/git-credential-oauth 0.13.4 v
+github.tarball_from archive
+revision            0
+
+description         \
+    A Git credential helper that securely authenticates to GitHub, GitLab and \
+    BitBucket using OAuth.
+
+long_description    {*}${description}
+
+categories          security devel
+installs_libs       no
+license             Apache-2
+maintainers         {gmail.com:herby.gillot @herbygillot} \
+                    openmaintainer
+
+build.pre_args-append \
+    -ldflags \" -X main.version=${github.tag_prefix}${version} \"
+
+destroot {
+    xinstall -m 0755 ${worksrcpath}/${name} ${destroot}${prefix}/bin/
+}
+
+github.livecheck.regex \
+                    {([0-9.]+)}
+
+checksums           ${distname}${extract.suffix} \
+                        rmd160  3bd2a517c9320d53f123dc45df9322c646596f97 \
+                        sha256  fa3f2de33b5a3f5d59aaa48073603eeea5405d750e5264e507c9cd8049f2cc89 \
+                        size    15302
+
+go.vendors          golang.org/x/oauth2 \
+                        lock    v0.23.0 \
+                        rmd160  094f064c80c68ca14f2cd1a3545632643c356009 \
+                        sha256  626e64c7be19ff96d84fede57954997e10f0a3057d2a2aa99ac9fb4311ee0f07 \
+                        size    98540 \
+                    github.com/google/go-cmp \
+                        lock    v0.5.9 \
+                        rmd160  9832ae80123461baed8aa20e830199c0e21e337b \
+                        sha256  3058d20d61f03aa05fca0fc07acb8c50850c68086998c542857aec7ad1529482 \
+                        size    104431

@@ -1,15 +1,14 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
-PortGroup           active_variants 1.1
 PortGroup           conflicts_build 1.0
 
 name                magic
-version             8.3.363
-revision            0
-checksums           rmd160  bfb5c1b26f4341b907699a4deb9cb5ec56492104 \
-                    sha256  30a34f1cf4ba265c7c25328d1840c2021e51df536d4cbfa14c1e10cf35cf6cbd \
-                    size    4205017
+version             8.3.508
+revision            1
+checksums           rmd160  f034a75cb02e22b72cf0f5748029bb06e570a259 \
+                    sha256  efd23c5b6de4da25868964f1f1e6e4e2229d8ee82f1bfa795e6c2cbfb48e46ab \
+                    size    3762537
 
 set branch          [join [lrange [split ${version} .] 0 1] .]
 categories          science
@@ -35,9 +34,11 @@ depends_lib         port:blt \
                     port:libGLU \
                     port:mesa \
                     port:tcl \
-                    port:tk
-
-require_active_variants tk x11
+                    port:tk-x11 \
+                    port:xorg-libice \
+                    port:xorg-libXi \
+                    port:xorg-libXmu \
+                    port:zlib
 
 universal_variant   no
 
@@ -46,14 +47,22 @@ conflicts_build     gnome-keyring
 configure.dir       ${worksrcpath}/scripts
 
 if {${os.platform} eq "darwin" && ${os.major} < 19} {
+    set python_version 3.12
     depends_build-append \
-                    port:python310
-    configure.args-append \
-                    ac_cv_path_PYTHON3=${prefix}/bin/python3.10
+                    port:python[string map {. {}} ${python_version}]
+    configure.python \
+                    ${prefix}/bin/python${python_version}
 } else {
-    configure.args-append \
-                    ac_cv_path_PYTHON3=/usr/bin/python3
+    configure.python \
+                    /usr/bin/python3
 }
+
+configure.args-append \
+                    ac_cv_path_PYTHON3=${configure.python} \
+                    --with-tk=${prefix}/lib/tk-x11 \
+                    --with-tkincls=${prefix}/include/tk-x11 \
+                    --with-tklibs=${prefix}/lib/tk-x11 \
+                    --with-wish=${prefix}/libexec/tk-x11/wish
 
 use_parallel_build  no
 

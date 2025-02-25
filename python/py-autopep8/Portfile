@@ -5,7 +5,7 @@ PortGroup           python 1.0
 PortGroup           select 1.0
 
 name                py-autopep8
-version             2.0.1
+version             2.3.2
 revision            0
 
 categories-append   devel
@@ -25,20 +25,21 @@ long_description    autopep8 automatically formats Python code to \
 
 homepage            https://github.com/hhatto/autopep8
 
-checksums           rmd160  fd24128689ba750910c39b841eeb941f87125396 \
-                    sha256  d27a8929d8dcd21c0f4b3859d2d07c6c25273727b98afc984c039df0f0d86566 \
-                    size    115905
+checksums           rmd160  a4f4ef2e5a0c3feb2b360cc302b45f70278b6081 \
+                    sha256  89440a4f969197b69a995e4ce0661b031f455a9f776d2c5ba3dbd83466931758 \
+                    size    92210
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_lib-append \
-                    port:py${python.version}-setuptools \
-                    port:py${python.version}-toml
-
     depends_run-append \
                     port:${python.rootname}_select \
                     port:py${python.version}-codestyle
+
+    if {${python.version} < 311} {
+        depends_run-append \
+                    port:py${python.version}-tomli
+    }
 
     test.run        yes
 

@@ -3,7 +3,7 @@
 PortSystem      1.0
 
 name            xorg-libFS
-version         1.0.8
+version         1.0.10
 revision        0
 categories      x11 devel
 license         X11
@@ -16,15 +16,16 @@ master_sites    xorg:individual/lib/
 
 distname        libFS-${version}
 
-checksums       rmd160  9253e762e18e530910d405b612380c080e29594a \
-                sha256  c8e13727149b2ddfe40912027459b2522042e3844c5cd228c3300fe5eef6bd0f \
-                size    347880
+checksums       rmd160  e6f8e1e2f99a055acc50e17dd0360e13f3f911a5 \
+                sha256  9babbd3c86069c98563da044045fdc0ece4ec0c93dcdd2c68aa74eb34b4f3b77 \
+                size    293016
 
-use_bzip2           yes
+use_xz              yes
 use_parallel_build  yes
 
-depends_build   port:pkgconfig \
-		port:xorg-xtrans
+depends_build-append \
+                path:bin/pkg-config:pkgconfig \
+                port:xorg-xtrans
 
 depends_lib	port:xorg-xorgproto
 

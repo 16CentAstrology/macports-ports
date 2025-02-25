@@ -1,5 +1,8 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
 PortSystem      1.0
 PortGroup       clang_dependency 1.0
+PortGroup       gnulib 1.0
 PortGroup       muniversal 1.0
 
 name            m4
@@ -34,11 +37,6 @@ platform darwin 8 {
     patchfiles-append      patch-m4-use-older-regnames-on-tiger.diff
 }
 
-if {${os.platform} eq "darwin" && ${os.major} < 10} {
-    # https://trac.macports.org/ticket/62994
-    patchfiles-append      patch-m4-confdir-error.diff
-}
-
 patchfiles-append          patch-clang-before-34.diff
 
 configure.args  --disable-silent-rules \
@@ -52,8 +50,10 @@ configure.checks.implicit_function_declaration.whitelist-append strchr
 
 # Fix for Rosetta: https://trac.macports.org/ticket/64487
 platform darwin {
-    if {${os.major} == 10 && ${build_arch} eq "ppc"} {
-        configure.args-append --build=powerpc-apple-darwin${os.major}
+    if {${os.arch} eq "arm" && ${configure.build_arch} eq "x86_64"} {
+        configure.args-append --host=${configure.build_arch}-apple-darwin${os.major}
+    } elseif {${os.major} == 10 && ${configure.build_arch} eq "ppc"} {
+        configure.args-append --host=powerpc-apple-darwin${os.major}
     }
 }
 

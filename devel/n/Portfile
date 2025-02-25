@@ -3,31 +3,39 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        tj n 9.0.1 v
+github.setup        tj n 10.1.0 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
+revision            0
 categories          devel
-platforms           darwin
 maintainers         {@akierig fastmail.de:akierig} \
                     openmaintainer
 
 license             MIT
+platforms           any
+supported_archs     noarch
 
 description         A simple tool to interactively manage Node.js versions
 
-long_description    ${description}
+long_description    {*}${description}
 
-checksums           rmd160  7a18c34d3fd92a805c46cc299ff7af839c28951b \
-                    sha256  e9c14f9fb2957b86c1adc79697572e49f2b46f92af78b1ba42f67e12ffa6b344 \
-                    size    35027
+checksums           rmd160  0d3b5b37e45063afa8343dc94c8d43886105709c \
+                    sha256  8eacbe036abce638927992b4c4ecdc9828b01aedca57f21c5c4988a133f67dae \
+                    size    37689
 
 use_configure       no
 
 build {}
 
 destroot.args       PREFIX=${destroot}${prefix}
+post-destroot {
+    xinstall -d ${destroot}${prefix}/share/doc/${name}
+    xinstall -m 644 -W ${worksrcpath} LICENSE README.md ${destroot}${prefix}/share/doc/${name}
+}
 
 notes {
 Set the environment variable N_PREFIX to install to a user-writable area:
 
-    export N_PREFIX=$HOME/.local/n
+    export N_PREFIX=$HOME/local/n
 
 }

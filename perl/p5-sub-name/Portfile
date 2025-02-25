@@ -4,17 +4,15 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Sub-Name 0.26
+perl5.setup         Sub-Name 0.28
 license             {Artistic-1 GPL}
 maintainers         nomaintainer
-description         (re)name a sub
-long_description    ${description}
+description         Sub::Name - (Re)name a sub
+long_description    {*}${description}
 
-platforms           darwin
-
-checksums           rmd160  188bef5cfbf0c484a957825bea86939b3fef6acc \
-                    sha256  2d2f2d697d516c89547e7c4307f1e79441641cae2c7395e7319b306d390df105 \
-                    size    84898
+checksums           rmd160  c997b9368683b3e96496eed76006020b47691d98 \
+                    sha256  39c53f6b3b02cbc73176564413b51d3c0f375f9760983fd579c27f558b169cfc \
+                    size    158803
 
 if {${perl5.major} != ""} {
     depends_build-append \

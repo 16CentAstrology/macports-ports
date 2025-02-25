@@ -14,13 +14,15 @@ platforms           darwin macosx
 license             GPL-3
 maintainers         {ra1nb0w @ra1nb0w} openmaintainer
 description         piHPSDR is an HPSDR application designed for low power boards, like Raspberry.
-long_description    ${description}
+long_description    {*}${description}
 
-github.setup        dl1ycf pihpsdr f39632ebaf0dea9088a1402b80c02db6a05b970f
-version             20221215-[string range ${github.version} 0 7]
-checksums           rmd160  2aa23e29396c55e20ecbe1f784e72013446c1d7c \
-                    sha256  d795340363402023189f8df342b8f4b8922d530b6cd1bdbf0277462f7a9202fa \
-                    size    119396646
+github.setup        dl1ycf pihpsdr a5992fe8f83669561eb162d018c41787c360d341
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
+version             20230516-[string range ${github.version} 0 7]
+checksums           rmd160  ced4a947f136996cf61d780519b84b3c348a5bf5 \
+                    sha256  f3f6c41d97ebc6e7918e82c9261fc3e2540e49dcb3b8aea95a1870298bc6af7d \
+                    size    119067573
 revision            0
 
 compiler.c_standard 1999

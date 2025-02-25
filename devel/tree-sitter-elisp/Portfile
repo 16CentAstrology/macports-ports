@@ -4,9 +4,11 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           tree_sitter 1.0
 
-github.setup        Wilfred tree-sitter-elisp 4b0e4a3891337514126ec72c7af394c0ff2cf48c
-version             20211003
+github.setup        Wilfred tree-sitter-elisp 1.5.0
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 revision            0
+epoch               1
 
 description         A tree-sitter parser for Emacs Lisp
 
@@ -16,9 +18,9 @@ categories          devel
 license             MIT
 maintainers         {amake @amake} openmaintainer
 
-checksums           rmd160  59d49e03a40c44784d5718266a7ef0ff651cb9a7 \
-                    sha256  6f14ad9047b5c319050aa30e72a484899f273c7a4914a3355c59c1a3c2b851bb \
-                    size    25831
+checksums           rmd160  f4a06b266694e5e6e55e8f4c456432ca9801516e \
+                    sha256  7fe3a1ea0f2700ae334fa3f5479b51aa0291deb72fa561d433d810b29fb15090 \
+                    size    34204
 
 worksrcdir          ${worksrcdir}/src
 

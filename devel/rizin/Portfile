@@ -6,8 +6,10 @@ PortGroup           meson   1.0
 PortGroup           openssl 1.0
 
 epoch               1
-github.setup        rizinorg rizin 0.4.1 v
+github.setup        rizinorg rizin 0.7.4 v
+github.tarball_from releases
 revision            0
+# Please revbump cutter-rizin whenever this is updated to a new version
 
 homepage            https://rizin.re
 
@@ -24,23 +26,23 @@ maintainers         {l2dy @l2dy} \
                     {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-github.tarball_from releases
 distname            ${github.project}-src-v${github.version}
-extract.suffix      .tar.xz
+worksrcdir          ${github.project}-v${github.version}
+use_xz              yes
 
-checksums           rmd160  baeb64ea6e5c8ccd9b063374989a0ba27f0a0e34 \
-                    sha256  669d956b997820a36e423cf35d482aa99849254b9658cef6844459912dfdbfb8 \
-                    size    11453808
+checksums           rmd160  9d81976b1432b4535cddf7a10d0fe13c9dfd711e \
+                    sha256  f7118910e5dc843c38baa3e00b30ec019a1cdd5c132ba2bc16cf0c7497631201 \
+                    size    18613012
 
 depends_build-append \
                     port:pkgconfig
 
-depends_lib         port:capstone \
+depends_lib-append  port:capstone \
                     port:libzip \
                     port:zlib \
                     port:lz4 \
-                    port:tree-sitter \
-                    port:libuv
+                    port:zstd \
+                    port:tree-sitter
 
 configure.args-append \
                     -Duse_sys_capstone=enabled \
@@ -50,5 +52,5 @@ configure.args-append \
                     -Duse_sys_lz4=enabled \
                     -Duse_sys_xxhash=disabled \
                     -Duse_sys_openssl=enabled \
-                    -Duse_sys_tree_sitter=enabled \
-                    -Duse_sys_libuv=enabled
+                    -Duse_sys_libzstd=enabled \
+                    -Duse_sys_tree_sitter=enabled

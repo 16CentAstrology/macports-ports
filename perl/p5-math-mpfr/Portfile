@@ -4,21 +4,17 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Math-MPFR 4.24
+perl5.setup         Math-MPFR 4.35 ../../authors/id/S/SI/SISYPHUS
 revision            0
 maintainers         nomaintainer
 categories-append   math
 license             {Artistic-1 GPL}
-description         Perl interface to the MPFR library
-long_description    This module wraps the MPFR library functions. The  \
-                    MPFR library is a C library for multiple-precision \
-                    floating-point computations with correct rounding.
+description         Math::MPFR - perl interface to the MPFR (floating point) library.
+long_description    {*}${description}
 
-platforms           darwin
-
-checksums           rmd160  c3e276401bd7c9cfaac4358a94828411d2767c09 \
-                    sha256  f4abe6b5e54e2dbc3a96372a8b603dc764251b8dbc3aa353754b5e4cb6ceff19 \
-                    size    216245
+checksums           rmd160  613066d50cde34e74111d79baf448b15fde96ede \
+                    sha256  6c97d38ca8b6b7df616b7c9386b2ccab1a878879379412df2a1676c1041ba8e3 \
+                    size    237793
 
 if {${perl5.major} != ""} {
     depends_build-append \

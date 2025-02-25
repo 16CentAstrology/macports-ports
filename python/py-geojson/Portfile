@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-geojson
-version             2.5.0
+version             3.2.0
 revision            0
 
 categories-append   gis
@@ -20,18 +20,15 @@ long_description    \
     formatted data and is an implementation of the Python __geo_interface__ \
     Specification.
 
-homepage            https://github.com/frewsxcv/python-geojson
+homepage            https://github.com/jazzband/geojson
 
-checksums           rmd160  72cae53bbe871d370d6da7c75ba24a8b7ec2cec1 \
-                    sha256  6e4bb7ace4226a45d9c8c8b1348b3fc43540658359f93c3f7e03efa9f15f658a \
-                    size    23086
+checksums           rmd160  5091e3ea8cd597d50293e49feeb16e500ababe5e \
+                    sha256  b860baba1e8c6f71f8f5f6e3949a694daccf40820fa8f138b3f712bd85804903 \
+                    size    24574
 
-python.versions     37 38
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     test.run        yes
 
     post-destroot {

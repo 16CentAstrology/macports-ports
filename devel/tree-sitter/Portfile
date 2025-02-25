@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        tree-sitter tree-sitter 0.20.7 v
+github.setup        tree-sitter tree-sitter 0.24.4 v
 github.tarball_from archive
 revision            0
 
@@ -26,25 +26,36 @@ license             MIT
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
+dist_subdir         ${name}/${version}_${revision}
+
 checksums           ${distname}${extract.suffix} \
-                    rmd160  1a1985c08797eaab05bea80b20e48859b468c8ac \
-                    sha256  b355e968ec2d0241bbd96748e00a9038f83968f85d822ecb9940cbe4c42e182e \
-                    size    2928761
+                    rmd160  1797fa317fb2dcde753c30ea71f8c6079d6da5b1 \
+                    sha256  d704832a6bfaac8b3cbca3b5d773cad613183ba8c04166638af2c6e5dfb9e2d2 \
+                    size    3019387
 
 use_configure       no
 
 if {${subport} eq ${name}} {
     PortGroup       makefile 1.0
+
+    # cc1: error: unrecognized command line option "-std=c11"
+    compiler.c_standard 2011
 }
 
 subport ${name}-cli {
     PortGroup       cargo 1.0
 
+    revision        0
+
     build.dir       ${worksrcpath}/cli
 
-    # Allow cargo to fetch dependencies at build time
+    dist_subdir     ${subport}/${version}_${revision}
+
+    depends_run-append \
+                    bin:node:nodejs20
+
     build.pre_args-delete \
-        --frozen
+                    --frozen --offline
 
     destroot {
         xinstall -m 0755 \
@@ -52,3 +63,7 @@ subport ${name}-cli {
             ${destroot}${prefix}/bin/
     }
 }
+
+# Exclude pre-release candidates
+github.livecheck.regex \
+                    {([0-9.]+)}

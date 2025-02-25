@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-platformdirs
-version             2.6.2
+version             4.3.6
 revision            0
 
 categories-append   devel
@@ -14,29 +14,24 @@ license             MIT
 maintainers         {reneeotten @reneeotten} openmaintainer
 
 description         A small Python module for determining appropriate platform-specific dirs
-long_description    ${description}, e.g. a \"user data dir\".
+long_description    {*}${description}, e.g. a \"user data dir\".
 
 homepage            https://github.com/platformdirs/platformdirs
 
-checksums           rmd160  fa1db03dfeac7dfba6a0201a889770118c945ab3 \
-                    sha256  e1fea1fe471b9ff8332e229df3cb7de4f53eeea4998d3b6bfff542115e998bd2 \
-                    size    14260
+checksums           rmd160  ab9c718c8dc4d8aa46fd31c87e8a3b482f879b92 \
+                    sha256  357fb2acbc885b0419afd3ce3ed34564c13c9b95c89360cd9563f73aa5e2b907 \
+                    size    21302
 
-# keep all these Python versions, port is a dependency of py-virtualenv
-python.versions     27 35 36 37 38 39 310 311
+# keep th Python 2.7 subport as it is a dependency of py-virtualenv
+# See <https://trac.macports.org/wiki/Python#VersionPolicy>
+python.versions     27 39 310 311 312 313
 
 if {${name} ne ${subport}} {
     depends_build-append \
                     port:py${python.version}-setuptools \
                     port:py${python.version}-setuptools_scm
 
-    if {${python.version} == 36} {
-        version     2.4.0
-        revision    0
-        checksums   rmd160  4dbcd578204ea2114f6ff5eb72fb5a4a860fd5ec \
-                    sha256  367a5e80b3d04d2428ffa76d33f124cf11e8fff2acdaa9b43d545f5c7d661ef2 \
-                    size    24051
-    } elseif {${python.version} <= 35} {
+    if {${python.version} == 27} {
         version     2.0.2
         epoch       1
         revision    0
@@ -48,20 +43,14 @@ if {${name} ne ${subport}} {
                     port:py${python.version}-toml
     } else {
         depends_build   port:py${python.version}-hatch-vcs
-        python.pep517   yes
         python.pep517_backend hatch
-
-        if {${python.version} < 38} {
-            depends_lib-append \
-                        port:py${python.version}-typing_extensions
-        }
     }
 
     post-destroot {
         set docdir ${prefix}/share/doc/${subport}
         xinstall -d ${destroot}${docdir}
         xinstall -m 0644 -W ${worksrcpath} README.rst ${destroot}${docdir}
-        if {${python.version} <= 36} {
+        if {${python.version} == 27} {
             xinstall -m 0644 -W ${worksrcpath} CHANGES.rst ${destroot}${docdir}
             xinstall -m 0644 -W ${worksrcpath} LICENSE.txt ${destroot}${docdir}
         } else {

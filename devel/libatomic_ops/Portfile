@@ -6,16 +6,17 @@ PortGroup           muniversal 1.0
 
 name                libatomic_ops
 
-github.setup        ivmai libatomic_ops 7.6.14 v
+github.setup        ivmai libatomic_ops 7.8.2 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 revision            0
 
-checksums           rmd160  d3ec67f5a93a34317fab026f63b286c38bc3b2df \
-                    sha256  0db4a792ab057e541199203b2b2e322515ddfb153d9d2b7ab8986d20db58b050 \
-                    size    139122
+checksums           rmd160  4f501f5d9830637961952bc48bc5d3ad235265c1 \
+                    sha256  6be3e73b9d1c0e16af011b06200bdf8f048c96f4a31d395c40eb07a344783acd \
+                    size    159627
 
 maintainers         nomaintainer
 categories          devel
-platforms           darwin
 # Permissive for parts from boehmgc, MIT for parts to be linked with other
 # software, GPL for the separate GPL'd library
 license             Permissive MIT GPL-2

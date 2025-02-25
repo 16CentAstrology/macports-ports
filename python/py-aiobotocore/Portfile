@@ -4,15 +4,14 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-aiobotocore
-version             2.4.0
+version             2.15.2
 revision            0
 categories-append   devel
 platforms           {darwin any}
 license             Apache-2
 supported_archs     noarch
 
-python.versions     37 38 39 310
-python.pep517       yes
+python.versions     39 310 311 312 313
 
 maintainers         {stromnov @stromnov} openmaintainer
 
@@ -21,9 +20,9 @@ long_description    {*}${description}
 
 homepage            https://github.com/aio-libs/aiobotocore
 
-checksums           rmd160  f57947f7d74d18184a505e07caa9c377bfcbbbb2 \
-                    sha256  f9fe0698cc497861bdb54cd16161c804031f758ada9480c35540f20c0c078385 \
-                    size    66212
+checksums           rmd160  cf0c3b04ea8f3c7289a57d3bbf4d50b4b691488e \
+                    sha256  9ac1cfcaccccc80602968174aa032bf978abe36bd4e55e6781d6500909af1375 \
+                    size    107035
 
 if {${name} ne ${subport}} {
     depends_lib-append  port:py${python.version}-botocore \

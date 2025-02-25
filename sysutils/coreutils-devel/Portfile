@@ -2,12 +2,13 @@
 
 PortSystem      1.0
 PortGroup       compiler_blacklist_versions 1.0
+PortGroup       gnulib 1.0
 
 name            coreutils-devel
 conflicts       gexpr coreutils
 set my_name     coreutils
 
-version         9.1
+version         9.6
 revision        0
 
 categories      sysutils
@@ -32,9 +33,9 @@ use_xz          yes
 
 installs_libs   no
 
-checksums       rmd160  c240beab8617b8530aca797f591ee1809c4cbf49 \
-                sha256  61a1f410d78ba7e7f37a5a4f50e6d1320aca33375484a3255eddf17a38580423 \
-                size    5712104
+checksums       rmd160  a1ca4d501fa683c6fb87c475fcd337ebcac4e69e \
+                sha256  7a0124327b398fd9eb1a6abde583389821422c744ffa10734b24f557610d3283 \
+                size    6134764
 
 depends_build-append \
                 port:gettext
@@ -52,7 +53,7 @@ configure.args-append \
                 --disable-silent-rules \
                 --program-prefix=g
 
-# Bypass year 2038 awareness code that causes the universal variant to fail.
+# Bypass year 2038 awareness code, which causes failures for 32-bit/universal.
 configure.args-append \
                 --disable-year2038
 
@@ -100,8 +101,8 @@ post-destroot {
 
 }
 
-# Set the RUN_EXPENSIVE_TESTS environmental variable to 'yes' to run more
-# expensive tests.  Set the RUN_VERY_EXPENSIVE_TESTS environmental variable
+# Set the RUN_EXPENSIVE_TESTS environment variable to 'yes' to run more
+# expensive tests.  Set the RUN_VERY_EXPENSIVE_TESTS environment variable
 # to 'yes' to run even more expensive tests.
 test.run        yes
 test.target     check

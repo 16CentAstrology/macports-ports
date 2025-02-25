@@ -4,11 +4,11 @@ PortSystem                  1.0
 PortGroup                   compiler_blacklist_versions 1.0
 
 name                        kerberos5
-version                     1.20.1
+version                     1.21.3
 revision                    0
-checksums                   rmd160  fc9dcb34199c566bc650876266cb06cbef5315cc \
-                            sha256  704aed49b19eb5a7178b34b2873620ec299db08752d6a8574f95d41879ab8851 \
-                            size    8661660
+checksums                   rmd160  51727964dcfc3d1f83f8df342b23cd2aad48f526 \
+                            sha256  b7a4cd5ead67fb08b980b21abd150ff7217e85ea320c9ed0c6dadd304840ad35 \
+                            size    9136145
 
 set branch                  [join [lrange [split ${version} .] 0 1] .]
 conflicts                   fbopenssl
@@ -31,8 +31,7 @@ master_sites                ${homepage}dist/krb5/${branch}/
 distname                    krb5-${version}
 
 depends_build               port:gettext \
-                            port:pkgconfig \
-                            port:python310
+                            path:bin/pkg-config:pkgconfig
 
 depends_lib                 port:gettext-runtime \
                             port:libcomerr \
@@ -55,7 +54,7 @@ configure.checks.implicit_function_declaration.whitelist-append strchr
 # remove ${prefix}/lib from configure.ldflags to allow linking against its own libs first
 # adding ${worksrcpath}/lib is not necessary and pollutes krb5-config --libs and pkg-config files
 configure.ldflags-delete    -L${prefix}/lib
-configure.python            ${prefix}/bin/python3.10
+configure.python            false
 configure.args              --with-system-et \
                             --without-system-db \
                             --without-hesiod \
@@ -79,11 +78,6 @@ if {[string match *gcc-4.2 ${configure.compiler}] &&
 post-configure {
     reinplace -E {s|-arch [^ ]+||g} \
         ${worksrcpath}/build-tools/krb5-config
-}
-
-post-destroot {
-    # Remove LDFLAGS settings that are needed for building this port but not dependents
-    reinplace "/^LDFLAGS=/s/^.*$/LDFLAGS=''/" ${destroot}${prefix}/bin/krb5-config
 }
 
 livecheck.type              regex

@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/sethvargo/ratchet 0.3.1 v
+go.setup            github.com/sethvargo/ratchet 0.10.0 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -21,15 +22,12 @@ license             Apache-2
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-# Allow Go to fetch dependencies at build time
-build.env-delete    GO111MODULE=off GOPROXY=off
-
 build.pre_args-append \
-    -ldflags \"-X ${go.package}/internal/version.Version=${version}\"
+    -ldflags \"-X ${go.package}/internal/version.version=${version}\"
 
-checksums           rmd160  e243940d889c2ad1e10080f7eec182ddd7d1ecbd \
-                    sha256  a2eb497e1af65dae7a35321d2e3f1eb6ce9dc6b02b212b49650487f1e01bbc6c \
-                    size    86942
+checksums           rmd160  7a7d79070d56e640c0b3262f7798ab8601177b4c \
+                    sha256  e96135fa2acddade2707e2110d212b790c2a8d114a7ace8c5d25e9edbf83b7e9 \
+                    size    52555
 
 destroot {
     xinstall -m 0755 ${worksrcpath}/${name} ${destroot}${prefix}/bin/

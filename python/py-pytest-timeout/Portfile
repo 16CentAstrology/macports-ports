@@ -4,39 +4,30 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           python 1.0
 
-github.setup        pytest-dev pytest-timeout 2.1.0
+github.setup        pytest-dev pytest-timeout 2.3.1
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 revision            0
 name                py-${github.project}
 
-checksums           rmd160  4da121399642f90fb7ed2cc1b09a52d7dc663a47 \
-                    sha256  9a1491f24855015a529ebb5e924eafbed1c4d9c614ada903fc31cc5adf2f5e36 \
-                    size    15133
+checksums           rmd160  a6621617829993406c4fec395a228a5a276b0cdf \
+                    sha256  fb5d247616358687090aed4e54139b0d7166cd1c796b68708e843ed29a0f98c9 \
+                    size    16837
 
 license             MIT
-maintainers         {@catap korins.ky:kirill} openmaintainer
+maintainers         nomaintainer
 supported_archs     noarch
 platforms           {darwin any}
 
 description         py.test plugin to abort hanging tests
 long_description    {*}${description}
 
-python.versions     37 38 39 310
+python.versions     38 39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
-    depends_test-append \
-                port:py${python.version}-ipdb \
-                port:py${python.version}-pexpect \
-                port:py${python.version}-pytest \
-                port:py${python.version}-pytest-cov
-
     test.run    yes
     test.env    PYTHONPATH=${worksrcpath}/build/lib \
                 PYTEST_PLUGINS=pytest_timeout
-    test.cmd    py.test-${python.branch}
-    test.target
 
     pre-test {
         # See https://docs.pytest.org/en/stable/pythonpath.html

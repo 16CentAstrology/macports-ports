@@ -5,10 +5,12 @@ PortGroup       legacysupport 1.0
 PortGroup       compiler_blacklist_versions 1.0
 
 name            bind9
-version         9.18.11
+version         9.20.6
+revision        0
 categories      net
 maintainers     {geeklair.net:dluke @danielluke} {jmr @jmroot}
-platforms       darwin freebsd sunos
+platforms       {darwin >= 11} freebsd sunos
+conflicts       bind9.18
 
 description     Domain Name System server
 # see https://gitlab.isc.org/isc-projects/bind9/-/blob/main/LICENSE
@@ -24,38 +26,46 @@ long_description \
                 and Internet addresses and is intended to be linked with applications \
                 requiring name service.
 
-homepage        https://www.isc.org/
+homepage        https://www.isc.org/bind/
 
 distname        bind-${version}
 master_sites    isc:${name}/${version}
 
-checksums       rmd160    eb642dec84fc2b2f252119583f778cc5a3e0a283 \
-                sha256    8ff3352812230cbcbda42df87cad961f94163d3da457c5e4bef8057fd5df2158 \
-                size      5284184
+checksums       rmd160    9dbea2ca7d02a490e409ae1e82d202dd788008ad \
+                sha256    ed7f54b44f84a7201a2fa7a949f3021ea568529bfad90fca664fd55c05104134 \
+                size      5639720
 
 use_xz          yes
 
-depends_build   port:pkgconfig
+depends_build   path:bin/pkg-config:pkgconfig
 
 depends_lib     path:lib/libssl.dylib:openssl  \
-                port:libuv \
+                path:lib/pkgconfig/libuv.pc:libuv \
                 port:libxml2 \
                 port:nghttp2 \
-                port:jemalloc \
+                path:lib/pkgconfig/jemalloc.pc:jemalloc \
                 port:json-c \
                 port:libidn2 \
-                port:lmdb
+                port:lmdb \
+                port:userspace-rcu
 
 universal_variant \
                 no
 
-# Needs working __atomic_* builtins
+compiler.c_standard 2011
+# Needs stdatomic.h
+# Apple clang 15.0.0 from Xcode before 15.2 has a codegen bug that causes a crash in libisc
 compiler.blacklist \
-                gcc-4.2 \
-                {clang < 500}
+                {clang < 703} \
+                {clang >= 1500.0.40.1 < 1500.1.0.2.5 }
+
+# https://trac.macports.org/wiki/WimplicitFunctionDeclaration#strchr
+configure.checks.implicit_function_declaration.whitelist-append strchr
 
 patchfiles      atomics.patch \
-                configure.patch
+                lib_dns_Makefile.in.patch \
+                setrlimit.patch \
+                fix-rwlock.patch
 
 # tests require `sudo bin/tests/system/ifconfig.sh up`
 test.run        yes
@@ -67,8 +77,15 @@ startupitem.executable  ${prefix}/sbin/named -u named -f
 
 add_users       named group=named
 
-configure.env   STD_CDEFINES=-DDIG_SIGCHASE=1
+configure.env   STD_CDEFINES=-DDIG_SIGCHASE=1 \
+                CC_FOR_BUILD=${configure.cc}
+if {${os.platform} eq "darwin" && ${os.major} <= ${legacysupport.newest_darwin_requires_legacy}} {
+    configure.env-append    CPPFLAGS_FOR_BUILD=-I${prefix}/include/LegacySupport \
+                            CFLAGS_FOR_BUILD=${configure.cc_archflags} \
+                            "LDFLAGS_FOR_BUILD=-L${prefix}/lib -lMacportsLegacySupport"
+}
 
+# set zonedb to RBTDB to workaround QPzone defect in 9.20.0 -> 9.20.4
 configure.args  --disable-silent-rules \
                 --mandir=${prefix}/share/man \
                 --with-openssl=${prefix} \
@@ -82,6 +99,13 @@ platform darwin 8 {
 
 platform darwin 9 {
     configure.args-append --with-dlopen=no
+}
+
+if {${os.platform} eq "darwin" && ${os.major} < 10} {
+    # Until this is fixed: https://trac.macports.org/ticket/65945
+    depends_lib-delete \
+                path:lib/pkgconfig/jemalloc.pc:jemalloc
+    configure.args-append --with-jemalloc=no
 }
 
 post-destroot    {
@@ -128,5 +152,5 @@ notes "******************************************************
 ******************************************************"
 
 livecheck.type   regex
-livecheck.url    ${homepage}downloads/
-livecheck.regex  {BIND(\d+\.\d*[02468]\.\d+(?:-P\d+)?)\.tar\.[gx]z - tar\.[gx]z\s*</a>}
+livecheck.url    https://www.isc.org/downloads/
+livecheck.regex  {BIND(\d+\.\d*[02468]\.\d+(?:-P\d+)?)\.tar\.[gx]z</a>}

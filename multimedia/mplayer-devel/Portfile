@@ -6,16 +6,16 @@ name                mplayer-devel
 conflicts           MPlayer
 
 # svn info svn://svn.mplayerhq.hu/mplayer/trunk
-version             38407
+version             38435
 
 # https://git.videolan.org/?p=ffmpeg.git;a=shortlog
 set ffmpeg_branch   master
-set ffmpeg_ver      6c814093d8a0351d0a5f5264deba2285a436e88a
+set ffmpeg_ver      7aa9684db39a8ecf444b3af1c74c225757d8e49f
 
 revision            0
 categories          multimedia
 license             GPL-2+
-maintainers         {kencu @kencu} {jeremyhu @jeremyhu}
+maintainers         {jeremyhu @jeremyhu} openmaintainer
 
 description         versatile movie player - development version
 long_description    ${name} plays most movie files in popular and less popular formats. \
@@ -59,6 +59,11 @@ depends_lib-append  path:include/turbojpeg.h:libjpeg-turbo \
                     port:lzo2 \
                     port:ncurses \
                     port:zlib
+
+# https://trac.macports.org/ticket/70804
+if {${os.platform} eq "darwin" && ${os.version} > 22} {
+    configure.cflags-append -Wno-error=incompatible-function-pointer-types -Wno-error=int-conversion
+}
 
 configure.args      --cc=${configure.cc} \
                     --host-cc=${configure.cc} \

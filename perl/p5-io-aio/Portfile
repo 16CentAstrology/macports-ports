@@ -5,17 +5,16 @@ PortGroup           perl5 1.0
 
 epoch               1
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         IO-AIO 4.79 ../../authors/id/M/ML/MLEHMANN
+perl5.setup         IO-AIO 4.81 ../../authors/id/M/ML/MLEHMANN
 revision            0
 license             {Artistic-1 GPL}
 maintainers         nomaintainer
+description         IO::AIO - Asynchronous/Advanced Input/Output
+long_description    {*}${description}
 
-description         Asynchronous Input/Output
-long_description    ${description}
-
-checksums           rmd160  b889a060cbf5c60309ea206578320fcd7d35c15d \
-                    sha256  a4617de75fec37aadcc09b8219fdb1e6e65f5a14ae930a2d8c130c3e45cb366c \
-                    size    189140
+checksums           rmd160  a94df338dccc043859233bb76c59d44fe895369a \
+                    sha256  67029f20e9b734ac1f483f7175d4ce45f924581c7de8fdf44e20c79be6dc0729 \
+                    size    189526
 
 if {${perl5.major} != ""} {
     depends_build-append \

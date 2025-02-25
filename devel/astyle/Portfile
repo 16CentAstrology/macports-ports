@@ -3,13 +3,14 @@
 PortSystem          1.0
 PortGroup           cmake 1.1
 PortGroup           java 1.0
+PortGroup           compiler_blacklist_versions 1.0
 
 name                astyle
-version             3.1
-revision            1
+version             3.6.6
+set branch          [join [lrange [split ${version} .] 0 1] .]
+revision            0
 categories          devel
 license             MIT
-platforms           darwin
 maintainers         nomaintainer
 
 description         source code beautifier for the C, C++, C# and Java programming languages
@@ -17,23 +18,25 @@ long_description    Artistic Style is a source code indenter, source code format
                     and source code beautifier for the C, C++, C# and Java \
                     programming languages.
 
-homepage            http://astyle.sourceforge.net
-master_sites        sourceforge:project/astyle/astyle/astyle%20${version}
-distname            ${name}_${version}_macos
-checksums           rmd160  5aed3c48b59aedf02e247652db6fad597ef9bd63 \
-                    sha256  c4eebbe082eb2cb98f90aafcce3da2daeb774dd092e4cf8b728102fded8d1dcf \
-                    size    187918
+homepage            https://astyle.sourceforge.net
+master_sites        sourceforge:project/astyle/astyle/astyle%20${branch}
+use_bzip2           yes
+checksums           rmd160  158da5b416add31c8338d403b9722faf666de06c \
+                    sha256  e731a262aeecdf4e3d5ccdd8c73b832749b1277078464ea7697adba26e6e6bb6 \
+                    size    218759
 
-worksrcdir          ${name}
+patchfiles          dont-force-stdlib.diff
 
-patchfiles          patch-CMakeLists.txt.diff
+compiler.cxx_standard   2017
 
-compiler.cxx_standard   2011
+# The <filesystem> header is only provided by Xcode 11 and later.
+compiler.blacklist-append {clang < 1100}
 
 # This build system can only build one thing at a time. Since we want several
-# things, we have to do each one separately.
+# things, we have to do each one separately. Docs will be installed with the
+# exectuable.
 set builds {
-                    executable  {}
+                    executable  {-DINSTALL_DOC=ON}
                     shared      {-DBUILD_SHARED_LIBS=ON}
                     static      {-DBUILD_STATIC_LIBS=ON}
 }
@@ -66,4 +69,4 @@ variant java description {Build and install the JNI library} {
     lappend builds  java        {-DBUILD_JAVA_LIBS=ON}
 }
 
-livecheck.regex     "[quotemeta $name] (\\d+(\\.\\d+)*)"
+livecheck.regex     "[quotemeta $name]-(\\d+(\\.\\d+)*)"

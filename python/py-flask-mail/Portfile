@@ -5,10 +5,12 @@ PortGroup           python 1.0
 PortGroup           github 1.0
 
 github.setup        mattupstate flask-mail 0.9.1
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 name                py-flask-mail
 version             0.9.1
 revision            2
-python.versions     27 35 36
+python.versions     27 36
 categories-append   www
 maintainers         {aronnax @lpsinger} openmaintainer
 description         Flask Mail extension

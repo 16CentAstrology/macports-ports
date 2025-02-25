@@ -6,12 +6,15 @@ PortGroup           janet  1.0
 
 name                janet-musty
 github.setup        pyrmont musty 1d5b431c49ae5cb3a3a53af3698b23615d5aae48
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 version             20210905
 revision            0
 categories          janet devel
 license             MIT
 maintainers         {@tsujp wz.ht:jc+macports} openmaintainer
-platforms           darwin
+platforms           any
+supported_archs     noarch
 description         an incomplete Mustache implementation in Janet
 long_description    Musty is {*}${description}.
 

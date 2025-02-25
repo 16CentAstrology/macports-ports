@@ -4,7 +4,7 @@ PortSystem      1.0
 PortGroup       python 1.0
 
 name            py-game
-version         2.1.2
+version         2.6.1
 categories-append     devel multimedia graphics
 license         LGPL-2.1+
 maintainers     {jmr @jmroot} openmaintainer
@@ -15,28 +15,24 @@ long_description    Pygame is a set of Python modules designed for \
             games and multimedia programs in the python language. \
             Pygame is highly portable and runs on nearly every \
             platform and operating system.
-homepage        http://www.pygame.org/
+homepage        https://www.pygame.org/
 
 python.rootname pygame
-checksums       md5 8467a125e9075fa701f082806d228366 \
-                rmd160 063aebffd5aae53e22c239f7edfb20af36c6e3ff \
-                sha256 d6d0eca28f886f0477cd0721ac688189155a587f2bb8eae740e52ca56c3ad23c
+checksums       md5 cb6bf42a449b0bb1f53c534bcbcc220c \
+                rmd160 7edb3cc722a0399eedb9f8e33d7d4b813033d57d \
+                sha256 56fb02ead529cee00d415c3e007f75e0780c655909aaa8e8bf616ee09c9feb1f
 
-python.versions 27 36 37 38 39 310
+python.versions 27 39 310 311 312 313
 
 if {$subport ne $name} {
     patchfiles  patch-config_darwin.py.diff \
                 patch-disable_portmidi.diff
 
-    depends_build   port:pkgconfig \
+    depends_build   path:bin/pkg-config:pkgconfig \
                     port:py${python.version}-setuptools
     depends_lib port:py${python.version}-numpy \
                 path:include/turbojpeg.h:libjpeg-turbo \
                 port:libpng
-
-    if {${python.version} != 27} {
-        python.pep517   yes
-    }
 
     use_configure   yes
     configure.env-append LOCALBASE=${prefix}

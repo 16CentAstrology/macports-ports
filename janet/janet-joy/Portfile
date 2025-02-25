@@ -6,12 +6,15 @@ PortGroup           janet  1.0
 
 name                janet-joy
 github.setup        joy-framework joy e61ebcb1c06f45bebc5af27d13cc3da63e016cc1
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 version             20210811
 revision            0
 categories          janet devel
 license             MIT
 maintainers         {@tsujp wz.ht:jc+macports} openmaintainer
-platforms           darwin
+platforms           any
+supported_archs     noarch
 description         A full stack janet web framework
 long_description    {*}${description}
 

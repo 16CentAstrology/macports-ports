@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/cosmtrek/air 1.41.0 v
+go.setup            github.com/air-verse/air 1.61.7 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -18,9 +19,9 @@ license             GPL-3
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  2cd97fee215d297c4cfa4dcf6c951c6cdd9fd27f \
-                    sha256  90cd4f0dcbd9be56ee1ad2286b3c1edcd1ebdc0b4c7bd02b311efbb8690c6f4a \
-                    size    216030
+checksums           rmd160  a54a523422fd15d60e70b5774b1fd01223777608 \
+                    sha256  d3c79d84c95bc6ee661bce6f2c6a26acf7ec0335c06d0905616017898372f90c \
+                    size    1029170
 
 patch {
     # Set the build version directly in the Makefile. Do not attempt to
@@ -38,9 +39,6 @@ patch {
     # Remove BuildTimestamp field to ensure build is more reproducible.
     reinplace -W ${worksrcpath} {/BuildTimestamp/ d} Makefile
 }
-
-# Allow Go to fetch deps at build time
-build.env-delete    GO111MODULE=off GOPROXY=off
 
 build.cmd           make
 build.target        build

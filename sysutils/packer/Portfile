@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/hashicorp/packer 1.8.5 v
+go.setup            github.com/hashicorp/packer 1.11.2 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -22,19 +23,17 @@ long_description    \
 
 categories          sysutils
 installs_libs       no
-license             MPL-2
+# Packer 1.10.0 onwards is licensed as per Hashicorp's Business Source License
+license             Commercial Permissive
 maintainers         {gmail.com:newtonne.github @newtonne} \
                     {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  8c8bb5f682b81882d15fcf1e7d474a8e26d27b34 \
-                    sha256  4919cd8cf3b27e919c89dde6e24ef4d32b879212d26f367082fb12485a620585 \
-                    size    2278013
+checksums           rmd160  0d4a2f3236d9b171cc4a69d7b7aacc86b41289d3 \
+                    sha256  8e795db6e3697fb261cfbaedf4033ea0dd326a9348cddd267183cfd83672169e \
+                    size    2355788
 
 depends_build-append port:realpath
-
-# Allow deps to be fetched at runtime
-build.env-delete    GO111MODULE=off GOPROXY=off
 
 build.env-append    XC_ARCH=${goarch} \
                     XC_OS=darwin
@@ -46,3 +45,6 @@ destroot {
     xinstall -m 0755 \
         ${worksrcpath}/bin/${name} ${destroot}${prefix}/bin/${name}
 }
+
+github.livecheck.regex \
+                    {([0-9.]+)}

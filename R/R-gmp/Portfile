@@ -3,16 +3,21 @@
 PortSystem          1.0
 PortGroup           R 1.0
 
-R.setup             cran cran gmp 0.6-10
+R.setup             cran antoinelucas gmp 0.7-5
 revision            0
 categories-append   math
 maintainers         {@barracuda156 gmail.com:vital.had} openmaintainer
-license             {GPL-2 GPL-3}
+license             GPL-2+
 description         Multiple precision arithmetic
 long_description    {*}${description}
 homepage            https://forgemia.inra.fr/sylvain.jasson/gmp
-checksums           rmd160  4ad2365a75f03106a898963217b023c9d0354459 \
-                    sha256  09ed39aa1c044691e543eeaa7bd907d4b34b134ebb39e99b44ae2ca4911baecc \
-                    size    165934
+checksums           rmd160  c39d8cc5bac1a9e96d2ab3cc924f17198843f5cd \
+                    sha256  f5cdaf9afb4cd921924f16682a6d6097ff372c95b697f363704c367f9b13ce78 \
+                    size    166664
 
 depends_lib-append  port:gmp
+
+depends_test-append port:R-Rmpfr \
+                    port:R-round
+
+test.run            yes

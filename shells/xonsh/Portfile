@@ -4,7 +4,8 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           python 1.0
 
-github.setup        xonsh xonsh 0.13.4
+github.setup        xonsh xonsh 0.19.2
+github.tarball_from releases
 revision            0
 categories          shells
 supported_archs     noarch
@@ -22,27 +23,25 @@ long_description    {*}${description} \
                     macOS, and Windows. Xonsh is meant for the daily use of \
                     experts and novices alike.
 
-checksums           rmd160  a50c4f5e635148ea5684b1d329d69e3c45dca3e9 \
-                    sha256  c2cbfba23f57111700b79f4b1a55582291dc70486f92124ebd662e140cc7bc3f \
-                    size    12677004
+checksums           rmd160  d42e102255b1c75278eabee2595b0f13ab1cd29e \
+                    sha256  74ed641d0888831b0605ddb03c9d0084b003fbc75675453e4b5745be064bb272 \
+                    size    12750652
 
-variant python37 conflicts python38 python39 python310 description {Use Python 3.7} {}
-variant python38 conflicts python37 python39 python310 description {Use Python 3.8} {}
-variant python39 conflicts python37 python38 python310 description {Use Python 3.9} {}
-variant python310 conflicts python37 python38 python39 description {Use Python 3.10} {}
+variant python39 conflicts python310 python311 python312 description {Use Python 3.9} {}
+variant python310 conflicts python39 python311 python312 description {Use Python 3.10} {}
+variant python311 conflicts python39 python310 python312 description {Use Python 3.11} {}
+variant python312 conflicts python39 python310 python311 description {Use Python 3.12} {}
 
-if {![variant_isset python37] && ![variant_isset python38] && ![variant_isset python39]} {
-        default_variants +python310
+if {![variant_isset python39] && ![variant_isset python310] && ![variant_isset python310]} {
+        default_variants +python312
 }
 
-foreach pv {310 39 38 37} {
+foreach pv {312 311 310 39} {
     if {[variant_isset python${pv}]} {
         python.default_version ${pv}
         break
     }
 }
-
-python.pep517       yes
 
 depends_lib-append  port:py${python.version}-prompt_toolkit \
                     port:py${python.version}-pygments \

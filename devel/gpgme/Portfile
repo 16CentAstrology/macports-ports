@@ -3,7 +3,13 @@
 PortSystem          1.0
 
 name                gpgme
-version             1.18.0
+version             1.24.1
+revision            0
+
+checksums           rmd160  72924d1b5bb4ba7e7081938e5c0c869c89e43dbd \
+                    sha256  ea05d0258e71061d61716584ec34cef59330a91340571edc46b78374973ba85f \
+                    size    1891695
+
 categories          devel security crypto
 license             {LGPL-2.1+ GPL-3+}
 maintainers         nomaintainer
@@ -19,11 +25,7 @@ homepage            https://www.gnupg.org/related_software/gpgme/
 master_sites        gnupg
 use_bzip2           yes
 
-checksums           rmd160  d1996b3f35278487aaef72da17ab3764ad731a75 \
-                    sha256  361d4eae47ce925dba0ea569af40e7b52c645c4ae2e65e5621bf1b6cdd8b0e9e \
-                    size    1762323
-
-depends_build       port:pkgconfig
+depends_build       path:bin/pkg-config:pkgconfig
 
 depends_lib         port:pth \
                     port:libgpg-error \
@@ -33,10 +35,6 @@ depends_lib         port:pth \
 patchfiles          patch-configure.ac.diff \
                     patch-tests-gpg-Makefile.am.diff
 
-# the <sys/select.h> header is not pulled on Tiger like it is on newer systems,
-# ticket 65877. cf libassuan port which has similar issue
-patchfiles-append   patch-src-tiger-needs-sys-select.diff
-
 post-patch {
     reinplace "s|@GPG@|${prefix}/bin/gpg2|" ${worksrcpath}/src/gpgme-config.in
     reinplace "s|thread_modules=\"\"|thread_modules=\"pthread\"|" ${worksrcpath}/src/gpgme-config.in
@@ -44,7 +42,7 @@ post-patch {
 }
 
 compiler.cxx_standard 2017
-# Build uses c++17 features, but incorrectly configures for c++11 only..
+# Build uses c++17 features, but incorrectly configures for c++11 only.
 configure.cxxflags-append -std=c++17
 
 # We are patching configure.ac.
@@ -60,12 +58,12 @@ configure.checks.implicit_function_declaration.whitelist-append strchr
 
 lappend languages cl
 
-# cpp bindings require libc++
-
-platform darwin {
-    if {${configure.cxx_stdlib} eq "libc++"} {
-        lappend languages cpp
-    }
+# This has to be enabled, otherwise CMake config files are not installed,
+# which breaks some dependents, like Poppler.
+# Contrary to the earlier situation, it does build now against libstdc++.
+# FIXME: on 10.4 it does not build: https://trac.macports.org/ticket/69279
+if {${os.platform} eq "darwin" && ${os.major} > 8} {
+    lappend languages cpp
 }
 
 # gpg regression tests run during build repeatedly fail with error

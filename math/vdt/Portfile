@@ -6,6 +6,8 @@ PortGroup           cmake 1.1
 PortGroup           github 1.0
 
 github.setup        dpiparo vdt 0.4.4 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 #github.setup        cjones051073 vdt b376d0f9e8cc97689d89f7f8c40c3a4644f48679
 #version             0.4.1
 revision            0
@@ -22,13 +24,11 @@ maintainers         {jonesc @cjones051073} openmaintainer
 license             LGPL-3+
 
 description         A collection of fast and inline implementations of mathematical functions.
-long_description    ${name} provides ${description}.
-
-platforms           darwin
+long_description    ${name} provides {*}${description}.
 
 compiler.cxx_standard 2011
 
 # Disable extensions on Apple silicon for now
-if { ${configure.build_arch} eq "arm64" } {
+if { ${configure.build_arch} in [list arm64 ppc ppc64] } {
     configure.args-append   -DSSE=OFF -DNEON=OFF
 }

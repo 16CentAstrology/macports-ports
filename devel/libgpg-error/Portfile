@@ -2,6 +2,7 @@
 
 PortSystem      1.0
 PortGroup       conflicts_build 1.0
+PortGroup       gnu_info 1.0
 
 # we will only use the muniversal PG on < 10.14
 set using_muniversal_PG false
@@ -14,12 +15,12 @@ if {${os.platform} eq "darwin" && ${os.major} < 18} {
 }
 
 name            libgpg-error
-version         1.46
-revision        1
+version         1.51
+revision        0
 categories      devel
 license         LGPL-2.1+
 maintainers     {mps @Schamschula} openmaintainer
-homepage        https://www.gnupg.org/
+
 description     Common error values for all GnuPG components
 
 long_description \
@@ -27,18 +28,21 @@ long_description \
     Among these are GPG, GPGSM, GPGME, GPG-Agent, libgcrypt, pinentry, SmartCard Daemon \
     and possibly more in the future.
 
+homepage        https://www.gnupg.org
 master_sites    gnupg
 
 use_bzip2       yes
 
-checksums       rmd160  7e80cbe7c44a9bbedbe5875408546ba1a5bb099f \
-                sha256  b7e11a64246bbe5ef37748de43b245abd72cfcd53c9ae5e7fc5ca59f1c81268d \
-                size    1014291
+checksums       rmd160  9a0efcd8b435e908417d40e76decc5624a1e2a56 \
+                sha256  be0f1b2db6b93eed55369cdf79f19f72750c8c7c39fc20b577e724545427e6b2 \
+                size    1085510
 
 depends_build   port:gettext
 
 depends_lib     port:gettext-runtime \
                 port:libiconv
+
+patchfiles      patch-src-spawn-posix.c.diff
 
 # build with gawk 5.0.0 is broken see https://trac.macports.org/ticket/58356
 configure.awk   /usr/bin/awk
@@ -48,6 +52,10 @@ configure.awk   /usr/bin/awk
 # can be removed when this is no longer necessary
 # see libgpg-error NOTES for more details
 configure.args  --enable-install-gpg-error-config
+
+# Also enable the building of static libs
+configure.args-append \
+                --enable-static
 
 # fix build on Tiger see https://trac.macports.org/ticket/55145
 platform darwin 8 {
@@ -78,6 +86,8 @@ post-destroot {
     xinstall -m 0644 -W ${worksrcpath} ABOUT-NLS AUTHORS COPYING COPYING.LIB NEWS README \
         THANKS VERSION ${destroot}${docdir}
 }
+
+gnu_info.name   gpgrt
 
 livecheck.type  regex
 livecheck.url   https://gnupg.org/ftp/gcrypt/${name}/

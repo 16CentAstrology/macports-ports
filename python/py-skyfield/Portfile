@@ -4,8 +4,8 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-skyfield
-version             1.45
-revision            1
+version             1.51
+revision            0
 categories          python
 license             MIT
 maintainers         {mps @Schamschula} openmaintainer
@@ -17,16 +17,13 @@ supported_archs     noarch
 platforms           {darwin any}
 homepage            https://rhodesmill.org/skyfield/
 
-checksums           rmd160  5070da0f31d5fbd11c0231d615c8682c77974a7a \
-                    sha256  5f0e0530bda6c9bf23a188c574181b4ee63cf2ce1ec1e0c8825f45ae577d8b36 \
-                    size    396384
+checksums           rmd160  6b11e12188e18b426ddf11dd61185d60d439304b \
+                    sha256  afebb71a86ff1049885133120f9149a54ed2d8b38721307eeb0e0a93ca73aafc \
+                    size    439733
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     depends_lib-append  \
                     port:py${python.version}-astropy \
                     port:py${python.version}-beautifulsoup4 \

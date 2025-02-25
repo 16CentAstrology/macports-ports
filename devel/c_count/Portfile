@@ -2,13 +2,13 @@
 PortSystem 1.0
 
 name            c_count
-version         7.21
+version         7.24
 categories      devel
 maintainers     {toby @tobypeterson}
 description     counts C-language source statements
 long_description \
-	C_COUNT counts C-language source statements, and summarizes statistics \
-	about the relative amount of commentary, whitespace, etc.
+    c_count counts lines, statements, other simple measures of C/C++ source programs. \
+    It isn't lex/yacc based, and is easily portable to a variety of systems.
 homepage        https://invisible-island.net/c_count/
 platforms       darwin
 
@@ -16,9 +16,9 @@ master_sites    https://invisible-island.net/archives/${name}/ \
                 https://invisible-mirror.net/archives/${name}/
 extract.suffix  .tgz
 
-checksums       rmd160  19e8ca44f14745e0d50a02b65cd9293a560d3782 \
-                sha256  c633f9360a2f93729b34c551e4f4332ae16974b17f5c824db9848fad61309455 \
-                size    115071
+checksums       rmd160  a3a1ddb2b19700fe1b2e813e4d66768a349092fd \
+                sha256  d76360132670a612c0d7ad2d4da30c841047e6098acda2c96f1f630ea5cb77fb \
+                size    118248
 
 configure.args  --mandir=\\\${prefix}/share/man
 

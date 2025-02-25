@@ -3,8 +3,9 @@
 PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           compiler_blacklist_versions 1.0
+PortGroup           legacysupport 1.1
 
-github.setup        Genivia ugrep 3.9.5 v
+github.setup        Genivia ugrep 7.2.2 v
 github.tarball_from archive
 revision            0
 
@@ -13,13 +14,13 @@ license             BSD
 maintainers         {reneeotten @reneeotten} openmaintainer
 
 description         ultra fast grep with interactive query UI and fuzzy search
-long_description    ${description}: search file systems, source code, text, \
+long_description    {*}${description}: search file systems, source code, text, \
                     binary files, archives (cpio/tar/pax/zip), compressed files \
                     (gz/Z/bz2/lzma/xz/lz4/zstd), documents and more.
 
-checksums           rmd160  377b5dfca21f2b710b36b6343b2f092931d704f8 \
-                    sha256  7872dae0c016db53eaa6b0e8497fbac635e0fc80eb347b0f2142c3dba44ea18d \
-                    size    4446404
+checksums           rmd160  ea140840730e3add2b48fbba31ad506cf1db9799 \
+                    sha256  09aad04eb20f34ca6a9cc5626f04286b9ad722407b88581c5dabf2599a0bba93 \
+                    size    7123580
 
 compiler.cxx_standard 2011
 
@@ -27,6 +28,9 @@ compiler.cxx_standard 2011
 # /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/list:227:9: error: field has incomplete type 'GrepWorker'
 # see: https://github.com/Genivia/ugrep/issues/130
 compiler.blacklist-append {clang < 700}
+
+legacysupport.newest_darwin_requires_legacy 10
+# needed for strnlen
 
 depends_lib-append  port:pcre2 \
                     port:zlib \
@@ -43,13 +47,15 @@ configure.args      --disable-silent-rules \
                     --with-lzma=${prefix} \
                     --with-lz4=${prefix} \
                     --with-zstd=${prefix} \
-                    --disable-avx \
+                    --without-brotli \
+                    --without-bzip3 \
+                    --disable-avx2 \
                     --disable-sse2 \
                     --disable-neon
 
 variant native description {Enable CPU-specific optimizations} {
     configure.args-delete \
-                    --disable-avx \
+                    --disable-avx2 \
                     --disable-sse2 \
                     --disable-neon
 }

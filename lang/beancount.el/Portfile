@@ -4,6 +4,8 @@ PortSystem          1.0
 PortGroup           github 1.0
 
 github.setup        beancount beancount-mode 3c04745fa539c25dc007683ad257239067c24cfe
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 version             20210303
 revision            0
 checksums           rmd160  38ef2dbf7c048fe05c278c9043599521372cd18e \
@@ -12,7 +14,8 @@ checksums           rmd160  38ef2dbf7c048fe05c278c9043599521372cd18e \
 
 name                beancount.el
 categories          lang editors
-platforms           darwin
+platforms           any
+supported_archs     noarch
 license             GPL-3+
 maintainers         {l2dy @l2dy} openmaintainer
 

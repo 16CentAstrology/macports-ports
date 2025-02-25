@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           cargo   1.0
 PortGroup           github  1.0
 
-github.setup        kyoheiu felix 2.2.3 v
+github.setup        kyoheiu felix 2.14.0 v
 github.tarball_from archive
 revision            0
 
@@ -12,19 +12,20 @@ description         tui file manager with vim-like key mapping
 
 long_description    {*}${description}
 
+conflicts           fx
+
 categories          sysutils
 installs_libs       no
 license             MIT
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           ${distname}${extract.suffix} \
-                    rmd160  e6d4d1fc7b6eba332db979b623e2147d097b05f5 \
-                    sha256  2cf2586d006959cee2d1c78bd24460bafecce707c11ed7ae8521d2417f23397f \
-                    size    23350724
-
 build.pre_args-delete \
                     --frozen --offline
+
+checksums           rmd160  8607c71bfa6b1becf326d65616cbd27bf0803ec0 \
+                    sha256  6c6cd8d8e16890c8afc0638af8588a56c40648728feae610b7f3c6886c5a51d3 \
+                    size    13355055
 
 destroot {
     xinstall -m 0755 \

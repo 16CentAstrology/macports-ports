@@ -1,31 +1,39 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
-PortGroup           makefile 1.0
+PortGroup           cmake 1.1
 
 name                di
-version             4.51
-revision            1
+version             5.0.13
+revision            0
 categories          sysutils
-platforms           darwin
 maintainers         {mps @Schamschula} openmaintainer
 license             zlib
 description         disk information utility
 long_description    di is a disk information utility, displaying everything \
                     (and more) than the classic df command does.
 
-homepage            https://gentoo.com/di/
+homepage            https://diskinfo-di.sourceforge.io/
 master_sites        sourceforge:project/diskinfo-di
 
-checksums           rmd160  01c5f25e904df2619cf751595cfd15551b9cd4f5 \
-                    sha256  79b2129c4aff27428695441175940a1717fa0fe2ec2f46d1b886ebb4921461bb \
-                    size    229504
+checksums           rmd160  a90d8dde3219bdb452a1c06e1d9ac2b86c0da808 \
+                    sha256  4c5235f3cfc950fe14b048683c418f044d17395db4372b59485a1c054e1db089 \
+                    size    132783
 
-depends_build       port:gettext
+depends_build-append \
+                    port:gettext
 
 depends_lib         port:gettext-runtime
 
-destroot.args       prefix=${destroot}${prefix}
+# Could use gmp (or tommath when https://trac.macports.org/ticket/71791 is fixed)
+configure.args-append \
+                    -DDI_USE_MATH=DI_INTERNAL
+
+if {${os.platform} eq "darwin" && ${os.major} < 14} {
+    # clang: error: unknown argument: '-fstack-protector-strong'
+    configure.args-append \
+                    -DDI_FORTIFY=N
+}
 
 livecheck.type      regex
 livecheck.url       https://sourceforge.net/projects/diskinfo-di/files/

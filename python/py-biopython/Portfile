@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-biopython
-version             1.80
+version             1.85
 revision            0
 
 categories-append   science
@@ -12,23 +12,24 @@ license             BSD
 maintainers         {reneeotten @reneeotten} openmaintainer
 
 description         Python tools for computational molecular biology
-long_description    ${description}: parsers for various file formats, interfaces for \
+long_description    {*}${description}: parsers for various file formats, interfaces for \
                     programs, tools for performing common operations on sequences, etc.
 
 homepage            https://biopython.org/
 
-checksums           rmd160  5cfc5d25710d2c2b80492442042c5b498bca7399 \
-                    sha256  52805e9af88767e450e2df8113b5bc59e964e2e8a7bb803a83570bdbb51c0e43 \
-                    size    17924553
+checksums           rmd160  1a830ef9903c8a6cfce4876bbcb71109c4978606 \
+                    sha256  5dafab74059de4e78f49f6b5684eddae6e7ce46f09cfa059c1d1339e8b1ea0a6 \
+                    size    19909902
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     depends_lib-append \
                     port:py${python.version}-numpy
+
+    # error: ‘for’ loop initial declaration used outside C99 mode
+    # error: redefinition of ‘i’
+    compiler.c_standard 2011
 
     post-destroot {
         set docdir ${prefix}/share/doc/${subport}

@@ -4,22 +4,23 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Test-Harness 3.44
+perl5.setup         Test-Harness 3.50
 revision            0
 license             {Artistic-1 GPL}
-platforms           {darwin any}
 maintainers         nomaintainer
-supported_archs     noarch
 
-description         Run perl standard test scripts with statistics.
+description         Test::Harness - Run Perl standard test scripts with statistics
 
 long_description    You can write test scripts without knowing the exact output this module expects by using \"Test\" \
                     modules. However, by using this module, you can know the specifics, and you can prints some \
                     performance statistics that are computed by the Benchmark module.
 
-checksums           rmd160  980f03d1d300cdd9e84c7422cab5f868fe7a098a \
-                    sha256  7eb591ea6b499ece6745ff3e80e60cee669f0037f9ccbc4e4511425f593e5297 \
-                    size    215148
+platforms           {darwin any}
+supported_archs     noarch
+
+checksums           rmd160  733d8887234d6231c223d6239a8a27138e3134da \
+                    sha256  79b6acdc444f1924cd4c2e9ed868bdc6e09580021aca8ff078ede2ffef8a6f54 \
+                    size    215840
 
 ## Test-Harness includes the 'prove' binary, which is used to run tests.  Sigh.
 perl5.link_binaries no

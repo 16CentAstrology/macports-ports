@@ -1,15 +1,18 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
-PortGroup           cmake 1.1
-PortGroup           github 1.0
 PortGroup           boost 1.0
+PortGroup           cmake 1.1
+PortGroup           conflicts_build 1.0
+PortGroup           github 1.0
+PortGroup           legacysupport 1.1
 
-github.setup        kpeeters cadabra2 2.4.3.2
+github.setup        kpeeters cadabra2 2.5.8
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 revision            0
 
 categories          math
-platforms           darwin
 license             GPL-3+
 maintainers         nomaintainer
 
@@ -25,23 +28,37 @@ long_description    Cadabra is a computer algebra system for the \
 
 homepage            https://cadabra.science/index.html
 
-checksums           rmd160  b7f670693d1bc2e76964a4a4caf790a7ae3d04a7 \
-                    sha256  8cce723f7f95a0072ba5292bdce320cde46af1cd91123f286f06cc107321d1f4 \
-                    size    25161710
+checksums           rmd160  bcf3fe76f7b8624473fceb59c02a18611d449b7e \
+                    sha256  ec8e3990a1d9ca56133af629e5b0288ec260003e6a222f7cd09e4917448e7c1c \
+                    size    32491416
+
+# cadabra2-gtk(12276) malloc: *** error for object 0x365c034: Non-aligned pointer being freed
+# legacysupport is only used for wrappers with libstdc++ builds.
+legacysupport.newest_darwin_requires_legacy 0
+legacysupport.redirect_bins cadabra-server cadabra2-cli cadabra2-gtk \
+                    cadabra2cadabra cadabra2html cadabra2ipynb \
+                    cadabra2latex cadabra2python cdb-nbtool
 
 compiler.cxx_standard 2017
 
-set python.version  311
+set python.version  313
+
 set python.branch   [string index ${python.version} 0].[string range ${python.version} 1 end]
+set python.prefix   ${frameworks_dir}/Python.framework/Versions/${python.branch}
+
+# TODO: Do this automatically via Boost portgroup
+cmake.module_path-append \
+                    [boost::lib_dir]/cmake
 
 depends_build-append \
-                    port:pkgconfig \
+                    path:bin/pkg-config:pkgconfig \
                     port:pcrexx
 
 depends_lib-append  port:adwaita-icon-theme \
                     port:dvipng \
                     port:gmp \
                     port:gtkmm3 \
+                    port:hicolor-icon-theme \
                     port:pcre \
                     port:py${python.version}-sympy \
                     port:sqlite3 \
@@ -49,18 +66,25 @@ depends_lib-append  port:adwaita-icon-theme \
                     port:texlive-latex \
                     port:texlive-latex-recommended
 
+# cadabra2 uses its own bundled version of nlohmann/json.hpp
+conflicts_build     nlohmann-json
+
 configure.args      -DENABLE_MATHEMATICA=OFF \
+                    -DPYBIND11_PYTHON_VERSION=${python.branch} \
                     -DSQLITE3_INCLUDE_DIR=${prefix}/include
 
 post-destroot {
-    ln ${destroot}${prefix}/lib/python${python.branch}/site-packages/cadabra2.cpython-${python.version}-darwin.so \
+    ln ${destroot}${python.prefix}/lib/python${python.branch}/site-packages/cadabra2.cpython-${python.version}-darwin.so \
             ${destroot}${prefix}/lib/cadabra2.cpython-${python.version}-darwin.so
 }
 
 post-activate {
     system "${prefix}/bin/texhash"
+    system "gtk-update-icon-cache ${prefix}/share/icons/hicolor"
 }
 
 variant texmacs description {install TeXmacs front end} {
     depends_run-append      port:TeXmacs
 }
+
+github.livecheck.regex  {(\d\.\d+(\.\d+))}

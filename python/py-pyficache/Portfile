@@ -4,8 +4,10 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           github 1.0
 
-github.setup        rocky python-filecache 2.3.0
-revision            1
+github.setup        rocky python-filecache 2.4.0
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
+revision            0
 name                py-pyficache
 
 platforms           {darwin any}
@@ -19,20 +21,18 @@ long_description    The pyficache module allows one to get any line from \
                     to the file. Although the file may be any file, the \
                     common use is when the file is a Python script.
 
-checksums           rmd160  7b0d58c8f9a9764eef1ab6b54f9d62c08b3509ca \
-                    sha256  0ad23e5ff1576c81923f8822ca3a230fa831fd3f961baa10fb7ebf68d780d9d2 \
-                    size    48748
+checksums           rmd160  dfbbcb694d3695366ad3131f3f5da4774f4ec021 \
+                    sha256  b1c42f86cefa9c1324302f4355061221a525ad80e7ae5841e6adca57443d2372 \
+                    size    54915
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312
 
 github.livecheck.regex  (\[0-9\.\]+)
 
 if {${subport} ne ${name}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     depends_lib-append \
                     port:py${python.version}-pygments \
+                    port:py${python.version}-term-background \
                     port:py${python.version}-xdis
 
     test.run        yes
@@ -40,7 +40,7 @@ if {${subport} ne ${name}} {
     post-destroot {
         set docdir ${prefix}/share/doc/${subport}
         xinstall -d ${destroot}${docdir}
-        xinstall -m 0644 -W ${worksrcpath} COPYING ChangeLog \
-           NEWS.md README.rst ${destroot}${docdir}
+        xinstall -m 0644 -W ${worksrcpath} COPYING \
+            NEWS.md README.rst ${destroot}${docdir}
     }
 }

@@ -5,7 +5,7 @@ PortGroup           muniversal 1.0
 PortGroup           compiler_blacklist_versions 1.0
 
 name                nss
-version             3.87
+version             3.108
 revision            0
 set NSS_VMAJOR      [lindex [split ${version} .] 0]
 set NSS_VMINOR      [lindex [split ${version} .] 1]
@@ -23,14 +23,14 @@ long_description    {*}${description}
 use_configure       no
 homepage            https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS
 
-set my_release      NSS_[strsed ${version} {g/\./_/}]_RTM
+set my_release      NSS_[string map {. _} ${version}]_RTM
 
 master_sites        https://ftp.mozilla.org/pub/security/nss/releases/${my_release}/src/ \
                     ftp://ftp.mozilla.org/pub/security/nss/releases/${my_release}/src/
 
-checksums           rmd160  f35228b2dfcd469203bb6551f36e06b9aec47f7d \
-                    sha256  68a1894496d3d158babc75f8a5dda3f55b7c1560573936e3b101a10fa4ac152d \
-                    size    71435408
+checksums           rmd160  8648f0f7a34efa93a18c4c92a5c252998bb96482 \
+                    sha256  a0f6fcb5dbadc1635b43827517a979e3a6d005d0788527802a6b31e2c5f66eec \
+                    size    76630022
 
 # build fails with gcc-4.2 on Intel, but succeeds with gcc-4.2 on PPC
 # cc1: error: unrecognized command line option "-mpclmul"
@@ -38,6 +38,8 @@ checksums           rmd160  f35228b2dfcd469203bb6551f36e06b9aec47f7d \
 if {${configure.build_arch} in [list i386 x86_64]} {
     compiler.blacklist-append *gcc-4.* *gcc-3.*
 }
+
+patchfiles          undef-prefix.patch
 
 # VSX and Crypto have to be disabled, since they belong to post-G5 ISA.
 # See: https://bugzilla.mozilla.org/show_bug.cgi?id=1687164
@@ -50,8 +52,12 @@ if {${configure.build_arch} in [list ppc ppc64]} {
     patchfiles-append patch-ppc.diff
 }
 
-# fails with clang-425 https://trac.macports.org/ticket/63245
-compiler.blacklist-append {clang < 426}
+# fails with clang-425: https://trac.macports.org/ticket/63245
+#   warning: implicit declaration of function '_mm_sha256xxxxx'
+# fails with clang < 800: https://trac.macports.org/ticket/67585
+#   error: "AES/PCLMUL instructions not enabled"
+# TODO: Latter blacklisting is a quick fix only; needs more investigation
+compiler.blacklist-append {clang < 800}
 
 depends_lib     port:nspr \
                 port:zlib \

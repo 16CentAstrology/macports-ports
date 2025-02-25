@@ -5,6 +5,8 @@ PortGroup               python 1.0
 PortGroup               github 1.0
 
 github.setup            flask-restful flask-restful 0.3.1
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from     tarball
 checksums               rmd160  c48cbb6ff03c608b26d64e8f68f2b5b80354eeed \
                         sha256  2317ddb006859b92ea575e3a578b2e1783ab3259f859de7cbbcf566e8df010b9
 
@@ -12,7 +14,7 @@ name                    py-flask-restful
 set real_name           Flask-Restful
 python.versions         27
 categories-append       www
-maintainers             {cal @neverpanic} openmaintainer
+maintainers             nomaintainer
 description             Flask extension for quickly building REST APIs.
 long_description        \
     Flask-RESTful is an extension for Flask that adds support for quickly \
@@ -20,7 +22,8 @@ long_description        \
     existing ORM/libraries.
 
 license                 BSD
-platforms               darwin
+platforms               {darwin any}
+supported_archs         noarch
 homepage                http://flask-restful.readthedocs.org/en/latest/
 
 if {${name} ne ${subport}} {

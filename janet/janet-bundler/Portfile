@@ -6,13 +6,16 @@ PortGroup           janet  1.0
 
 name                janet-bundler
 github.setup        joy-framework bundler 23785e59c468d39973dfc9a2aeee8e1b135f15fd
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 # from project.janet
 version             0.1.0
 revision            0
 categories          janet devel
 license             MIT
 maintainers         {@tsujp wz.ht:jc+macports} openmaintainer
-platforms           darwin
+platforms           any
+supported_archs     noarch
 description         A very simple css and js bundler for janet
 long_description    {*}${description}
 

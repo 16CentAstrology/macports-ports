@@ -5,6 +5,8 @@ PortGroup           github 1.0
 PortGroup           python 1.0
 
 github.setup        worldveil photomosaic d24fb8599c97fec7cce11869be007ab7e31800f7
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 version             2020.06.03
 revision            0
 name                py-${github.project}
@@ -50,9 +52,6 @@ if {${name} ne ${subport}} {
                     port:py${python.version}-scipy \
                     port:py${python.version}-tqdm
 
-    depends_test-append \
-                    port:py${python.version}-pytest
-
     build {}
 
     destroot {
@@ -72,10 +71,4 @@ if {${name} ne ${subport}} {
     }
 
     test.run        yes
-    test.env        PYTHONPATH=${worksrcpath}/build/lib
-    test.cmd        py.test-${python.branch}
-    test.pre_args   {-s -v}
-    test.target
-
-    livecheck.type  none
 }

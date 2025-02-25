@@ -5,10 +5,11 @@ PortGroup python 1.0
 PortGroup select 1.0
 
 name                py-hy
-version             0.25.0
+version             1.0.0
 categories-append   lang
 license             MIT
-platforms           darwin
+platforms           {darwin any}
+supported_archs     noarch
 maintainers         {toby @tobypeterson} openmaintainer
 description         Lisp dialect embedded in Python
 long_description    Hy is a Lisp dialect that's embedded in Python. Since Hy \
@@ -16,30 +17,19 @@ long_description    Hy is a Lisp dialect that's embedded in Python. Since Hy \
                     objects, you have the whole beautiful world of Python at your \
                     fingertips, in Lisp form.
 
-homepage            http://hylang.org/
+homepage            https://hylang.org/
 
-checksums           rmd160  e57a1e2c857a367533c0a936fda6b04755a5f967 \
-                    sha256  50ed88834b03a33fc25b85d8897bbe15b7846b84d324630ace8d052f7d48327b \
-                    size    97130
+checksums           rmd160  e63e68c4c67878668f195724dc5091652af12d8c \
+                    sha256  3a00013e075ff5ce8f5d475ca2be47e4c871f09184ba3533787cb544d32d1f9e \
+                    size    121792
 
-python.versions     38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append    port:py${python.version}-setuptools \
-                            port:py${python.version}-wheel
-
-    depends_lib-append      port:py${python.version}-colorama \
-                            port:py${python.version}-funcparserlib
-    if {${python.version} < 39} {
-        depends_lib-append  port:py${python.version}-astor
-    }
+    depends_lib-append      port:py${python.version}-funcparserlib
 
     depends_run-append      port:hy_select
 
     select.group            hy
     select.file             ${filespath}/hy${python.version}
-
-    livecheck.type          none
-} else {
-    livecheck.type          pypi
 }

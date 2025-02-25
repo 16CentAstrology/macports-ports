@@ -4,15 +4,14 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-anyio
-version             3.6.2
+version             4.8.0
 revision            0
 categories-append   devel
 license             MIT
 supported_archs     noarch
 platforms           {darwin any}
 
-python.versions     37 38 39 310 311
-python.pep517       yes
+python.versions     39 310 311 312 313
 
 maintainers         {stromnov @stromnov} openmaintainer
 
@@ -21,19 +20,22 @@ long_description    {*}${description}
 
 homepage            https://github.com/agronholm/anyio
 
-checksums           rmd160  d312dc711dbfbfcb5db9fcaf10bd9c1ee37edbd8 \
-                    sha256  25ea0d673ae30af41a0c442f81cf3b38c7e79fdc7b60335a4c14e05eb0947421 \
-                    size    140378
+checksums           rmd160  296a86c2a150d414493360a60c6c2533649bb4ab \
+                    sha256  1d9fe889df5212298c0c0723fa20479d1b94883a2df44bd3897aa91083316f7a \
+                    size    181126
 
 if {${name} ne ${subport}} {
     depends_build-append \
-                        port:py${python.version}-setuptools_scm \
-                        port:py${python.version}-toml
+                        port:py${python.version}-setuptools_scm
 
     depends_lib-append  port:py${python.version}-idna \
                         port:py${python.version}-sniffio
 
-    if {${python.version} < 38} {
+    if {${python.version} < 311} {
+        depends_lib-append  port:py${python.version}-exceptiongroup
+    }
+
+    if {${python.version} < 313} {
         depends_lib-append  port:py${python.version}-typing_extensions
     }
 }

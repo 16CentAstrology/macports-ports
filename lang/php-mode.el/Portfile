@@ -3,11 +3,11 @@
 PortSystem              1.0
 PortGroup               github 1.0
 
-github.setup            emacs-php php-mode 1.24.2 v
+github.setup            emacs-php php-mode 1.27.0 v
 revision                0
-checksums               rmd160  4015cb32177f5afe91fc81f446e809967d866196 \
-                        sha256  bb468c5ec243ebd6c74be65b09aca42d4f70e55f8f1a8b3b71a0ab807c33f1c9 \
-                        size    133018
+checksums               rmd160  0b17317b2052fb0c286a63c30154d0d9d312b51c \
+                        sha256  2ac03fe0e553d2df630b267f51069a815e430e3b73bf14f6844244ccfbb4778f \
+                        size    133871
 
 name                    php-mode.el
 categories              lang editors

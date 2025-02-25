@@ -4,6 +4,7 @@ PortSystem          1.0
 
 name                gsmartcontrol
 version             1.1.4
+revision            1
 maintainers         {cal @neverpanic} openmaintainer
 
 categories          sysutils gnome
@@ -41,7 +42,7 @@ configure.cxxflags-append \
                     -std=c++11
 
 post-activate {
-    system "gtk-update-icon-cache-3.0 ${prefix}/share/icons/hicolor"
+    system "gtk-update-icon-cache ${prefix}/share/icons/hicolor"
 }
 
 livecheck.regex     "[quotemeta ${name}]-(\\d+(\\.\\d+)*)[quotemeta ${extract.suffix}]"

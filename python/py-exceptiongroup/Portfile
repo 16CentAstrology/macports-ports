@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-exceptiongroup
-version             1.0.4
+version             1.2.2
 epoch               1
 revision            0
 
@@ -12,19 +12,19 @@ categories-append   devel
 supported_archs     noarch
 platforms           {darwin any}
 license             MIT
-maintainers         {@catap korins.ky:kirill} openmaintainer
+maintainers         nomaintainer
 
 description         Backport of PEP 654 (exception groups)
 long_description    {*}${description}
 
 homepage            https://pypi.org/project/exceptiongroup
 
-checksums           rmd160  65e97c7a5344f226f94b1221c540a61dce3bfdb7 \
-                    sha256  bd14967b79cd9bdb54d97323216f8fdf533e278df937aa2a90089e7d6e06e5ec \
-                    size    14701
+checksums           rmd160  0eeee23cd04321d7cecc3b463ff80bf36242f476 \
+                    sha256  47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc \
+                    size    28883
 
 python.pep517       yes
-python.versions     37 38 39 310 311
+python.versions     37 38 39 310 311 312 313
 
 if {${name} ne ${subport}} {
     depends_build-append \

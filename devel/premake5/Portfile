@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           makefile 1.0
 
-github.setup        premake premake-core 5.0.0-beta2 v
+github.setup        premake premake-core 5.0.0-beta5 v
 name                premake5
 revision            0
 
@@ -25,9 +25,9 @@ homepage            https://premake.github.io/
 github.tarball_from releases
 use_zip             yes
 distname            premake-${version}-src
-checksums           sha256  4c1100f5170ae1c3bd1b4fd9458b3b02ae841aefbfc41514887b80996436dee2 \
-                    rmd160  d2ffce82b4cdc41f2a8726f63bee335f7ac233a5 \
-                    size    8867376
+checksums           sha256  660ba0dd472c06be59da60b78c3abaf8cef10a0a4f3b9ad69d8e34fbd190126b \
+                    rmd160  2107454fd5c7a0c601413439e87fa0a650f2d681 \
+                    size    10599481
 use_configure       no
 
 # Premake statically links a handful of vendored libraries; don't let MacPorts
@@ -37,7 +37,7 @@ compiler.cpath
 configure.cppflags-delete -I${prefix}/include
 configure.ldflags-delete  -L${prefix}/lib
 
-build.dir           ${worksrcpath}/build/gmake2.macosx
+build.dir           ${worksrcpath}/build/gmake.macosx
 build.args-append   config=release verbose=true
 
 destroot	{

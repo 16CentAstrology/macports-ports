@@ -3,11 +3,11 @@
 PortSystem          1.0
 
 name                typescript
-version             4.6.2
+version             5.7.2
 revision            0
-checksums           rmd160  d26bc3d25644998ea8a45f013bfcef2c5353fa65 \
-                    sha256  30afe4c71ff164ba41560e0770e0f8c48f9c03959cbcdcc7c410ab052bf2f6d6 \
-                    size    11410610
+checksums           rmd160  84bef253ec7c249c39192b832c9270958ead3df3 \
+                    sha256  6826f763112d55de0093fd94a4257cabadf1f40b387757e7c68485fc971e886b \
+                    size    4231797
 
 categories          lang
 maintainers         @goranmoomin openmaintainer
@@ -22,11 +22,12 @@ master_sites        https://registry.npmjs.org/${name}/-
 
 distfiles          ${distname}.tgz
 
-platforms           darwin
+platforms           any
+supported_archs     noarch
 
-depends_lib-append  path:bin/node:nodejs16
+depends_lib-append  path:bin/node:nodejs22
 depends_build-append \
-                    path:bin/npm:npm8
+                    path:bin/npm:npm10
 
 use_configure       no
 

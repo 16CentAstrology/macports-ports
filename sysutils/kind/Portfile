@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/kubernetes-sigs/kind 0.17.0 v
+go.setup            github.com/kubernetes-sigs/kind 0.26.0 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -25,13 +26,9 @@ maintainers         {gmail.com:herby.gillot @herbygillot} \
 build.cmd           make
 build.target        build
 
-checksums           rmd160  08565aaf2a657e99dbe51cbf74478945363f5a45 \
-                    sha256  056171a47e6fa0e7f52d009dd52bdeac30c517566921807f83b3f6ce47fe3be4 \
-                    size    1926043
-
-# Allowing go to fetch dependencies during build time for now.
-# See: https://trac.macports.org/ticket/61192
-build.env-delete    GOPROXY=off GO111MODULE=off
+checksums           rmd160  c9d4d333316adaf37248cb06ea16d6572fa74b83 \
+                    sha256  6b0ae7748144034ba296a302f5aaaad7120aef4df9d8138cc6276a43ca3c96d1 \
+                    size    1938149
 
 destroot {
     xinstall -m 0755 ${worksrcpath}/bin/${name} ${destroot}${prefix}/bin/

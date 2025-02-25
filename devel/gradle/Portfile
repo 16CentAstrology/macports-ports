@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           java 1.0
 
 name                gradle
-version             7.6
+version             8.12.1
 revision            0
 categories          devel java groovy
 license             Apache-2
@@ -18,15 +18,15 @@ long_description    Gradle is a build system which offers you ease, power and fr
                     of Ant and the convenience of a build-by-convention behavior.
 
 homepage            https://gradle.org/
-platforms           darwin
+platforms           {darwin any}
 supported_archs     noarch
 distname            ${name}-${version}-bin
 master_sites        https://services.gradle.org/distributions
 
 # Update checksums for variant when updating these!
-checksums           rmd160  242f7e291dfa1e1a653693ecd0a4ee5656e41750 \
-                    sha256  7ba68c54029790ab444b39d7e293d3236b2632631fb5f2e012bb28b4ff669e4b \
-                    size    122031645
+checksums           rmd160  7031b46dcaecc17e437d2ec7ef83db56c3c19f42 \
+                    sha256  8d97a97984f6cbd2b85fe4c60a743440a347544bf18818048e611f5288d46c94 \
+                    size    136556486
 
 worksrcdir          ${name}-${version}
 
@@ -62,9 +62,9 @@ destroot {
 variant all description {Install supplemental documentation and source code} {
     distname        ${name}-${version}-all
 
-    checksums       rmd160  99c598673831efdccd6e64bb8beccf0a7705aa8c \
-                    sha256  312eb12875e1747e05c2f81a4789902d7e4ec5defbd1eefeaccc08acf096505d \
-                    size    165398808
+    checksums       rmd160  4b29804979b90630b4435d942f97ff61cb79a0ad \
+                    sha256  296742a352f0b20ec14b143fb684965ad66086c7810b7b255dee216670716175 \
+                    size    229909900
 
     post-destroot {
         xinstall -m 0755 -d ${destroot}${prefix}/share/doc/${name}

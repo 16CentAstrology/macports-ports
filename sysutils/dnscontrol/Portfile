@@ -3,32 +3,35 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/StackExchange/dnscontrol 3.25.0 v
+go.setup            github.com/StackExchange/dnscontrol 4.12.1 v
+github.tarball_from archive
+go.offline_build    no
+revision            0
 
-checksums           rmd160  16d5aff35ca295f874265a22c96510cb32858211 \
-                    sha256  ddcf08942e1ffb15a2fb9c711344f49aca923727c8673b14957ea36f4e7f2670 \
-                    size    6380479
+checksums           rmd160  9372d7d236a9412b4db2e86900191ba503f4a7b9 \
+                    sha256  442024caa4be0b27ac679ac3d69ebf86631eb6899b88b0f430962f4b5ddecccd \
+                    size    5507812
 
-homepage            https://stackexchange.github.io/dnscontrol/
+homepage            https://dnscontrol.org
+
 description         Synchronize your DNS to multiple providers from a simple DSL
-long_description    DNSControl is a system for maintaining DNS zones. It has   \
-                    two parts: a domain specific language (DSL) for describing \
-                    DNS zones plus software that processes the DSL and pushes  \
-                    the resulting zones to DNS providers such as Route53,      \
-                    Cloudflare, and Gandi. It can send the same DNS records to \
-                    multiple providers. It even generates the most beautiful   \
-                    BIND zone files ever. It runs anywhere Go runs (Linux,     \
-                    macOS, Windows). The provider model is extensible, so more \
-                    providers can be added.
+
+long_description    \
+    DNSControl is a system for maintaining DNS zones. It has two parts: a \
+    domain specific language (DSL) for describing DNS zones plus software \
+    that processes the DSL and pushes the resulting zones to DNS providers \
+    such as Route53, Cloudflare, and Gandi. It can send the same DNS records \
+    to multiple providers. It even generates the most beautiful BIND zone \
+    files ever. It runs anywhere Go runs (Linux, macOS, Windows). The \
+    provider model is extensible, so more providers can be added.
+
 livecheck.url       ${github.homepage}/releases
 
 categories          sysutils
+installs_libs       no
 license             MIT
-maintainers         {ajhall.us:macports @ajhall} \
-                    openmaintainer
+maintainers         nomaintainer
 
-# Allow deps to be fetched at build time
-build.env-delete    GO111MODULE=off GOPROXY=off
 
 build.args-append   -ldflags \"-s -w \
                                 -X main.Version=${version} \

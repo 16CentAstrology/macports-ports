@@ -4,14 +4,14 @@ PortSystem          1.0
 PortGroup           makefile    1.0
 PortGroup           sourcehut   1.0
 
-sourcehut.setup     rjarry aerc 0.14.0
+sourcehut.setup     rjarry aerc 0.19.0
 revision            0
 
 homepage            https://aerc-mail.org
 
 description         Terminal-based email client.
 
-long_description    \
+long_description \
     ${name} is an email client that runs in your terminal, featuring editing \
     emails in an embedded terminal tmux-style and first-class support for \
     working with Git & email.
@@ -22,9 +22,9 @@ license             MIT
 maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  941179d86461aa605415b2122fdbc21408aeb0aa \
-                    sha256  60bfd15e5528a504dd11a03a33a11438ebbac7d5daca46e02d0bdc983adf9012 \
-                    size    332575
+checksums           rmd160  ad2583128c6d2f5cc8efbbdee83a0403a5f7b386 \
+                    sha256  caf830959cf689db257ffb64893fd78f1a362a22fe774dd561340fc552d599eb \
+                    size    473597
 
 depends_build-append \
                     port:go \
@@ -33,8 +33,10 @@ depends_build-append \
 default_variants    +notmuch
 
 variant notmuch description {Enable support for notmuch integration} {
-    depends_lib         port:notmuch
-    build.args-append   GOFLAGS="-tags=notmuch"
+    depends_lib-append \
+                    port:notmuch
+    build.args-append \
+                    GOFLAGS="-tags=notmuch"
 }
 
 build.pre_args-append \

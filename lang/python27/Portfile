@@ -45,7 +45,8 @@ patchfiles          patch-Makefile.pre.in.diff \
                     darwin20.diff \
                     arm.patch \
                     implicit.patch \
-                    openssl_ver.patch
+                    openssl_ver.patch \
+                    libedit-types.patch
 
 if {${os.platform} eq "darwin" && ${os.major} >= 21} {
     patchfiles-append patch-getpath.diff
@@ -54,7 +55,7 @@ if {${os.platform} eq "darwin" && ${os.major} >= 21} {
 if {${subport} eq ${name}} {
     PortGroup       openssl 1.0
 
-    depends_build   port:pkgconfig
+    depends_build   path:bin/pkg-config:pkgconfig
     depends_lib     port:bzip2 \
                     port:db48 \
                     port:expat \

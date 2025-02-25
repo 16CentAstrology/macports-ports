@@ -1,40 +1,48 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
+PortGroup           compiler_blacklist_versions 1.0
 PortGroup           cmake 1.1
 PortGroup           github 1.0
 
-github.setup        CastXML CastXML 0.5.1 v
+github.setup        CastXML CastXML 0.6.11 v
+github.tarball_from archive
 
 name                castxml
 epoch               20190718
 revision            0
 categories          lang
-platforms           darwin
 license             Apache-2
 
 maintainers         {stromnov @stromnov} openmaintainer
 
 description         CastXML is a C-family abstract syntax tree XML output tool.
-long_description    ${description}
+long_description    {*}${description}
 
-checksums           rmd160  eea251f3549faf1b33d650a5103dc830d190f4d4 \
-                    sha256  acd99a94e01a9f4f4aa9f7fc8b4798c852674db2dad1cd6472ac79b56bd39001 \
-                    size    106964
+checksums           rmd160  fbb9d2084e44c595c6bcde1272e7ec96a7298029 \
+                    sha256  fc5b49f802b67f98ecea10564bc171c660020836a48cecefc416681a2d2e1d3d \
+                    size    123221
+
+# See: https://trac.macports.org/ticket/68235
+compiler.blacklist-append \
+                    {clang < 900}
 
 compiler.cxx_standard \
-                    2014
+                    2017
 
-depends_lib-append  port:zlib \
-                    port:libffi \
+depends_lib-append \
                     port:libedit \
-                    port:ncurses
+                    port:libffi \
+                    port:libxml2 \
+                    port:ncurses \
+                    port:zlib \
+                    port:zstd
 
 configure.args-append \
                     -DCastXML_INSTALL_DOC_DIR=share/doc/castxml
 
 # List of clang versions to offer variants for
-set clang_vers { 6.0 7.0 8.0 9.0 10 11 12 13 14 15 }
+set clang_vers { 6.0 7.0 8.0 9.0 10 11 12 13 14 15 16 17 18 19 }
 
 proc variant_name {ver} {
     return clang[string map {. {}} ${ver}]
@@ -59,13 +67,13 @@ foreach ver ${clang_vers} {
         set has_variant yes
     }
 }
-if {!$has_variant} { default_variants +clang15 }
+if {!$has_variant} { default_variants +clang19 }
 
 foreach ver ${clang_vers} {
     set v_name [variant_name ${ver}]
     if {[variant_isset ${v_name}]} {
-        depends_lib-append          port:llvm-${ver}
-        depends_build-append        port:clang-${ver}
+        depends_lib-append          port:llvm-${ver} \
+                                    port:clang-${ver}
         configure.args-append       -DLLVM_DIR=${prefix}/libexec/llvm-${ver}/lib/cmake/llvm
         cmake.install_rpath-append  ${prefix}/libexec/llvm-${ver}/lib
     }

@@ -4,8 +4,8 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-discordpy
-python.rootname     discord.py
-version             2.1.0
+python.rootname     discord_py
+version             2.5.0
 license             MIT
 platforms           {darwin any}
 supported_archs     noarch
@@ -16,21 +16,18 @@ long_description    discord.py is an API wrapper for Discord written in Python. 
 
 homepage            https://github.com/Rapptz/discord.py
 
-checksums           rmd160 35b329a99dc71ca0d503d039b6b03b8b2d7816cd \
-                    sha256 027ccdd22b5bb66a9e19cbd8daa1bc74b49271a16a074d57e52f288fcfa208e8 \
-                    size 965357
+checksums           rmd160  fcad67e635673ebf59101b9b118074f7153b5644 \
+                    sha256  f6827909b87ea89bdb2cc49d475cb1fada2e73235a3e4568fc8b113660340c73 \
+                    size    1054589
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append    port:py${python.version}-setuptools
-    depends_lib-append      port:py${python.version}-aiohttp
+    depends_lib-append      port:py${python.version}-aiohttp \
+                            port:py${python.version}-orjson \
+                            port:py${python.version}-zstd
 
-    # [speed]
-    depends_lib-append      port:py${python.version}-orjson \
-                            port:py${python.version}-aiodns \
-                            port:py${python.version}-brotli \
-                            port:py${python.version}-cchardet
-
-    livecheck.type  none
+    if {${python.version} >= 313} {
+        depends_lib-append  port:py${python.version}-audioop_lts
+    }
 }

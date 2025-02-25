@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        dbeaver dbeaver 22.3.3
+github.setup        dbeaver dbeaver 24.3.5
 github.tarball_from releases
 revision            0
 name                dbeaver-community
@@ -27,48 +27,34 @@ long_description    \
     Informix, etc.
 homepage            https://dbeaver.io/
 
-set arch ${build_arch}
-if {${build_arch} eq "arm64"} {
-    set arch "aarch64"
-}
+use_dmg             yes
 
-distname            dbeaver-ce-${version}-macosx.cocoa.${arch}
-
-checksums           dbeaver-ce-${version}-macosx.cocoa.x86_64${extract.suffix} \
-                        rmd160  1af4eea2cc9377b58c396dc6c5f5fed0d125b1df \
-                        sha256  af8e1e665462f518687b7f6ed7d443f58e5fc5b7af790e16b433207951d7c94a \
-                        size    114847834 \
-                    dbeaver-ce-${version}-macosx.cocoa.aarch64${extract.suffix} \
-                        rmd160  1490136e2cc4b2a06ead4624192ed9f9389e75c5 \
-                        sha256  7fadd5b771224a26b7c11e0bbc8893d5bf94796868f16e8729bfa70bc3f25aeb \
-                        size    115548133
-
-extract.mkdir       yes
-use_configure       no
-
-depends_run         port:openjdk17-temurin
-variant jdk17 description {Use Oracle Java 17} {
-    depends_run-replace port:openjdk17-temurin port:jdk17
-}
-
-# Since the user in any case needs to have OpenJDK to run this port, it is
-# better to install OpenJDK from MacPorts, with which there is no issue like
-# https://trac.macports.org/ticket/64170
-patchfiles          patch-java-path.diff
-
-post-patch {
-    if {[variant_isset jdk17]} {
-        reinplace "s|@@JAVA_VERSION@@|jdk17|g" \
-            ${worksrcpath}/DBeaver.app/Contents/Info.plist
-    } else {
-        reinplace "s|@@JAVA_VERSION@@|openjdk17-temurin|g" \
-            ${worksrcpath}/DBeaver.app/Contents/Info.plist
+switch ${build_arch} {
+    x86_64 {
+        distfiles           dbeaver-ce-${version}-macos-x86_64${extract.suffix}
+        checksums           rmd160  3c278ba41874c541f9e0b4efd24c423876e3a5e0 \
+                            sha256  e2e66b9608c7273ef33a01a7ee64d1b73fea8e5bf30609570157237fb483982b \
+                            size    130591353
+    }
+    arm64 {
+        distfiles           dbeaver-ce-${version}-macos-aarch64${extract.suffix}
+        checksums           rmd160  e5003687c9c975019e868228a99eea2d76995721 \
+                            sha256  1e6f76d7985ca0d11cfda99343d9815f6c25f79693085d7f4fee5cadcb5b69e0 \
+                            size    129368871
+    }
+    default {
+        known_fail  yes
+        pre-fetch {
+            ui_error "${subport} @ ${version} only supported for architectures ${supported_archs}"
+            return -code error "Unsupported architecture: ${build_arch}"
+        }
     }
 }
+
+use_configure       no
 
 build {}
 
 destroot {
-    delete ${worksrcpath}/DBeaver.app/Contents/Eclipse/jre
     copy ${worksrcpath}/DBeaver.app ${destroot}${applications_dir}
 }

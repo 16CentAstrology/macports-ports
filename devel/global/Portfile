@@ -3,14 +3,13 @@
 PortSystem          1.0
 
 name                global
-version             6.6.9
+version             6.6.14
 revision            0
-checksums           rmd160  664dbd538690880083a6c9497430e5de9e82bcfc \
-                    sha256  aacba0fa8d60ca645e62f312dcd23b47ed48a081aa0fb1563cff4702d9d1fad5 \
-                    size    2993872
+checksums           rmd160  4757976b5f60c788ae0153dacadfdff9f16b023e \
+                    sha256  f6e7fd0b68aed292e85bb686616baf6551d5c9424adcddca11d808ba318cb320 \
+                    size    3012014
 
 categories          devel
-platforms           darwin
 maintainers         nomaintainer
 description         source code tag system
 license             GPL-3+
@@ -27,7 +26,7 @@ long_description    GNU GLOBAL is a source code tag system that works the \
 homepage            https://www.gnu.org/software/global/
 master_sites        gnu
 
-set python_branch   3.10
+set python_branch   3.12
 set python_version  [string map {"." ""} ${python_branch}]
 set python_bin      ${prefix}/bin/python${python_branch}
 

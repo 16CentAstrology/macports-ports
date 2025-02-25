@@ -4,26 +4,27 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Convert-Color 0.14
+perl5.setup         Convert-Color 0.18
 revision            0
 license             {Artistic-1 GPL}
 maintainers         nomaintainer
 description         Convert::Color - color space conversions and named lookups
-long_description    ${description}
+long_description    {*}${description}
 
 platforms           {darwin any}
 supported_archs     noarch
 
-checksums           rmd160  4bf3b869fb33c062d94802581bec39f3c610cafa \
-                    sha256  c3c5fef75b785bceb951c1aa6dab7f2098b9d43877fb2e1b46f13b494069c699 \
-                    size    35574
+checksums           rmd160  895b241f19d586e3efc8e63730db2a92019c7bb7 \
+                    sha256  10c01c000b5aa6e9aaf259c7959b1b199b5c9235f40ccdac93e1d4ab885faab9 \
+                    size    36546
 
 if {${perl5.major} != ""} {
     depends_build-append \
-                    port:p${perl5.major}-test-number-delta
+                    port:p${perl5.major}-test-simple
 
     depends_lib-append \
                     port:p${perl5.major}-list-utilsby \
+                    port:p${perl5.major}-meta \
                     port:p${perl5.major}-module-pluggable
 
     perl5.use_module_build

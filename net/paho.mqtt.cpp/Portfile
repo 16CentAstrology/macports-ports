@@ -5,7 +5,8 @@ PortGroup           github 1.0
 PortGroup           cmake 1.1
 PortGroup           openssl 1.0
 
-github.setup        eclipse paho.mqtt.cpp 1.2.0 v
+github.setup        eclipse paho.mqtt.cpp 1.5.1 v
+github.tarball_from archive
 revision            0
 categories          net
 maintainers         nomaintainer
@@ -25,8 +26,13 @@ depends_lib-append \
 
 # We enable SSL so that the paho.mqtt.cpp library builds without issues
 configure.args-append \
+                    -DPAHO_BUILD_SHARED=ON \
+                    -DPAHO_BUILD_STATIC=ON \
                     -DPAHO_WITH_SSL=ON
 
-checksums           rmd160  435b0a3366dd68811c372e76b02ddd868c55d43a \
-                    sha256  2640f780b1cab2baab0d85dd74a0298c4ff2976d8174cfe63a63d01233fee3ee \
-                    size    216127
+checksums           rmd160  549175a4721ef07446ff875418bfdfc8805e0476 \
+                    sha256  1deb281ca75b49f605d6018cec594771905ea3ba9632a072c329a5ac23fc8c97 \
+                    size    265099
+
+# Since 1.5.0 a C++17 compiler is required
+compiler.cxx_standard   2017

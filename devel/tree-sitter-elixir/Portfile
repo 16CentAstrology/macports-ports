@@ -4,9 +4,10 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           tree_sitter 1.0
 
-github.setup        elixir-lang tree-sitter-elixir b20eaa75565243c50be5e35e253d8beb58f45d56
-version             20221017
+github.setup        elixir-lang tree-sitter-elixir 0.3.4 v
+github.tarball_from archive
 revision            0
+epoch               1
 
 description         A tree-sitter parser for Elixir
 
@@ -16,10 +17,13 @@ categories          devel
 license             MIT
 maintainers         {amake @amake} openmaintainer
 
-checksums           rmd160  65adc43b941bcfaf5ea33a92fb715209ce055dd5 \
-                    sha256  07a9a6c2c1f678e9f403f8dfc2efe0b2ae73e43b61ef3af70355eb806c6f4e79 \
-                    size    594677
+checksums           rmd160  1cf2f85f71767e4f9dbef14dac41e2e8dddb5621 \
+                    sha256  cd40b25fc0259fda2f456d7a1e29c067c58c11cd7d96fbf71b546da069d92239 \
+                    size    561177
 
 worksrcdir          ${worksrcdir}/src
+
+# scanner.h: error: ‘for’ loop initial declaration used outside C99 mode
+configure.cflags-append -std=c99
 
 github.livecheck.branch main

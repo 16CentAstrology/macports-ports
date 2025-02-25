@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-coverage
-version             7.0.5
+version             7.6.12
 revision            0
 
 categories-append   devel
@@ -20,42 +20,18 @@ long_description    Coverage measures code coverage, typically during test \
 
 homepage            https://github.com/nedbat/coveragepy
 
-checksums           sha256  051afcbd6d2ac39298d62d340f94dbb6a1f31de06dfaf6fcef7b759dd3860c45 \
-                    size    796171
+checksums           rmd160  2b4913297a27dcc298b4e1316412d2df816e4337 \
+                    sha256  48cfc4641d95d34766ad41d9573cc0f22a48aa88d22657a1fe01dca0dbae4de2 \
+                    size    805941
 
-python.versions     27 35 36 37 38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
     patchfiles      patch-setup.py.diff
 
     post-patch {
         reinplace "s|coverage run|coverage-${python.branch} run|g" {*}[glob ${worksrcpath}/tests/*.py]
         reinplace "s|\"coverage\"|\"coverage-${python.branch}\"|g" ${worksrcpath}/tests/coveragetest.py
-    }
-
-    if {${python.version} in "27 35"} {
-        version     5.5
-        checksums   rmd160  5652a14045197a2e4f051128f4826f9b0dd3c6fa \
-                    sha256  ebe78fe9a0e874362175b02371bdfbee64d8edc42a044253ddf4ee7d3c15212c \
-                    size    691258
-        revision    0
-
-        patchfiles  patch-v55_setup.py.diff
-
-        depends_lib-append \
-                    port:py${python.version}-setuptools
-    } elseif {${python.version} == 36} {
-        version     6.2
-        checksums   rmd160  35831a75c405cfb730ac92da3f6ef76869319420 \
-                    sha256  e2cad8093172b7d1595b4ad66f24270808658e11acf43a8f95b41276162eb5b8 \
-                    size    678664
-        revision    0
-    } elseif {${python.version} < 38} {
-        depends_lib-append \
-                    port:py${python.version}-importlib-metadata
     }
 
     post-destroot {
@@ -65,6 +41,4 @@ if {${name} ne ${subport}} {
             LICENSE.txt CONTRIBUTORS.txt CHANGES.rst \
             ${destroot}${docdir}
     }
-
-    livecheck.type  none
 }

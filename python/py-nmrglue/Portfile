@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-nmrglue
-version             0.9
+version             0.11
 revision            0
 
 categories-append   science
@@ -21,31 +21,38 @@ long_description    nmrglue is a module for working with NMR data in Python. \
 
 homepage            https://nmrglue.com
 
-checksums           rmd160  3c7aff83b51a08caebb8a4bb55009ebcfbe9f752 \
-                    sha256  be2602a08b4453bccd2b276640ebe2f06e1598aa3883492be7d11c686f623507 \
-                    size    180992
+checksums           rmd160  d3d361f1ca9f62ddf497f91c0d38f635f7037aec \
+                    sha256  9e740a02d34ce5df9eb0390274c6a5f37b4837d59139512a3dd169106a8e3fe1 \
+                    size    205874
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
-foreach pver {37 38 39 310} {
+conflicts           ${subport}-devel
+
+foreach pver [list {*}${python.versions} ""] {
     subport py${pver}-nmrglue-devel {
         PortGroup       github 1.0
 
-        github.setup    jjhelmus nmrglue a3494234497a4507537c8fc5a89081bdb09b1954
-        version         20221210-[string range ${github.version} 0 7]
+        github.setup    jjhelmus nmrglue 32df8629234b269a593
+        # Change github.tarball_from to 'releases' or 'archive' next update
+        github.tarball_from tarball
+        version         20241029-[string range ${github.version} 0 7]
         revision        0
-        checksums       rmd160  9b15e2a260b2da1501120f2371d8888646f5066e \
-                        sha256  f4602df8dcea55c11682f4cfd42ddfa7fcfdbe99e4227cb6e7e67dc8b614ce82 \
-                        size    14916439
+        checksums       rmd160  b074dc434af54dcaf2b78fbb07ce83c78b756d50 \
+                        sha256  e680e7095ea2bff03244d2ec97d8c5a6be4fa01e816c17f33a9ce1a9ba5dabe4 \
+                        size    14921719
 
         conflicts       py${pver}-nmrglue
+
+        if {${pver} ne ""} {
+            livecheck.type  none
+        } else {
+            PortGroup   stub 1.0
+        }
     }
 }
 
-if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
-
+if {${subport} ni [list ${name} ${name}-devel]} {
     depends_lib-append \
                     port:py${python.version}-numpy \
                     port:py${python.version}-scipy
@@ -57,10 +64,5 @@ if {${name} ne ${subport}} {
         xinstall -d ${destroot}${prefix}/share/doc/${subport}
         xinstall -m 0644 -W ${worksrcpath} TODO.txt LICENSE.txt INSTALL.txt \
             README.rst ${destroot}${prefix}/share/doc/${subport}
-    }
-
-    if {[string last devel ${subport}] == -1} {
-        livecheck.type  none
-        conflicts       py${python.version}-nmrglue-devel
     }
 }

@@ -4,9 +4,11 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           github 1.0
 
-github.setup        pydicom pydicom 2.3.1 v
+github.setup        pydicom pydicom 3.0.1 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 name                py-pydicom
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312
 license             MIT BSD
 maintainers         {eborisch @eborisch} \
                     openmaintainer
@@ -24,11 +26,15 @@ long_description    pydicom is a pure python package for working with DICOM \
 
 homepage            https://pydicom.github.io/pydicom/stable/index.html
 
-checksums           rmd160  1a6f5908cd18fbf452bad10684ad181cb8708046 \
-                    sha256  887b9222e0c3db2932fcc8f1fb75bc10dba6a4ab84f47bcbd2bfe137bbbd9b40 \
-                    size    2189356
+checksums           rmd160  8d32e0ca6cf9d53185e893bfd42be52ade621cde \
+                    sha256  ce1614ab848b4c48e193b7c3b50786724ab2c3781f6c254257facb636ebb952f \
+                    size    2899822
+
+github.livecheck.regex {([0-9.]+).*}
+
 
 if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-flit
     depends_lib-append      port:py${python.version}-numpy
 
     variant doc description "Build offline documentation" {

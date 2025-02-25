@@ -2,21 +2,25 @@
 
 PortSystem              1.0
 PortGroup               xcode 1.0
+PortGroup               active_variants 1.1
 
 name                    R-app
 
 # Update for newer systems, keep pegged for older. Compatibility see in R.xcodeproj/project.pbxproj
 if {${os.platform} eq "darwin" && ${os.major} > 12} {
-    version             1.78
+    version             1.81
+    set rel_r_ver       4.4.2
+    revision            0
+    # The version of R when this version of R-app was released, used for changing version
+    # info of app bundle to match the actual R version. Should be updated for each R-app release,
+    # and revbumped for each R release.
+    worksrcdir          Mac-GUI
 } else {
     # Version for older systems, including PPC. 1.73 still builds but freezes on quit.
     version             1.72
+    set rel_r_ver       4.0.2
+    revision            4
 }
-revision                2
-set rel_r_ver           4.2.0
-# The version of R when this version of R-app was released, used for changing version
-# info of app bundle to match the actual R version. Should be updated for each R-app release,
-# and revbumped for each R release.
 categories              math science aqua
 maintainers             {me.com:kjell.konis @kjellpk} {i0ntempest @i0ntempest} openmaintainer
 license                 GPL-2+
@@ -32,11 +36,13 @@ master_sites            http://cran.rstudio.com/bin/macosx/ \
 
 distname                Mac-GUI-${version}
 
+require_active_variants R aqua
+
 if {${os.platform} eq "darwin" && ${os.major} > 12} {
     checksums           ${distname}.tar.gz \
-                        rmd160  01fda817e1d16609908c2db8235a6a7cc1bc4746 \
-                        sha256  158bfa738dce96cbdc4cbc0f5b9e888ed0827a858f7576e30716ded2a209898d \
-                        size    1298306
+                        rmd160  58e5e51ad820a447c5680b85ab783dcdc9388540 \
+                        sha256  f94187304ffa5bcd61fc2e645b767c0c18e299188f07e78988926a98c7cf9a1f \
+                        size    1399999
 } else {
     checksums           ${distname}.tar.gz \
                         rmd160  022ddae8a3988c5a33928d520742ddfca73ac21d \

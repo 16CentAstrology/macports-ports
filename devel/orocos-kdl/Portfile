@@ -3,6 +3,8 @@ PortGroup       cmake 1.1
 PortGroup       github 1.0
 
 github.setup    orocos orocos_kinematics_dynamics 1.4.0 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 name            orocos-kdl
 revision        0
 categories      devel
@@ -30,4 +32,4 @@ checksums       rmd160  104ec8b519c658470be3b2f5da16ee96e0c52721 \
 depends_build-append \
     port:pkgconfig
 depends_lib \
-    port:eigen3
+    path:share/pkgconfig/eigen3.pc:eigen3

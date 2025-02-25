@@ -4,30 +4,29 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-inflate64
-version             0.3.1
+version             1.0.1
 revision            0
 
 license             LGPL-2.1+
-maintainers         {@catap korins.ky:kirill} openmaintainer
+maintainers         nomaintainer
 
 description         deflate64 compression/decompression library
 long_description    {*}${description}
 
 homepage            https://pypi.org/project/inflate64
 
-checksums           rmd160  5208ebf0e2b69016b8d4f805e8e8ab86c23d7abe \
-                    sha256  b52dd8fefd2ba179e5dfa18d6eca7e2fc822584616271c039d5ef1f9ca90c71c \
-                    size    895561
+checksums           rmd160  6d43dbab4886740ae9f6f02f97206869bf716f8b \
+                    sha256  3b1c83c22651b5942b35829df526e89602e494192bf021e0d7d0b600e76c429d \
+                    size    896103
 
-python.versions     38 39 310
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
     depends_build-append \
-                    port:py${python.version}-setuptools
+                    port:py${python.version}-setuptools_scm
 
     depends_test-append \
-                    port:py${python.version}-pyannotate \
-                    port:py${python.version}-pytest
+                    port:py${python.version}-pyannotate
 
     test.run        yes
 }

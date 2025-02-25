@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-bitarray
-version             1.1.0
+version             3.0.0
 revision            0
 
 categories-append   math
@@ -22,11 +22,13 @@ long_description    \
 
 homepage            https://github.com/ilanschnell/bitarray
 
-checksums           rmd160  7080c4a112fff2169a8751d843a1354745b44a09 \
-                    sha256  9f578314c7808eb1416620dc7d7977d4787a65a4f61b4c9685343a860712615b \
-                    size    40080
+checksums           rmd160  b9c0aac79b8241230a927028d14c6df5253087f4 \
+                    sha256  a2083dc20f0d828a7cdf7a16b20dae56aab0f43dc4f347a3b3039f6577992b03 \
+                    size    126627
 
-python.versions     37 38
+python.versions     39 310 311 312 313
+
+python.test_framework
 
 if {${name} ne ${subport}} {
     post-destroot {
@@ -35,13 +37,7 @@ if {${name} ne ${subport}} {
         xinstall -m 0644 -W ${worksrcpath} README.rst ${destroot}${docdir}
     }
 
-    pre-test {
-        test.env    PYTHONPATH=[glob -nocomplain ${worksrcpath}/build/lib*]
-    }
-
     test.run        yes
+    python.test_framework
     test.cmd        ${python.bin} bitarray/test_bitarray.py
-    test.target
-
-    livecheck.type  none
 }

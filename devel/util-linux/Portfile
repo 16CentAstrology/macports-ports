@@ -4,8 +4,14 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           legacysupport 1.0
 
-github.setup        karelzak util-linux 2.38.1 v
+github.setup        util-linux util-linux 2.40.2 v
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from tarball
 revision            0
+checksums           rmd160  9aa0a267442d5aea79b5d8edeaba0e511b480408 \
+                    sha256  d78b37a66f5922d70edf3bdfb01a6b33d34ed3c3cafd6628203b2a2b67c8e8b3 \
+                    size    8854820
+
 set branch          [join [lrange [split ${version} .] 0 1] .]
 categories          devel
 maintainers         {khindenburg @kurthindenburg} openmaintainer
@@ -34,12 +40,6 @@ fetch.ignore_sslcert    yes
 
 use_xz              yes
 
-checksums           rmd160  7e500eb4458e7bb00feda9dd5e6e42f2b96bbca2 \
-                    sha256  60492a19b44e6cf9a3ddff68325b333b8b52b6c59ce3ebd6a0ecaa4c5117e84f \
-                    size    7495904
-
-patchfiles          patch-includes.diff
-
 if { ${os.platform} eq "darwin" && ${os.major} < 9 } {
     configure.cppflags-append -D__DARWIN_UNIX03
 
@@ -59,6 +59,7 @@ configure.args      --disable-agetty \
                     --disable-fsck \
                     --disable-kill \
                     --disable-libblkid \
+                    --disable-liblastlog2 \
                     --disable-libmount \
                     --disable-libuuid \
                     --disable-login \
@@ -81,6 +82,29 @@ configure.args      --disable-agetty \
                     --without-audit \
                     --without-python
 
+# The build procedure now includes checking related to the Y2038 problem, which
+# fails on 32-bit builds (due to the 32-bit time_t).  This check can be disabled
+# with the --disable-year2038 configure option.  Although it's probably OK
+# to set this option unconditionally, for maximum safety we only set it when
+# needed, i.e. when there's a 32-bit target.  This needs to take into account
+# all target archs in universal builds.
+#
+if {[variant_isset universal]} {
+    set target_archs ${configure.universal_archs}
+} else {
+    set target_archs ${configure.build_arch}
+}
+set have_32bit no
+foreach arch ${target_archs} {
+    if {${arch} in [list arm i386 ppc]} {
+        set have_32bit yes
+    }
+}
+if {${have_32bit}} {
+    configure.args-append --disable-year2038
+}
+
+# https://trac.macports.org/wiki/WimplicitFunctionDeclaration#strchr
 configure.checks.implicit_function_declaration.whitelist-append strchr
 
 # When adding new programs, check the .c file for license
@@ -118,4 +142,4 @@ destroot {
                        ${destroot}${docdir}
 }
 
-github.livecheck.regex  {([^"rc]+)}
+github.livecheck.regex  {([0-9.]+)}

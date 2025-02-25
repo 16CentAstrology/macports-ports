@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           cargo   1.0
 PortGroup           github  1.0
 
-github.setup        roapi roapi 0.8.1 roapi-v
+github.setup        roapi roapi 0.12.3 roapi-v
 github.tarball_from archive
 revision            0
 
@@ -17,14 +17,16 @@ maintainers         {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
 checksums           ${distname}${extract.suffix} \
-                    rmd160  d1d413d24a685b060db747503ec31d4635f3be6a \
-                    sha256  890f2b7d83b41bf61e7c5e6850d4388df488bb543b1bfa4621109715297e2df8 \
-                    size    278293
+                    rmd160  047343cf08cef8b0057506b26acd0d4bae05f9aa \
+                    sha256  3ffb4c3aaa261dd18d8d4def4a2330d498181b4e1ec7f3dd7f1844af85f6d90e \
+                    size    344968
 
 set bin_name        ${name}
 
 if {${subport} eq ${name}} {
     # roapi
+
+    homepage        https://roapi.github.io/docs/
 
     description     \
         Create full-fledged APIs for slowly moving datasets without writing a \
@@ -47,7 +49,7 @@ if {${subport} eq ${name}} {
     # columnq
     set bin_name    columnq
 
-    version         0.3.0
+    version         0.5.2
 
     description     \
         Simple CLI to help you query tabular data with support for a rich \

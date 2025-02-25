@@ -1,13 +1,17 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
+PortGroup           compiler_blacklist_versions 1.0
 PortGroup           github 1.0
+PortGroup           legacysupport 1.1
 
-github.setup        ocaml opam 2.1.3
+# faccessat
+legacysupport.newest_darwin_requires_legacy 13
+
+github.setup        ocaml opam 2.3.0
 
 name                opam
 revision            0
-platforms           darwin
 categories          ocaml sysutils
 license             LGPL-2
 maintainers         {@pmetzger pmetzger} openmaintainer
@@ -21,11 +25,15 @@ long_description    OPAM is a source-based package manager for OCaml.\
 github.tarball_from releases
 distname            opam-full-${version}
 
-checksums           rmd160  0040c5f2352266123125e6ad0593e124aefeb9d5 \
-                    sha256  cb2ab00661566178318939918085aa4b5c35c727df83751fd92d114fdd2fa001 \
-                    size    9618995
+checksums           rmd160  af863ac8afccbdd3e825e3fe1fffcdf66d128993 \
+                    sha256  506ba76865dc315b67df9aa89e7abd5c1a897a7f0a92d7b2694974fdc532b346 \
+                    size    12860518
 
 depends_build       port:ocaml
+# Opam upgrade uses patch to update the package repository,
+# this can silently fail with macos patch when files are
+# deleted upstream.
+depends_lib         port:gpatch
 
 # This prevents configure from trying to use a program to fetch dependencies.
 # We don't need or want one.
@@ -41,4 +49,34 @@ patchfiles          patch-stop-fetch-check.diff \
                     patch-makefile.diff
 
 use_parallel_build  no
-build.target        lib-ext all
+build.target        all
+configure.args-append --with-vendored-deps
+
+# Match OCaml settings:
+compiler.blacklist  *gcc-4.0 *gcc-4.2 {clang < 400}
+
+if {[string match *gcc* ${configure.compiler}]} {
+    # Temporary fix for:
+    # https://github.com/ocaml-opam/ocaml-mccs/issues/51
+    # https://github.com/ocaml/dune/issues/949
+    configure.args-append \
+                    --without-mccs
+}
+
+platform darwin {
+    if {${os.major} < 14} {
+        patchfiles-append \
+                    patch-link-legacysupport.diff
+
+        post-patch {
+            reinplace "s|@PREFIX@|${prefix}|" ${worksrcpath}/src/core/dune
+        }
+    }
+
+    if {${os.major} < 11} {
+        # Matching ocaml 1.1 PG setting.
+        # See: https://github.com/ocaml/dune/issues/8941
+        build.env-append \
+                    DUNE_CONFIG__COPY_FILE=portable
+    }
+}

@@ -20,7 +20,6 @@ checksums       rmd160  b1da5df10d7e0fd07d864973f106d4376b7e375b \
 
 license         Boost-1
 categories      devel
-platforms       darwin
 maintainers     {michaelld @michaelld} \
                 {mascguy @mascguy} \
                 openmaintainer
@@ -33,12 +32,11 @@ long_description \
     which work well with the C++ Standard Library.
 
 homepage        http://www.boost.org
-master_sites    https://boostorg.jfrog.io/artifactory/main/release/${version}/source/
+master_sites    https://archives.boost.io/release/${version}/source
 set distver     [join [split ${version} .] _]
 distname        boost_${distver}
 use_bzip2       yes
 
-compiler.cxx_standard     2011
 compiler.blacklist-append {clang < 1000}
 
 depends_lib-append \
@@ -125,6 +123,17 @@ post-patch {
 # ld: internal error: atom not found in symbolIndex(__ZNSt3__1plIcNS_11char_traitsIcEENS_9allocatorIcEEEENS_12basic_stringIT_T0_T1_EERKS9_SB_) for architecture x86_64
 patchfiles-append patch-b2-build-older-OSes.diff
 
+# Upstream fix to allow building Boost with Clang 16+. Included in versions v181+.
+# https://trac.macports.org/ticket/67324
+patchfiles-append patch-boost-clang16-cpp17-compat.diff
+
+# Upstream c++17 fix: https://github.com/boostorg/functional/commit/6a573e4
+patchfiles-append patch-boost-functional.diff
+
+# Upstream c++17 fix: https://github.com/boostorg/math/commit/1ec5c98d80de97f9e962c5627e1a0e6096099894
+# https://trac.macports.org/ticket/71647
+patchfiles-append patch-math-tools-utility.diff
+
 proc write_jam s {
     global worksrcpath
     set config [open ${worksrcpath}/user-config.jam a]
@@ -140,8 +149,15 @@ mpi.setup          -gcc
 # Further: Building Boost using C++11 compliance does not seem to then
 # require ports depending on Boost to also require C++11 compliance,
 # and requiring it does make such building easier for those ports.
-configure.cxxflags-append -std=gnu++11
-compiler.cxx_standard   2011
+configure.cxxflags-append -std=gnu++17
+# ICU requires C++17
+compiler.cxx_standard   2017
+
+# Error: integer value is outside the valid range of values for this enumeration type
+# See: https://trac.macports.org/ticket/69103
+configure.cxxflags-append \
+                    -Wno-enum-constexpr-conversion \
+                    -Wno-unknown-warning-option
 
 # This flag fixes the return type of unsetenv(3)
 # See: https://trac.macports.org/ticket/63121
@@ -168,7 +184,7 @@ if {[string match *gcc* ${configure.compiler}]} {
 # makecontext/swapcontext introduced in 10.6
 # In 10.6.x Rosetta they do not work: https://trac.macports.org/ticket/64978
 platform darwin {
-    if {${os.major} < 10 || (${os.major} == 10 && ${build_arch} eq "ppc")} {
+    if {${os.major} < 10 || (${os.major} == 10 && ${configure.build_arch} eq "ppc")} {
         configure.args-append   --without-libraries=context \
                                 --without-libraries=coroutine
     }
@@ -214,8 +230,7 @@ build.args      -d2 \
                 threading=single,multi \
                 link=static,shared \
                 runtime-link=shared \
-                -j${build.jobs} \
-                --no-cmake-config
+                -j${build.jobs}
 
 destroot.cmd    ${worksrcpath}/b2
 destroot.post_args
@@ -251,7 +266,7 @@ post-destroot {
     }
 }
 
-set pythons_versions {2.7 3.5 3.6 3.7 3.8 3.9 3.10 3.11}
+set pythons_versions {2.7 3.9 3.10 3.11 3.12}
 
 set pythons_ports {}
 foreach v ${pythons_versions} {
@@ -286,8 +301,9 @@ foreach v ${pythons_versions} {
         configure.args-delete   --without-libraries=python
         configure.args-append   --with-python=${prefix}/bin/python${v} --with-python-root=${prefix}/bin/python${v}
 
-        patchfiles-append   ${bppatch} patch-tools-build-src-tools-python.jam.diff \
-                            patch-tools-build-src-tools-python-2.jam.diff
+        patchfiles-append   ${bppatch} patch-tools-build-src-tools-python.jam.diff
+        patchfiles-append   patch-tools-build-src-tools-python-2.jam.diff
+        patchfiles-append   patch-python-enum_type.diff
 
         post-patch {
             reinplace s|@FRAMEWORKS_DIR@|${frameworks_dir}| ${worksrcpath}/tools/build/src/tools/python.jam
@@ -296,7 +312,7 @@ foreach v ${pythons_versions} {
 }
 
 if {![variant_isset debug]} {
-    set selected_python python310
+    set selected_python python312
     foreach v ${pythons_versions} {
         set s [string map {. {}} ${v}]
         if {[variant_isset python${s}]} {
@@ -333,7 +349,7 @@ variant no_single description {Disable building single-threaded libraries} {
 }
 
 subport ${name}-numpy {
-    revision 5
+    revision 8
     description Boost.Numpy library
     long_description {*}${description}
     depends_lib port:boost${tag}
@@ -357,8 +373,7 @@ subport ${name}-numpy {
 }
 
 if {$subport eq $name} {
-
-    revision 6
+    revision 13
 
     patchfiles-append patch-disable-numpy-extension.diff
 
@@ -445,23 +460,23 @@ if {$subport eq $name} {
 }
 
 if {!${universal_possible} || ![variant_isset universal]} {
-    if {[lsearch ${build_arch} arm*] != -1} {
+    if {[lsearch ${configure.build_arch} arm*] != -1} {
         build.args-append address-model=64 architecture=arm
     } else {
-        if {[lsearch ${build_arch} ppc*] != -1} {
+        if {[lsearch ${configure.build_arch} ppc*] != -1} {
             build.args-append architecture=power
             if {${os.arch} ne "powerpc"} {
                 build.args-append --disable-long-double
             }
         } else {
-            if {[lsearch ${build_arch} *86*] != -1} {
+            if {[lsearch ${configure.build_arch} *86*] != -1} {
                 build.args-append architecture=x86
             } else {
                 pre-fetch {
-                    error "Current value of 'build_arch' (${build_arch}) is not supported."
+                    error "Current value of 'configure.build_arch' (${configure.build_arch}) is not supported."
                 }
             }
-            if {[lsearch ${build_arch} *64] != -1} {
+            if {[lsearch ${configure.build_arch} *64] != -1} {
                 build.args-append address-model=64
             } else {
                 build.args-append address-model=32
@@ -475,6 +490,12 @@ variant universal {
 
     if {[lsearch ${configure.universal_archs} arm*] != -1} {
         build.args-append address-model=64 architecture=combined
+
+        # allow universal building on arm/Intel
+        # https://trac.macports.org/ticket/64954
+        patchfiles-append patch-boost176-universal-arm64-x86_64-fix.diff \
+                          patch-boost176-no-abi-asm_sources.diff
+
     } else {
         if {[lsearch ${configure.universal_archs} ppc*] != -1} {
             if {[lsearch ${configure.universal_archs} *86*] != -1} {
@@ -513,16 +534,4 @@ platform darwin 8 powerpc {
     if {[variant_isset universal]} {
         build.args-append   macosx-version=10.4
     }
-}
-
-# As of Boost 1.70.0, Boost provides CMake find scripts for itself
-# that are installed by default. Those provided in 1.70.0 were broken
-# in multiple ways; many fixed were added before 1.71.0. That said,
-# we're not installing them by default at this time, but instead
-# providing an option to install them for testing / evaluation
-# purposes. We will likely enable these scripts in the future since it
-# is likely that CMake will stop providing them once the
-# Boost-provided version is stable.
-variant cmake_scripts description {Install Boost CMake find scripts} {
-    build.args-delete --no-cmake-config
 }

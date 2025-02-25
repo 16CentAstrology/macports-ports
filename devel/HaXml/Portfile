@@ -3,8 +3,8 @@
 PortSystem          1.0
 
 name                HaXml
-version             1.25.9
-revision            3
+version             1.25.13
+revision            0
 categories          devel
 license             LGPL-2.1
 maintainers         nomaintainer
@@ -17,14 +17,14 @@ long_description    HaXml is a collection of utilities for parsing, \
                     error-correcting parser for HTML, an XML \
                     validator, and pretty-printers for XML and HTML.
 
-homepage            https://projects.haskell.org/${name}
+homepage            https://github.com/HaXml/HaXml
 
-master_sites        https://hackage.haskell.org/package/${name}-${version}
+checksums           rmd160  370429d09761915339f196115ffbacfc9926a04c \
+                    sha256  5d855449bddef93703d2759626558c3202fbedb4a6deaa7f9659da6557bab373 \
+                    size    147978
 
-checksums           sha1    f44cda704057f27b0bd5cc8125406a8cd3d2013b \
-                    rmd160  b32efb8c2e04e876df4a463d68bdea23af1361d0 \
-                    sha256  01bbc66cd260286bb7b51f94f03854eae56797d0137a5b89d2a9f4769d3b4245 \
-                    size    147629
+installs_libs       no
+
 variant stack \
     description {Use stack to build.} {}
 

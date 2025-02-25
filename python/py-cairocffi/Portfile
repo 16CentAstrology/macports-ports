@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-cairocffi
-version             1.4.0
+version             1.7.1
 revision            0
 
 categories-append   graphics
@@ -14,21 +14,18 @@ license             BSD
 maintainers         {reneeotten @reneeotten} openmaintainer
 
 description         cairocffi is a CFFI-based drop-in replacement for Pycairo
-long_description    ${description}
+long_description    {*}${description}
 
 homepage            https://github.com/Kozea/cairocffi
 
-checksums           rmd160  bca71eff7c93f2164d80572e154ac7352643852c \
-                    sha256  509339b32ccd8d7b00c2204c32736cde78db53a32e6a162d312478d25626cd9a \
-                    size    69851
+checksums           rmd160  aac10dbb24b57465c6683a3ec72038daf9ee61d8 \
+                    sha256  2e48ee864884ec4a3a34bfa8c9ab9999f688286eb714a15a43ec9d068c36557b \
+                    size    88096
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
+python.pep517_backend flit
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                        port:py${python.version}-pytest-runner \
-                        port:py${python.version}-setuptools
-
     depends_lib-append  path:lib/pkgconfig/cairo.pc:cairo \
                         path:lib/pkgconfig/gdk-pixbuf-2.0.pc:gdk-pixbuf2 \
                         port:libffi \

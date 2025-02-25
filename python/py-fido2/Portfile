@@ -4,9 +4,11 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-fido2
-version             1.1.0
+version             1.2.0
 categories          python security crypto
 license             BSD
+platforms           {darwin any}
+supported_archs     noarch
 maintainers         {amake @amake} openmaintainer
 
 homepage            https://github.com/Yubico/python-fido2
@@ -17,17 +19,15 @@ long_description    Provides library functionality for communicating with a \
                     FIDO device over USB as well as verifying attestation \
                     and assertion signatures.
 
-checksums           rmd160  0c8ba2335962501c9da55b24d1bbe2f4a1c63e87 \
-                    sha256  2b4b4e620c2100442c20678e0e951ad6d1efb3ba5ca8ebb720c4c8d543293674 \
-                    size    243526
+checksums           rmd160  2cf72565783670b9a53e246311527272f47d0b64 \
+                    sha256  e39f95920122d64283fda5e5581d95a206e704fa42846bfa4662f86aa0d3333b \
+                    size    266369
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312
+
+python.pep517_backend poetry
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-        port:py${python.version}-setuptools
-
     depends_lib-append \
-        port:py${python.version}-six \
         port:py${python.version}-cryptography
 }

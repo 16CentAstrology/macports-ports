@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/golang/tools 0.5.0 v
+go.setup            github.com/golang/tools 0.30.0 v
+go.offline_build    no
 github.tarball_from archive
 epoch               7
 revision            0
@@ -11,18 +12,15 @@ revision            0
 name                go-tools
 categories          devel
 license             BSD
-maintainers         {ciserlohn @ci42} {@enckse voidedtech.com:enckse} openmaintainer
+maintainers         {ciserlohn @ci42} {@enckse voidedtech.com:enckse} \
+                    {gmail.com:herby.gillot @herbygillot} \
+                    openmaintainer
 description         Various packages and tools that support the Go programming language.
-long_description    $description
+long_description    {*}${description}
 
-checksums           rmd160  a94af765be1caefb2749a8be8525e7be1aa18b2a \
-                    sha256  1b5f80eb6da71afba18c7d4327d4913cfb9b6a0840ebb33006e3b9eccec12412 \
-                    size    2565991
-
-# FIXME: This port currently can't be built without allowing go mod to fetch
-# dependencies during the build phase. See
-# https://trac.macports.org/ticket/61192
-build.env-delete    GOPROXY=off GO111MODULE=off
+checksums           rmd160  bedf767f68958242393bcc9ff983ab83b6d2d63c \
+                    sha256  c1e93ac3be804264bbe3779418caa6728944472cf5bc9368365657e31c1b4a2e \
+                    size    7639760
 
 build.args          -o bin/ ./cmd/... ./cmd/auth/...
 

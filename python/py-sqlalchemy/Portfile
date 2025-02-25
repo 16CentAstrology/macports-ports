@@ -4,14 +4,14 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-sqlalchemy
-python.rootname     SQLAlchemy
-version             1.4.46
+version             2.0.38
 revision            0
 categories-append   databases
 license             MIT
 
-python.versions     27 35 36 37 38 39 310 311
-python.pep517       yes
+# do NOT remove the 27 subport as this is a depdendency of buildbot-0.8, which
+# is required for the MacPorts infractructure
+python.versions     27 39 310 311 312 313
 
 maintainers         {stromnov @stromnov} openmaintainer
 
@@ -21,34 +21,32 @@ long_description    SQLAlchemy is the Python SQL toolkit and Object \
                     Relational Mapper that gives application developers \
                     the full power and flexibility of SQL.
 
-homepage            http://www.sqlalchemy.org/
+homepage            https://www.sqlalchemy.org/
 
-checksums           rmd160  7582cdd7d9142e1b1d969712111a18b19e2710d5 \
-                    sha256  6913b8247d8a292ef8315162a51931e2b40ce91681f1b6f18f697045200c4a30 \
-                    size    8544238
+checksums           rmd160  c25b97d014982aaf17291e7654b9951b19ce0a18 \
+                    sha256  e5a4d82bdb4bf1ac1285a68eab02d253ab73355d9f0fe725a97e1e0fa689decb \
+                    size    9634782
 
 if {${name} ne ${subport}} {
-    if {${python.version} eq 35} {
-        version             1.3.23
+    if {${python.version} == 27} {
+        python.rootname     SQLAlchemy
+        version             1.4.46
         revision            0
         distname            ${python.rootname}-${version}
-        checksums           rmd160  edd24330178b399aa5061b8eedb5ddb61d75c82d \
-                            sha256  6fca33672578666f657c131552c4ef8979c1606e494f78cd5199742dfb26918b \
-                            size    6313652
-    } else {
-        if {${python.version} < 38} {
-            depends_lib-append  port:py${python.version}-importlib-metadata
-        }
-        if {${python.version} >= 36} {
-            depends_lib-append  port:py${python.version}-greenlet
-        }
-    }
-
-    if {${python.version} < 37} {
-        python.pep517       no
+        checksums           rmd160  7582cdd7d9142e1b1d969712111a18b19e2710d5 \
+                            sha256  6913b8247d8a292ef8315162a51931e2b40ce91681f1b6f18f697045200c4a30 \
+                            size    8544238
         depends_build-append \
                             port:py${python.version}-setuptools
+        depends_lib-append  port:py${python.version}-importlib-metadata
+    } else {
+        depends_build-append \
+                            path:bin/cython-${python.branch}:py${python.version}-cython
+
+        depends_lib-append  port:py${python.version}-typing_extensions
     }
+
+    depends_lib-append  port:py${python.version}-greenlet \
 
     post-destroot {
         # Install example files not installed by the Makefile

@@ -4,11 +4,10 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           github 1.0
 
-github.setup        pythongssapi python-gssapi 1.8.2 v
+github.setup        pythongssapi python-gssapi 1.9.0 v
 github.tarball_from releases
 
 name                py-gssapi
-platforms           darwin
 license             ISC
 maintainers         {toby @tobypeterson} openmaintainer
 
@@ -17,11 +16,11 @@ long_description    Python-GSSAPI provides both low-level and high level wrapper
                     around the GSSAPI C libraries. While it focuses on the Kerberos \
                     mechanism, it should also be useable with other GSSAPI mechanisms.
 
-checksums           rmd160  9ddb1228c662db99a168b2d4a67bbdf1d26b4269 \
-                    sha256  ac62a7e0ee94096f7c5f5f19d3e7c9d96689180c47e18c5b55207f00fb03a313 \
-                    size    112521
+checksums           rmd160  71966a7d6bf97fca5ccf27f687334b53f8bd1d85 \
+                    sha256  18bdb2c03c38015833ed14c68ae64e60471251b0483c5669d69a587675662a0b \
+                    size    112822
 
-python.versions     38 39 310 311
+python.versions     39 310 311 312 313
 
 patchfiles          patch-setup.py.diff
 
@@ -29,6 +28,9 @@ if {${name} ne ${subport}} {
     depends_build-append    port:py${python.version}-setuptools \
                             port:py${python.version}-cython
     depends_lib-append      port:py${python.version}-decorator
+
+    # pycore_frame.h:134: error: ‘for’ loop initial declaration used outside C99 mode
+    patchfiles-append       patch-c99.diff
 
     # Uses GSS.framework on macOS >= 10.9
     if {${os.platform} eq "darwin" && ${os.major} < 13} {

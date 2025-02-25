@@ -5,7 +5,7 @@ PortGroup           python 1.0
 
 name                py-editorconfig
 python.rootname     EditorConfig
-version             0.12.3
+version             0.17.0
 revision            0
 
 platforms           {darwin any}
@@ -14,17 +14,14 @@ license             BSD
 maintainers         {reneeotten @reneeotten} openmaintainer
 
 description         EditorConfig File Locator and Interpreter for Python
-long_description    ${description}
+long_description    {*}${description}
 
 homepage            https://editorconfig.org/
 
-checksums           rmd160  458973a038828fe7b166d7b11c36e9cb7cf786fb \
-                    sha256  57f8ce78afcba15c8b18d46b5170848c88d56fd38f05c2ec60dbbfcb8996e89e \
-                    size    13329
+distname            editorconfig-${version}
 
-python.versions     37 38 39 310 311
+checksums           rmd160  95e22cd6551c63af7c87416e3a366845e1b90d11 \
+                    sha256  8739052279699840065d3a9f5c125d7d5a98daeefe53b0e5274261d77cb49aa2 \
+                    size    13369
 
-if {${name} ne ${subport}} {
-    depends_lib-append \
-                        port:py${python.version}-setuptools
-}
+python.versions     39 310 311 312 313

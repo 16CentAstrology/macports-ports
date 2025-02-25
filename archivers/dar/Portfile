@@ -3,11 +3,11 @@
 PortSystem          1.0
 
 name                dar
-version             2.7.8
+version             2.7.16
 revision            0
-checksums           rmd160  e988b8b69ff190f14ee7edb998dc4e929029a5d6 \
-                    sha256  74eadc5e657315b4f6aee018c95b625f04bdbbee39e5ec9ec4663533ee950fe9 \
-                    size    2414732
+checksums           rmd160  d161439a775bd8d28072d9b6d5c090602e437e1a \
+                    sha256  1aac0eab03602ccfa3696c2e1817c09665deee124da6c319d77f1ee1d641804d \
+                    size    2444321
 
 categories          archivers
 maintainers         {ryandesign @ryandesign} openmaintainer
@@ -22,7 +22,7 @@ homepage            https://dar.sourceforge.io
 master_sites        sourceforge:project/dar/dar/${version}
 
 depends_build       path:bin/doxygen:doxygen \
-                    port:pkgconfig
+                    path:bin/pkg-config:pkgconfig
 
 depends_lib         port:argon2 \
                     port:bzip2 \
@@ -31,17 +31,27 @@ depends_lib         port:argon2 \
                     port:gpgme \
                     port:libgcrypt \
                     port:libiconv \
+                    port:librsync \
+                    port:lz4 \
                     port:lzo2 \
                     path:lib/libssl.dylib:openssl \
                     port:xz \
-                    port:zlib
-
-patchfiles          dynamic_lookup-11.patch
+                    port:zlib \
+                    port:zstd
 
 compiler.cxx_standard 2014
 compiler.thread_local_storage yes
 
 universal_variant   no
 
-# don't opportunistically try to build Python bindings
-configure.args      --disable-python-binding
+configure.args      --disable-dar-static \
+                    --disable-nodump-flag \
+                    --disable-python-binding \
+                    --disable-upx
+
+# Tests fail with "need to be run as root" and MacPorts does not have a
+# "test.asroot" option yet:
+# https://github.com/macports/macports-base/commit/6f0de6c40e7d3cd13c2ab274564fbf1f5e611eba
+test.run            no
+test.target         check
+#test.asroot         yes

@@ -5,23 +5,22 @@ PortGroup           python 1.0
 
 # also update py-pycryptodome
 name                py-pycryptodomex
-version             3.16.0
+version             3.21.0
 revision            0
 
 license             BSD
-platforms           darwin
-maintainers         {@catap korins.ky:kirill} openmaintainer
+maintainers         nomaintainer
 
 description         Cryptographic library for Python
 long_description    ${description}
 
 homepage            https://www.pycryptodome.org
 
-checksums           rmd160  d94f4d4c700cd4a00772d05c99c90fa66298015c \
-                    sha256  e9ba9d8ed638733c9e95664470b71d624a6def149e2db6cc52c1aca5a6a2df1d \
-                    size    4548384
+checksums           rmd160  af9463c04f7e2215a18ac2ed5ca8b854b351c853 \
+                    sha256  222d0bd05381dd25c32dd6065c071ebf084212ab79bab4599ba9e6a3e0009e6c \
+                    size    4818543
 
-python.versions     38 39 310 311
+python.versions     39 310 311 312 313
 
 if {${name} ne ${subport}} {
     depends_build-append \

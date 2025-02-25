@@ -2,51 +2,56 @@
 
 PortSystem          1.0
 PortGroup           compiler_blacklist_versions 1.0
+PortGroup           legacysupport 1.1
 PortGroup           texlive 1.0
 
 name                asymptote
-version             2.70
-revision            3
+version             3.01
+revision            0
 
 categories          graphics
-maintainers         {mojca @mojca} openmaintainer
+maintainers         nomaintainer
 description         A vector graphics language
 long_description    Asymptote is a powerful descriptive \
                     vector graphics language that provides a natural \
                     coordinate-based framework for technical drawing. \
                     Labels and equations are typeset with LaTeX, for \
                     high-quality PostScript output.
-homepage            http://asymptote.sourceforge.net
+homepage            https://asymptote.sourceforge.net
 license             LGPL-3+
 # libpaper is a dependency of ghostscript that's only used at runtime
 license_noconflict  libpaper
 
-set python.branch   3.9
+set python.branch   3.13
 set python.version  [join [split ${python.branch} "."] ""]
 set python.bin      ${prefix}/bin/python${python.branch}
 
 master_sites        sourceforge:project/${name}/${version}/
 extract.suffix      .src.tgz
 
-checksums           rmd160  c78a5d06d17dfda25e785e7b599e044e6374494b \
-                    sha256  f5cc913a858c33e92f79ab421d354c0fe2babd87f452ae9dff729a902aa80c3f \
-                    size    4674495
+checksums           rmd160  002a1e4a39698bdf43a2719c2061afa43d4872a4 \
+                    sha256  7a05000ac3f6bf0631daebd2099f07fe32d4f5fd7b4a2cfc8055b008d497b084 \
+                    size    31828144
+
+# FileNotFoundError: [Errno 2] No such file or directory: 'ccache /opt/local/bin/g++-mp-14'
+configure.ccache    no
 
 # On Lion the default clang fails with
 # ../base/graph_splinetype.asy: 13.10: arrays have different lengths: 24 != 25
 compiler.blacklist  {clang < 500}
+# error: invalid use of template-name 'std::unordered_set' without an argument list
+compiler.cxx_standard   2017
 
-patchfiles          patch-Makefile.diff
-
-post-patch {
-    reinplace "s|@@PYTHON@@|${python.bin}|g" ${worksrcpath}/Makefile.in
-}
-
-configure.args      --enable-gc=system \
+configure.args-append \
                     --with-latex=${texlive_texmfports}/tex/latex \
                     --with-context=${texlive_texmfports}/tex/context/third \
                     --mandir=${prefix}/share/man \
-                    --disable-offscreen
+                    --disable-lsp
+
+configure.cxxflags-append \
+                    -std=c++17
+
+build.env-append     PYTHON=${python.bin}
 
 #build.env-append    PYRCC5=${prefix}/bin/pyrcc5-${python.branch} \
 #                    PYUIC5=${prefix}/bin/pyuic5-${python.branch}
@@ -63,19 +68,21 @@ configure.args      --enable-gc=system \
 #
 # one day we could split that into a separate +docs variant
 # or fetch the PDF from somewhere
-depends_build       port:ghostscript \
+depends_build-append \
+                    port:ghostscript \
+                    path:bin/pkg-config:pkgconfig \
                     port:texinfo \
+                    port:texlive-fonts-recommended \
                     port:texlive-latex-recommended \
-                    port:texlive-fonts-recommended
+                    port:texlive-latex-extra
 #                   port:py${python.version}-pyqt5
 
-depends_lib         port:readline \
-                    port:fftw-3 \
+depends_lib-append  port:fftw-3 \
                     port:glm \
                     port:gsl \
                     port:libsigsegv \
                     port:ncurses \
-                    port:boehmgc
+                    port:readline
 
 # Runtime dependencies really depend on user preferences.
 # Asy can draw graphics without any TeX or without LaTeX,

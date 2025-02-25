@@ -4,8 +4,11 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-autoflake
-version             2.0.0
+version             2.3.1
+revision            0
 license             MIT
+platforms           {darwin any}
+supported_archs     noarch
 maintainers         nomaintainer
 
 description         Removes unused imports and unused variables
@@ -13,16 +16,30 @@ long_description    {*}${description}
 
 homepage            https://github.com/PyCQA/autoflake
 
-checksums           rmd160  a146c1b676d1935541a55edddb07cde49c12dd1a \
-                    sha256  7185b596e70d8970c6d4106c112ef41921e472bd26abf3613db99eca88cc8c2a \
-                    size    26591
+checksums           rmd160  ac35ba45a6ece9c32604d3717954432e9a1d624f \
+                    sha256  c98b75dc5b0a86459c4f01a1d32ac7eb4338ec4317a4469515ff1e687ecd909e \
+                    size    27642
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
-python.pep517           yes
 python.pep517_backend   hatch
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools
+    depends_lib-append \
+                    port:py${python.version}-pyflakes
+
+    if {${python.version} < 311} {
+        depends_lib-append \
+                    port:py${python.version}-tomli
+    }
+
+    post-destroot {
+        set docdir ${destroot}${prefix}/share/doc/${subport}
+        set doc_list [list LICENSE README.md]
+        xinstall -d ${docdir}
+        foreach f ${doc_list} {
+            xinstall -m 644 -W ${worksrcpath} ${f} ${docdir}
+            file delete -force ${destroot}/${python.pkgd}/${f}
+        }
+    }
 }

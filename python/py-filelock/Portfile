@@ -4,12 +4,12 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-filelock
-version             3.8.2
+version             3.16.1
 revision            0
 
 platforms           {darwin any}
 supported_archs     noarch
-license             Unlicense
+license             public-domain
 maintainers         {@funasoul gmail.com:funasoul} openmaintainer
 
 description         A platform independent file lock
@@ -19,27 +19,16 @@ long_description    This package contains a single module, which implements \
 
 homepage            https://py-filelock.readthedocs.io/
 
-checksums           rmd160  2a839a34999b84dad83347cc24fa93107cee979c \
-                    sha256  7565f628ea56bfcd8e54e42bdc55da899c85c1abfe1b5bcfd147e9188cebb3b2 \
-                    size    207820
+checksums           rmd160  0d9040dc27c5363912b7dce9abb23963fc2fec10 \
+                    sha256  c249fbfcd5db47e5e2d6d62198e565475ee65e4831e2561c8e313fa7eb961435 \
+                    size    18037
 
-# keep version for PY27 and PY34, these are (indirect) dependencies of py-virtualenv
-python.versions     27 34 35 36 37 38 39 310 311
+# keep version for Python 2.7, this is an (indirect) dependencies of py-virtualenv
+# See: <https://trac.macports.org/wiki/Python#VersionPolicy>
+python.versions     27 39 310 311 312 313
 
 if {${name} ne ${subport}} {
-    depends_build-append \
-                    port:py${python.version}-setuptools_scm
-
-    if {${python.version} == 36} {
-        version     3.4.1
-        revision    0
-
-        checksums   rmd160  4df725914d2d3943b8ebabc699695ab1a6da700d \
-                    sha256  0f12f552b42b5bf60dba233710bf71337d35494fc8bdd4fd6d9f6d082ad45e06 \
-                    size    206768
-    }
-
-    if {${python.version} <= 35} {
+    if {${python.version} == 27} {
         version     3.2.1
         revision    0
         epoch       1
@@ -49,19 +38,16 @@ if {${name} ne ${subport}} {
                     size    202950
 
         depends_build-append \
+                    port:py${python.version}-setuptools_scm \
                     port:py${python.version}-toml
+    } else {
+        python.pep517_backend hatch
 
+        depends_build-append \
+                    port:py${python.version}-hatch-vcs
     }
 
-    if {${python.version} ni "34"} {
-        depends_test-append \
-                    port:py${python.version}-pytest
-
-        test.run    yes
-        test.cmd    py.test-${python.branch}
-        test.target
-        test.env    PYTHONPATH=${worksrcpath}/build/lib
-    }
+    test.run    yes
 
     livecheck.type  none
 }

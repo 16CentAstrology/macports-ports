@@ -4,8 +4,8 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                twine
-version             4.0.2
-revision            0
+version             6.1.0
+revision            1
 
 categories-append   devel
 platforms           {darwin any}
@@ -19,25 +19,24 @@ long_description    {*}${description}
 
 homepage            https://twine.readthedocs.io/
 
-checksums           rmd160  a19a198f115fcf154845a36473a08af5f8f1a69a \
-                    sha256  9e102ef5fdd5a20661eb88fad46338806c3bd32cf1db729603fe3697b1bc83c8 \
-                    size    215249
+checksums           rmd160  6e57ed8104f1a13daf270203e3739057e0b6f33a \
+                    sha256  be324f6272eff91d07ee93f251edf232fc647935dd585ac003539b42404a8dbd \
+                    size    168404
 
-python.default_version  310
-python.pep517       yes
+python.default_version  313
 
 depends_build-append \
                     port:py${python.version}-setuptools_scm
 
-depends_lib-append  port:py${python.version}-colorama \
-                    port:py${python.version}-importlib-metadata \
+depends_lib-append  port:py${python.version}-id \
                     port:py${python.version}-keyring \
-                    port:py${python.version}-pkginfo \
+                    port:py${python.version}-packaging \
                     port:py${python.version}-readme_renderer \
                     port:py${python.version}-requests \
                     port:py${python.version}-requests-toolbelt \
                     port:py${python.version}-rfc3986 \
-                    port:py${python.version}-rich
+                    port:py${python.version}-rich \
+                    port:py${python.version}-urllib3
 
 post-destroot {
     set docdir ${prefix}/share/doc/${subport}

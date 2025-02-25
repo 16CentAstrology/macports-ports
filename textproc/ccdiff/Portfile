@@ -5,11 +5,11 @@ PortGroup           perl5 1.0
 
 name                ccdiff
 perl5.branches      5.34
-perl5.setup         App-ccdiff 0.32 ../by-authors/id/H/HM/HMBRAND/
+perl5.setup         App-ccdiff 0.34 ../by-authors/id/H/HM/HMBRAND/
 revision            0
-checksums           rmd160  ec07bf22605fb2e8558e20c84316d199b2fc58cc \
-                    sha256  a20fe5c58e121050d55b60b1bbcabd6493f6fdce3c8905e6c700c2a1ba60e64a \
-                    size    34327
+checksums           rmd160  705ac02a424848b2a9e61bb5de31a5b75a834e14 \
+                    sha256  8f5c15ba8b07c8622c3efb16feebe4a5a75cb04c2a52de6e8e23338ae531dd16 \
+                    size    36235
 
 categories          textproc
 supported_archs     noarch

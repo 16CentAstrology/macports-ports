@@ -8,7 +8,7 @@ PortGroup           app 1.0
 name                codeblocks
 conflicts           codeblocks-devel
 version             20.03
-revision            0
+revision            1
 platforms           darwin freebsd
 categories          devel aqua x11
 license             GPL-3+
@@ -141,4 +141,9 @@ platform darwin arm {
         copy -force ${automake_dir}/config.guess ${automake_dir}/config.sub \
             ${worksrcpath}
     }
+}
+
+notes {
+for information about how to configure the spellchecker module\
+please see https://trac.macports.org/ticket/71176
 }

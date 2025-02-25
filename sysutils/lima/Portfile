@@ -3,57 +3,77 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/lima-vm/lima 0.14.2 v
+go.setup            github.com/lima-vm/lima 1.0.6 v
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
+homepage            https://lima-vm.io
+
 description         Linux virtual machines
 
-long_description    {*}${description}
+long_description    {*}{
+    Lima launches Linux virtual machines with automatic file sharing
+    and port forwarding (similar to WSL2). The original goal of Lima
+    was to promote containerd including nerdctl (contaiNERD ctl) to
+    Mac users, but Lima can be used for non-container applications as
+    well. Lima also supports other container engines, such as Docker,
+    Podman, Kubernetes, etc. Lima can also emulate other architectures
+    if QEMU is installed.
+}
 
 categories          sysutils
 installs_libs       no
 license             Apache-2
 maintainers         {gmail.com:herby.gillot @herbygillot} \
+                    {macports.halostatue.ca:austin @halostatue} \
                     openmaintainer
 
-depends_run         port:qemu
-
-checksums           rmd160  604cfeadcaa42cc683491e43b2ba3cbcfe20db21 \
-                    sha256  8d6cd72dd1670c6ade1f92ede6dc01ab64cbeec38fbaba617d9aa93f59ca1ae1 \
-                    size    349140
-
-# Allow Go to fetch dependencies at build time, re-enable GO111MODULES
-build.env-delete    GO111MODULE=off GOPROXY=off
+checksums           rmd160  ffbf90669e10985ea61020ec26fdf1e1185a93be \
+                    sha256  16077e869cf525003c9aacd2290dadd5e966b0d0ab8ffdb69c13836610526526 \
+                    size    7382304
 
 build.cmd           make
 
+patchfiles          patch-Makefile.diff
+
+platform darwin {
+    # Lima defaults to VZ with macOS 13.5 and later; drop dependency from 14 onwards
+    if {${os.major} < 23} {
+        depends_run-append port:qemu
+    } else {
+        # added January 2025
+        notes {
+            Please note that the Lima now defaults to native\
+            virtualization support and not QEMU. If you rely on it,\
+            such as for emulating other architectures, you can install\
+            it explicitly:
+
+            port install qemu
+        }
+    }
+}
+
+post-patch {
+    reinplace "s|@@VERSION@@|${version}|g" ${worksrcpath}/Makefile
+}
+
+post-build {
+    set limactl ${worksrcpath}/_output/bin/limactl
+
+    set bash_completions_dir ${worksrcpath}/_output/share/bash-completion/completions
+    set fish_completions_dir ${worksrcpath}/_output/share/fish/vendor_completions.d
+    set zsh_completions_dir ${worksrcpath}/_output/share/zsh/site-functions
+
+    xinstall -d ${bash_completions_dir} ${fish_completions_dir} ${zsh_completions_dir}
+
+    system "${limactl} completion bash > ${bash_completions_dir}/${name}"
+    system "${limactl} completion fish > ${fish_completions_dir}/${name}.fish"
+    system "${limactl} completion zsh > ${zsh_completions_dir}/_${name}"
+}
+
 destroot {
-    xinstall -m 0755 \
-        {*}[glob ${worksrcpath}/_output/bin/*] ${destroot}${prefix}/bin
-
-    xinstall -m 0755 -d ${destroot}${prefix}/share/lima
-    xinstall -m 0644 \
-        {*}[glob ${worksrcpath}/_output/share/lima/lima-guestagent.Linux-*] \
-        ${destroot}${prefix}/share/lima
-
-    xinstall -m 0755 -d ${destroot}${prefix}/share/doc/lima
-    xinstall -m 0644 \
-        ${worksrcpath}/_output/share/doc/lima/LICENSE \
-        ${destroot}${prefix}/share/doc/lima
-    xinstall -m 0644 \
-        ${worksrcpath}/_output/share/doc/lima/README.md \
-        ${destroot}${prefix}/share/doc/lima
-
-    xinstall -m 0755 -d ${destroot}${prefix}/share/doc/lima/docs
-    xinstall -m 0644 \
-        {*}[glob ${worksrcpath}/_output/share/doc/lima/docs/*.md] \
-        ${destroot}${prefix}/share/doc/lima/docs
-
-    xinstall -m 0755 -d ${destroot}${prefix}/share/lima/examples
-    xinstall -m 0644 \
-        {*}[glob ${worksrcpath}/_output/share/doc/lima/examples/*.yaml] \
-        ${destroot}${prefix}/share/lima/examples
+    system -W ${worksrcpath} "make install DEST=${destroot}${prefix}"
 }
 
 github.livecheck.regex {([0-9.]+)}

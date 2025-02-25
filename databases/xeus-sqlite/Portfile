@@ -4,7 +4,9 @@ PortSystem              1.0
 PortGroup               cmake 1.1
 PortGroup               github 1.0
 
-github.setup            jupyter-xeus xeus-sqlite 0.6.0
+github.setup            jupyter-xeus xeus-sqlite 0.7.0
+# Change github.tarball_from to 'releases' or 'archive' next update
+github.tarball_from     tarball
 revision                0
 categories              databases
 license                 BSD
@@ -13,24 +15,25 @@ description             xeus-sqlite is a Jupyter kernel for SQL based on the nat
                         implementation of the Jupyter protocol xeus.
 long_description        {*}${description}
 
-checksums               rmd160  e85bd1a55c05c872650cd1e7398f5b40bcff673d \
-                        sha256  15fea3d633d89f124702642b97a720c7fa414f0d566a03693cb13206ea7ff3d7 \
-                        size    373673
+checksums               rmd160  ca4ee09efed7492d8a9e720a071ab86322f0fade \
+                        sha256  50f8aeac6a974c3eff7c732b5b2ac32186337cc82cb463ed9d90783a3f63b4ac \
+                        size    373506
 
 compiler.cxx_standard   2017
 
-depends_build-append    port:pkgconfig
+depends_build-append    path:bin/pkg-config:pkgconfig
 
-variant python37 conflicts python38 python39 python310 description {Use Python 3.7} {}
-variant python38 conflicts python37 python39 python310 description {Use Python 3.8} {}
-variant python39 conflicts python37 python38 python310 description {Use Python 3.9} {}
-variant python310 conflicts python37 python38 python39 description {Use Python 3.10} {}
+variant python39 conflicts python310 python311 python312 python313 description {Use Python 3.9} {}
+variant python310 conflicts python39 python311 python312 python313 description {Use Python 3.10} {}
+variant python311 conflicts python39 python310 python312 python313 description {Use Python 3.11} {}
+variant python312 conflicts python39 python310 python311 python313 description {Use Python 3.12} {}
+variant python313 conflicts python39 python310 python311 python312 description {Use Python 3.13} {}
 
-if {![variant_isset python37] && ![variant_isset python38] && ![variant_isset python39]} {
-    default_variants +python310
+if {![variant_isset python39] && ![variant_isset python310] && ![variant_isset python311] && ![variant_isset python313]} {
+    default_variants +python312
 }
 
-foreach pv {310 39 38 37} {
+foreach pv {313 312 311 310 39} {
     if {[variant_isset python${pv}]} {
         set python.version ${pv}
         break
@@ -38,13 +41,19 @@ foreach pv {310 39 38 37} {
 }
 
 depends_lib-append      port:nlohmann-json \
-                        port:py${python.version}-jupyterlab \
+                        path:lib/libssl.dylib:openssl \
                         port:sqlite3 \
                         port:sqlitecpp \
                         port:tabulate \
                         port:xeus-zmq \
                         port:xvega \
                         port:xvega-bindings
+
+if {${configure.build_arch} ni [list ppc ppc64]} {
+    # It pulls in Rust via one of dependencies, no Rust on PowerPC at the moment.
+    # This is not a required dependency for the build.
+    depends_lib-append  port:py${python.version}-jupyterlab
+}
 
 configure.args-append   -DCMAKE_PREFIX_PATH:PATH=${prefix}/lib/pkgconfig \
                         -Dcppzmq_DIR=${prefix}/share/cmake/cppzmq \
@@ -63,3 +72,4 @@ configure.args-append   -DCMAKE_PREFIX_PATH:PATH=${prefix}/lib/pkgconfig \
                         -Dxvega-bindings_DIR=${prefix}/lib/cmake/xvega-bindings \
                         -DZeroMQ_DIR=${prefix}/lib/cmake/ZeroMQ \
                         -DXSQL_DISABLE_ARCH_NATIVE:BOOL=ON
+

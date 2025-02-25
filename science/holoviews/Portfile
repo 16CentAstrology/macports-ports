@@ -1,10 +1,10 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
-PortGroup           github 1.0
 PortGroup           python 1.0
 
-github.setup        pyviz holoviews 1.15.4 v
+name                holoviews
+version             1.20.1
 revision            0
 categories-prepend  science
 license             BSD
@@ -18,29 +18,33 @@ supported_archs     noarch
 platforms           {darwin any}
 homepage            https://github.com/holoviz/holoviews
 
-checksums           rmd160  3a0f2aa816229fbc2d0e1ad0f8e8afdedb662cd0 \
-                    sha256  0f2f089c17502db76d1798ed72e4065f29c1c4b4bc12b97d8e989b8922d04a53 \
-                    size    4818317
+checksums           rmd160  87c7853c8b2473d0ebb5cacded2d3b8a9a648755 \
+                    sha256  f4ad8c6533d9ac918a762cb6ba8e7508f55525f9dfa447b8806da66272badceb \
+                    size    4592003
 
-variant python38 conflicts python39 python310 python311 description {Use Python 3.8} {}
-variant python39 conflicts python38 python310 python311 description {Use Python 3.9} {}
-variant python310 conflicts python38 python39 python311 description {Use Python 3.10} {}
-variant python311 conflicts python38 python39 python310 description {Use Python 3.11} {}
+variant python39 conflicts python310 python311 python312 python313 description {Use Python 3.9} {}
+variant python310 conflicts python39 python311 python312 python313 description {Use Python 3.10} {}
+variant python311 conflicts python39 python310 python312 python313 description {Use Python 3.11} {}
+variant python312 conflicts python39 python310 python311 python313 description {Use Python 3.12} {}
+variant python313 conflicts python39 python310 python311 python312 description {Use Python 3.13} {}
 
-if {![variant_isset python38] && ![variant_isset python39]
-        && ![variant_isset python310]} {
-    default_variants +python311
+if {![variant_isset python39] && ![variant_isset python310]
+    && ![variant_isset python311] && ![variant_isset python312]} {
+        default_variants +python313
 }
 
-foreach pv {311 310 39 38} {
+foreach pv {313 312 311 310 39} {
     if {[variant_isset python${pv}]} {
         python.default_version ${pv}
         break
     }
 }
 
+python.pep517_backend \
+                    hatch
+
 depends_build-append \
-                    port:py${python.version}-setuptools
+                    port:py${python.version}-hatch-vcs 
 
 depends_lib-append  port:py${python.version}-bokeh \
                     port:py${python.version}-colorcet \
@@ -51,5 +55,3 @@ depends_lib-append  port:py${python.version}-bokeh \
                     port:py${python.version}-param \
                     port:py${python.version}-pyct \
                     port:py${python.version}-pyviz_comms
-
-github.livecheck.regex  {(\d\.\d+(\.\d+)?(?!a))}

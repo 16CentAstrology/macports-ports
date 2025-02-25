@@ -4,15 +4,14 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-paramiko
-version             2.12.0
+version             3.5.0
 revision            0
 categories-append   net security
 license             LGPL-2.1+
 supported_archs     noarch
 platforms           {darwin any}
 
-python.versions     27 37 38 39 310 311
-python.pep517       yes
+python.versions     39 310 311 312 313
 
 maintainers         {stromnov @stromnov} openmaintainer
 
@@ -27,27 +26,12 @@ long_description    This is a library for making SSH2 connections (client \
 
 homepage            https://github.com/paramiko/paramiko/
 
-checksums           rmd160  f9b63ac3a29fd4a757ba815ac0ea09c2219dd0ff \
-                    sha256  376885c05c5d6aa6e1f4608aac2a6b5b0548b1add40274477324605903d9cd49 \
-                    size    1076369
+checksums           rmd160  9eafc7f48cfb8587d8f712bc668a7adf325c1539 \
+                    sha256  ad11e540da4f55cedda52931f1a3f812a8238a7af7f62a60de538cd80bb28124 \
+                    size    1704305
 
 if {${name} ne ${subport}} {
-    if {${python.version} < 37} {
-        version             2.10.4
-        revision            0
-        python.pep517       no
-        distname            ${python.rootname}-${version}
-        checksums           rmd160  5ff18116578200c92c1eb92fb40ce69aa11caf4b \
-                            sha256  3d2e650b6812ce6d160abff701d6ef4434ec97934b13e95cf1ad3da70ffb5c58 \
-                            size    1068156
-        depends_build-append \
-                            port:py${python.version}-setuptools
-    }
-
     depends_lib-append  port:py${python.version}-bcrypt \
                         port:py${python.version}-cryptography \
-                        port:py${python.version}-pynacl \
-                        port:py${python.version}-six
-
-    livecheck.type      none
+                        port:py${python.version}-pynacl
 }

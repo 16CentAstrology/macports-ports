@@ -2,11 +2,12 @@
 
 PortSystem          1.0
 PortGroup           python 1.0
+PortGroup           select 1.0
 
 name                py-panel
-version             0.14.2
+version             1.6.1
 revision            0
-categories          python
+categories-append   graphics devel
 license             BSD
 maintainers         {mps @Schamschula} openmaintainer
 description         A high-level app and dashboarding solution for Python.
@@ -17,36 +18,70 @@ supported_archs     noarch
 platforms           {darwin any}
 homepage            https://panel.holoviz.org
 
-python.versions     37 38 39 310 311
+python.versions     39 310 311 312 313
 
-checksums           rmd160  48cde2f2e0b6b928bac138e37ee0034afe986774 \
-                    sha256  c22690833dfa508d72ae632e2d42ea7d63ee2a31347e23b7ecf8dcded312ec74 \
-                    size    20352366
+checksums           rmd160  e79446ce1b984d02da8b2a85819bf3d303dccc6d \
+                    sha256  75f95701f03f6b64d00d69a5369c3f521126e697fb855e717816c4a02ddbfd57 \
+                    size    29945215
 
 if {${name} ne ${subport}} {
-    python.pep517   yes
+    if {${python.version} eq 39} {
+        version     1.4.5
+        revision    0
+        checksums   rmd160  a97be410438a274dbd7c8c7f7fb0cbc0da9804b0 \
+                    sha256  a7c9be109b57bdea16a143ce6a897500e1172a28b8a7c0dcfd5b7f61c616ea42 \
+                    size    39096558
+    }
+
+    python.pep517_backend \
+                    hatch
 
     depends_build-append \
-                    port:npm8 \
-                    port:py${python.version}-pyct
+                    port:npm10 \
+                    port:py${python.version}-hatch-vcs
 
     depends_run-append \
-                    path:bin/node:nodejs16 \
+                    path:bin/node:nodejs22 \
+                    port:panel_select \
                     port:py${python.version}-bleach \
                     port:py${python.version}-bokeh \
+                    port:py${python.version}-linkify-it-py \
                     port:py${python.version}-markdown \
+                    port:py${python.version}-markdown-it-py \
+                    port:py${python.version}-mdit-py-plugins \
+                    port:py${python.version}-packaging \
                     port:py${python.version}-pandas \
                     port:py${python.version}-param \
                     port:py${python.version}-pyct \
                     port:py${python.version}-pyviz_comms \
                     port:py${python.version}-requests \
-                    port:py${python.version}-tqdm
+                    port:py${python.version}-tqdm \
+                    port:py${python.version}-typing_extensions \
+                    port:py${python.version}-tzdata \
+                    port:py${python.version}-xyzservices
+
+    select.group    panel
+    select.file     ${filespath}/py${python.version}-panel
 
     platform darwin {
         if {${os.major} < 13} {
+            depends_build-replace \
+                    port:npm10 \
+                    port:npm8
+
             depends_run-replace \
-                    path:bin/node:nodejs16 \
+                    path:bin/node:nodejs22 \
                     path:bin/node:nodejs14
+        }
+
+        if {${os.major} < 16} {
+            depends_build-replace \
+                    port:npm10 \
+                    port:npm9
+
+            depends_run-replace \
+                    path:bin/node:nodejs22 \
+                    path:bin/node:nodejs18
         }
     }
 }

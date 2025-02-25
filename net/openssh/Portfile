@@ -5,13 +5,13 @@ PortSystem          1.0
 PortGroup           compiler_blacklist_versions 1.0
 
 name                openssh
-version             9.1p1
-revision            2
+version             9.9p2
+revision            0
 categories          net
-maintainers         nomaintainer
+maintainers         {@artkiver gmail.com:artkiver} openmaintainer
 license             BSD
 installs_libs       no
-conflicts           lsh pkixssh
+conflicts           pkixssh
 
 description         OpenSSH secure login server
 
@@ -28,9 +28,9 @@ long_description    OpenSSH is a FREE version of the SSH protocol suite of \
 
 homepage            https://www.openbsd.org/openssh/
 
-checksums           rmd160  4f23923aa29f8de79619f30d33bd215426b31937 \
-                    sha256  19f85009c7e3e23787f0236fbb1578392ab4d4bf9f8ec5fe6bc1cd7e8bfdd288 \
-                    size    1838747
+checksums           rmd160  3a15a3386fb6be9e9269c9f3f3ac39d53904fa3a \
+                    sha256  91aadb603e08cc285eddf965e1199d02585fa94d994d6cae5b41e1721e215673 \
+                    size    1944499
 
 master_sites        openbsd:OpenSSH/portable \
                     ftp://ftp.cise.ufl.edu/pub/mirrors/openssh/portable/ \
@@ -48,14 +48,13 @@ if {${name} eq ${subport}} {
         depends_build-append port:cctools
     }
 
-    # the HPN patch needs this, so rewrite all other patches to support it, too
-    patch.args          -p1
+    patch.pre_args-replace  -p0 -p1
     patchfiles          launchd.patch \
                         agent.patch \
                         pam.patch \
                         patch-sandbox-darwin.c-apple-sandbox-named-external.diff \
-                        patch-sshd.c-apple-sandbox-named-external.diff \
-                        macports-config.patch
+                        patch-sshd-session.c-apple-sandbox-named-external.diff \
+                        macports-config.patch \
 
     # We need a couple of patches
     # - pam.patch
@@ -79,6 +78,7 @@ if {${name} eq ${subport}} {
         reinplace "s|@PREFIX@|${prefix}|g" ${worksrcpath}/sandbox-darwin.c
     }
 
+    # We are patching configure.ac
     use_autoreconf          yes
 
     # strnvis(3) isn't actually "broken".  OpenBSD decided to be special and flip
@@ -112,7 +112,7 @@ if {${name} eq ${subport}} {
     use_parallel_build  yes
 
     platform macosx {
-        if {${os.major} < 10 || (${os.major} == 10 && ${build_arch} eq "ppc")} {
+        if {${os.major} < 10 || (${os.major} == 10 && ${configure.build_arch} eq "ppc")} {
             # See: https://trac.macports.org/ticket/60385
             # clang does not work for ppc on 10.6.8 Rosetta
             # See also: https://trac.macports.org/ticket/65613
@@ -129,6 +129,8 @@ if {${name} eq ${subport}} {
             # support Object Subscripting and the oldest version in our tree is
             # now 3.3.
             compiler.blacklist-append   *gcc* cc {clang < 421}
+        } elseif {(${os.major} >= 22 && ${configure.build_arch} eq "x86_64")} {
+            compiler.blacklist-append   {clang >= 1403 < 1500}
         }
     }
 
@@ -158,6 +160,11 @@ if {${name} eq ${subport}} {
         if {![file exists "${prefix}/etc/ssh/ssh_config"]} {
             copy "${prefix}/etc/ssh/ssh_config.example" "${prefix}/etc/ssh/ssh_config"
         }
+    }
+
+    pre-test {
+        ui_msg "Tests require a cooperating server named 'somehost'."
+        ui_msg "Failure to connect to it results in a hang."
     }
 
     variant xauth description {Build with support for xauth} {
@@ -199,6 +206,12 @@ if {${name} eq ${subport}} {
         depends_lib-append      port:libfido2
     }
 
+    variant legacy_dsa description "Enable legacy DSA support (until 2025)" {
+        configure.args-append  --enable-dsa-keys
+        notes-append "DSA support is scheduled to be removed in early 2025."
+        notes-append "DSA-based keys will need to be replaced by then."
+        notes-append "See: https://www.openbsd.org/openssh/releasenotes.html"
+    }
 
     platform darwin {
         # create link to /usr/include/pam because 'security' was renamed to 'pam'

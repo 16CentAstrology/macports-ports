@@ -4,21 +4,19 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         PDF-API2 2.044 ../../authors/id/S/SS/SSIMMS
+perl5.setup         PDF-API2 2.047 ../../authors/id/S/SS/SSIMMS
 revision            0
 license             LGPL-2.1
 maintainers         nomaintainer
-description         create and manipulate PDF files
-long_description    This module is 'The Next Generation' of Text::PDF::API \
-                    which initially provided a nice API around the \
-                    Text::PDF::* modules created by Martin Hosken.
+description         PDF::API2 - Create, modify, and examine PDF files
+long_description    {*}${description}
 
 platforms           {darwin any}
 supported_archs     noarch
 
-checksums           rmd160  4dc196ff5c0e81f18175d4269d2b24e0c5583688 \
-                    sha256  b2d15579e42723d8d7f9b72de86d0d35cde34f1eb7713456ba2ad35fb3cbea7e \
-                    size    3595900
+checksums           rmd160  03387c7e1bceed5263ea9d1802fbf09448a68d37 \
+                    sha256  84d6318279d77844923e4de4275fe4345cd08b225edd7f9ed6a16f87a91aca39 \
+                    size    3596588
 
 if {${perl5.major} != ""} {
     depends_build-append \

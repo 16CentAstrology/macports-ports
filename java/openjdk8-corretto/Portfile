@@ -2,55 +2,52 @@
 
 PortSystem       1.0
 
-name             openjdk8-corretto
+set feature 8
+name             openjdk${feature}-corretto
 categories       java devel
 maintainers      {breun.nl:nils @breun} openmaintainer
-platforms        darwin
+
+# JVMMinimumSystemVersion in Contents/Info.plist is set to macOS 10.6.0 for x86_64:
+# /usr/libexec/PlistBuddy -c "Print :JavaVM:JVMMinimumSystemVersion" Contents/Info.plist
+# Mapping to Darwin version: https://trac.macports.org/wiki/PortfileRecipes#compare-osx-darwin-version
+platforms        {darwin any >= 10 }
+
 # This port uses prebuilt binaries; 'NoMirror' makes sure MacPorts doesn't mirror/distribute these third-party binaries
 license          GPL-2 NoMirror
+
 # This port uses prebuilt binaries for a particular architecture; they are not universal binaries
 universal_variant no
 
 # https://github.com/corretto/corretto-8/releases
 supported_archs  x86_64 arm64
 
-version      8.362.08.1
+version      ${feature}.442.06.1
 revision     0
 
-description  Amazon Corretto OpenJDK 8 (Long Term Support)
+description  Amazon Corretto OpenJDK ${feature} (Long Term Support)
 long_description No-cost, multiplatform, production-ready distribution of OpenJDK from Amazon.
 
 master_sites https://corretto.aws/downloads/resources/${version}/
 
 if {${configure.build_arch} eq "x86_64"} {
     distname     amazon-corretto-${version}-macosx-x64
-    checksums    rmd160  4a026a80e17c0993e7fa1f723cf5f0a3ed07b5f2 \
-                 sha256  2f6a307970a74440a6020e33ab166856f602fa644cb94352bd6efd91de515989 \
-                 size    118782619
+    checksums    rmd160  b859fa6b678bab27a620955b16e063b9ae7bc873 \
+                 sha256  9c083edd6470af55d96591e39ce55b1e48e7353fde5f10fb40680e0064215a46 \
+                 size    118509798
 } elseif {${configure.build_arch} eq "arm64"} {
     distname     amazon-corretto-${version}-macosx-aarch64
-    checksums    rmd160  9c2dd9d57a9fddd26d8be1e8ca8b3f9e1b469eb1 \
-                 sha256  4e6781effb34b37b49603e25d8c4fd6951aff3aadae3116b52313257a66675d9 \
-                 size    104216967
+    checksums    rmd160  bf7ab5e098ac1ce88647e17fcb5209aa913d9b24 \
+                 sha256  d0738d1f3dc01a9ad9518e2707fc1ef4e72fbb2ccb8b5202cd3ec89012ac8dfc \
+                 size    102934373
 }
 
-worksrcdir   amazon-corretto-8.jdk
-
-# https://trac.macports.org/wiki/PortfileRecipes#compare-osx-darwin-version
-if {${os.platform} eq "darwin" && ${os.major} < 19} {
-    # See https://github.com/corretto/corretto-8/blob/release-8.362.08.1/CHANGELOG.md
-    known_fail yes
-    pre-fetch {
-        ui_error "${name} ${version} is only supported on macOS 10.15 Catalina or later."
-        return -code error
-    }
-}
+worksrcdir   amazon-corretto-${feature}.jdk
 
 homepage     https://aws.amazon.com/corretto/
 
 livecheck.type      regex
-livecheck.url       https://github.com/corretto/corretto-8/releases
-livecheck.regex     amazon-corretto-(8\.\[0-9\.\]+)-macosx-.*\.tar\.gz
+livecheck.url       https://github.com/corretto/corretto-${feature}/releases
+livecheck.regex     amazon-corretto-(${feature}\.\[0-9\.\]+)-macosx-.*\.tar\.gz
 
 use_configure    no
 build {}
@@ -83,17 +80,21 @@ test.args   -version
 # macOS Java tools expect to find Java virtual machines under /Library/Java/JavaVirtualMachines, which is not under ${prefix}.
 destroot.violate_mtree yes
 
-set target /Library/Java/JavaVirtualMachines/${name}
-set destroot_target ${destroot}${target}
+set jvms /Library/Java/JavaVirtualMachines
+set jdk ${jvms}/${name}
 
 destroot {
-    xinstall -m 755 -d ${destroot_target}
-    copy ${worksrcpath}/Contents ${destroot_target}
+    xinstall -m 755 -d ${destroot}${prefix}${jdk}
+    copy ${worksrcpath}/Contents ${destroot}${prefix}${jdk}
+
+    # macOS Java tools expect to find Java virtual machines under /Library/Java/JavaVirtualMachines, so let's create a symlink there
+    xinstall -m 755 -d ${destroot}${jvms}
+    ln -s ${prefix}${jdk} ${destroot}${jdk}
 }
 
 notes "
 If you have more than one JDK installed you can make ${name} the default\
 by adding the following line to your shell profile:
 
-    export JAVA_HOME=${target}/Contents/Home
+    export JAVA_HOME=${jdk}/Contents/Home
 "

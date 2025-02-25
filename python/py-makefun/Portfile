@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-makefun
-version             1.15.0
+version             1.15.2
 license             BSD
 supported_archs     noarch
 platforms           {darwin any}
@@ -17,19 +17,16 @@ long_description    makefun helps you create functions dynamically, with the sig
 
 homepage            https://smarie.github.io/python-makefun/
 
-checksums           rmd160 2aa4c7878b7fcf4ae5cc39e9d6680186ab559070 \
-                    sha256 5b110e733d94f7a49d8ac27b1e2d40f2bb0501e98c1d825e0d932d26920dd5df \
-                    size   74404
+checksums           rmd160  5583cef07ae57541518fe0d5b1f6da93fc1794a1 \
+                    sha256  16f2a2b34d9ee0c2b578c960a1808c974e2822cf79f6e9b9c455aace10882d45 \
+                    size    74602
 
-python.versions     39 310
+python.versions     39 310 311 312
+python.pep517       yes
 
 if {${name} ne ${subport}} {
 
     depends_build-append \
                         port:py${python.version}-pytest-runner \
-                        port:py${python.version}-setuptools \
-                        port:py${python.version}-setuptools_scm \
-                        port:py${python.version}-wheel
-
-    livecheck.type      none
+                        port:py${python.version}-setuptools_scm
 }

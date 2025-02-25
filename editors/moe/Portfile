@@ -3,12 +3,11 @@
 PortSystem          1.0
 
 name                moe
-version             1.12
+version             1.15
 revision            0
 
 categories          editors
-platforms           darwin
-license             GPL-3
+license             GPL-2+
 
 maintainers         nomaintainer
 
@@ -25,10 +24,16 @@ homepage            https://www.gnu.org/software/moe/
 master_sites        gnu
 use_lzip            yes
 
-checksums           rmd160  0ae511b28d9b557db8412d6bae0e9ea6ce7ea9c6 \
-                    sha256  8a885f2be426f8e04ad39c96012bd860954085a23744f2451663168826d7a1e8 \
-                    size    87917
+checksums           rmd160  a493702328eed74ccee79b8ba39c5f1111bfc897 \
+                    sha256  41f8c8b099ce3047945ca4e097a60d9243e9c73fbb268c194a12da8b0d9f0a66 \
+                    size    93995
 
-depends_lib         port:ncurses
+depends_build-append \
+                    bin:makeinfo:texinfo
+depends_lib-append  port:ncurses
 
-configure.args      --infodir=${prefix}/share/info
+configure.args      CXX="${configure.cxx}" \
+                    CPPFLAGS="${configure.cppflags}" \
+                    CXXFLAGS="${configure.cxxflags} [get_canonical_archflags cxx]" \
+                    LDFLAGS="${configure.ldflags} [get_canonical_archflags ld]" \
+                    MAKEINFO="${prefix}/bin/makeinfo"

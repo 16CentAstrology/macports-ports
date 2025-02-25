@@ -3,19 +3,18 @@
 PortSystem          1.0
 PortGroup           R 1.0
 
-R.setup             cran eddelbuettel BH 1.78.0-0
-revision            0
+R.setup             cran eddelbuettel BH 1.84.0-0
+revision            1
 categories-append   devel
 maintainers         {@barracuda156 gmail.com:vital.had} openmaintainer
 license             Boost-1
 description         Boost C++ Header Files
 long_description    {*}${description}
 homepage            https://dirk.eddelbuettel.com/code/bh.html
-checksums           rmd160  49d181772b07e92379369315b8de625dfc39564f \
-                    sha256  3b9e9d07682013e0c06a396dda176b405eab99a7273eca6c40d1b4c4110e8cb3 \
-                    size    13269768
+checksums           rmd160  d195071d1b7abf4efd8d9c9fec6ef3743a311b36 \
+                    sha256  6fb660755f572cd975073d7052075654acf8db12d208954ca223b8e4f77ef1ac \
+                    size    14017751
 supported_archs     noarch
+platforms           {darwin any}
 
-patch.pre_args      -p1
-# See: https://github.com/boostorg/smart_ptr/issues/105
-patchfiles          0001-spinlock_gcc_atomic.hpp-fix-for-macOS-ppc32.patch
+test.run            yes

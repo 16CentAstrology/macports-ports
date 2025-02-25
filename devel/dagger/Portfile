@@ -3,9 +3,9 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        dagger dagger 0.3.9 v
+github.setup        dagger dagger 0.15.1 v
 github.tarball_from releases
-revision            1
+revision            0
 
 categories          devel
 maintainers         {judaew @judaew} openmaintainer
@@ -13,29 +13,35 @@ license             Apache-2
 
 description         A portable devkit for CI/CD pipelines
 long_description    \
-    Using Dagger, software teams can develop powerful CICD pipelines with \
+    Using Dagger, software teams can develop powerful CI/CD pipelines with \
     minimal effort, then run them anywhere. Benefits include: \
-    \n- Unify dev and CI environments. Write your pipeline once, Dagger will \
+    \n- Unified dev and CI environments. Write your pipeline once, Dagger will \
     run it the same everywhere. \
-    \n- Reduce CI lock-in. No more re-writing everything from scratch every \
+    \n- Reduced CI lock-in. No more re-writing everything from scratch every \
     6 months.
 homepage            https://dagger.io
 
-set arch ${build_arch}
-if {${build_arch} eq "x86_64"} {
-    set arch "amd64"
+switch ${build_arch} {
+    x86_64 {
+        distfiles           dagger_v${version}_darwin_amd64${extract.suffix}
+        checksums           rmd160  cab99c5c0762f524e42df80051078e3dc619920a \
+                            sha256  759156895c2076036837049aba208d185682b6be9e7a75bf91984fa2cb91ffbd \
+                            size    11258422
+    }
+    arm64 {
+        distfiles           dagger_v${version}_darwin_arm64${extract.suffix}
+        checksums           rmd160  f7c397dbc7c826ddf98ffbe043d5fbc64eb7b6b7 \
+                            sha256  d5f0f95690941b5845c1a4f60be8a3c8f79be18a786b6bd31354a587118cafa6 \
+                            size    10619160
+    }
+    default {
+        known_fail  yes
+        pre-fetch {
+            ui_error "${subport} @ ${version} only supported for architectures ${supported_archs}"
+            return -code error "Unsupported architecture: ${build_arch}"
+        }
+    }
 }
-
-distfiles           dagger_v${version}_darwin_${arch}${extract.suffix}
-
-checksums           dagger_v${version}_darwin_amd64${extract.suffix} \
-                        rmd160  b73962635bc6cab7cd0b8610e310299a74527bec \
-                        sha256  b5a4b9e0c320e6f37969f876cbf7446488863a32b309f4b210b2b3eacbb72014 \
-                        size    7763212 \
-                    dagger_v${version}_darwin_arm64${extract.suffix} \
-                        rmd160  bc31b27c58071a01a12be7253720fed9edb6cd35 \
-                        sha256  9365f9333d59b738b80f2f401b6798e1e3ab096147d5249082f2cad9b1b7cced \
-                        size    7478555
 
 extract.mkdir       yes
 use_configure       no
@@ -47,8 +53,8 @@ destroot {
     # Shell completion
     xinstall -d ${destroot}${prefix}/etc/bash_completion.d
     xinstall -d ${destroot}${prefix}/share/zsh/site-functions
-    xinstall -d ${destroot}${prefix}/share/fish/completions
+    xinstall -d ${destroot}${prefix}/share/fish/vendor_completions.d
     system "${destroot}${prefix}/bin/${name} completion bash > ${destroot}${prefix}/etc/bash_completion.d/${name}"
     system "${destroot}${prefix}/bin/${name} completion zsh > ${destroot}${prefix}/share/zsh/site-functions/_${name}"
-    system "${destroot}${prefix}/bin/${name} completion fish > ${destroot}${prefix}/share/fish/completions/${name}.fish"
+    system "${destroot}${prefix}/bin/${name} completion fish > ${destroot}${prefix}/share/fish/vendor_completions.d/${name}.fish"
 }

@@ -3,8 +3,9 @@
 PortSystem          1.0
 PortGroup           golang 1.0
 
-go.setup            github.com/k6io/k6 0.42.0 v
+go.setup            github.com/k6io/k6 0.56.0 v
 go.package          go.k6.io/k6
+go.offline_build    no
 github.tarball_from archive
 revision            0
 
@@ -25,17 +26,20 @@ maintainers         {l2dy @l2dy} \
                     {gmail.com:herby.gillot @herbygillot} \
                     openmaintainer
 
-checksums           rmd160  29b1065ccc2d23d4f34737af781d4632968f11a6 \
-                    sha256  a9bf8fb4a30de2da825a7427420cb32b33e6356e3069906f9e4ce9f764ee6372 \
-                    size    7536512
-
-build.env-delete    GO111MODULE=off
+checksums           rmd160  835e6fd6a006285f09849b9ad58aa408f5722828 \
+                    sha256  a11776d57e9cf3fb306c4f0df9141f972c1b6506c47a750fd71d0f5b24945272 \
+                    size    10911752
 
 destroot {
     xinstall -m 0755 ${worksrcpath}/${name} ${destroot}${prefix}/bin/
 
     set docdir ${prefix}/share/doc/${name}
+    set sharedir ${prefix}/share/${name}
+
     xinstall -d ${destroot}${docdir}
     xinstall -m 0644 -W ${worksrcpath} README.md LICENSE.md \
         ${destroot}${docdir}
+
+    xinstall -d ${destroot}${sharedir}/
+    copy ${worksrcpath}/examples ${destroot}${sharedir}/
 }

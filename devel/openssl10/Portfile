@@ -2,6 +2,9 @@
 
 PortSystem          1.0
 PortGroup           muniversal 1.0
+PortGroup           deprecated 1.0
+
+deprecated.eol_version yes
 
 set short_v         1.0
 name                openssl[string map {. {}} $short_v]
@@ -100,7 +103,10 @@ pre-destroot {
     if {[variant_exists universal] && [variant_isset universal]} {
         global merger_dont_diff
         if {[llength ${universal_archs_to_use}] > 2} {
-            lappend merger_dont_diff ${prefix}/include/openssl/opensslconf.h
+            lappend merger_dont_diff ${my_prefix}/include/openssl/opensslconf.h
+            # Previous version/revisions got this wrong, but this situation
+            # is too obscure to justify revbumping the dependents.
+            notes-append "Universal dependents may need to be rebuilt."
         }
     }
 }
@@ -130,5 +136,5 @@ variant rfc3779 description {enable RFC 3779: X.509 Extensions for IP Addresses 
 }
 
 livecheck.type      regex
-livecheck.url       https://www.openssl.org/source/old/1.0.2/
+livecheck.url       https://www.openssl-library.org/source/old/1.0.2/
 livecheck.regex     openssl-(1.0.\[0-9.\]+\[a-z\]?)\\.tar\\.gz

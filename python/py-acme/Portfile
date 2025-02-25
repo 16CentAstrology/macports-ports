@@ -5,30 +5,31 @@ PortGroup           github 1.0
 PortGroup           python 1.0
 
 name                py-acme
-github.setup        certbot certbot 2.2.0 v
-revision            0
+github.setup        certbot certbot 3.2.0 v
+github.tarball_from releases
+revision            1
 categories-append   security
 license             Apache-2
 maintainers         {mps @Schamschula} openmaintainer
 description         ACME protocol implementation in Python.
 long_description    {*}${description}
-supported_archs     noarch
-platforms           {darwin any}
 homepage            https://certbot.eff.org/
 
-python.versions     37 38 39 310 311
+distname            acme-${version}
 
-checksums           rmd160  b38e8f5d6a4bb2ac264a1a754d7bac1c121f3a52 \
-                    sha256  e68e9b4d22929ff8c5bda4f5297ebc1f17b6d7edc936a3ecfe71fba1a3b75183 \
-                    size    1331079
+supported_archs     noarch
+platforms           {darwin any}
+
+python.versions     39 310 311 312 313
+
+checksums           rmd160  8a023284f54e6ef6409ad763168187f6f6bf9992 \
+                    sha256  e11d0ccf43ec19244ada40df1dc4ca49c9ce407749f3771d2cefe0674e206d84 \
+                    size    92875
 
 if {${name} ne ${subport}} {
-    build.dir       ${worksrcpath}/acme
-
     depends_build-append \
                     port:py${python.version}-funcsigs \
-                    port:py${python.version}-mock \
-                    port:py${python.version}-setuptools
+                    port:py${python.version}-mock
 
     depends_lib-append  \
                     port:py${python.version}-cryptography \
@@ -45,17 +46,16 @@ if {${name} ne ${subport}} {
             port:py${python.version}-sphinx_rtd_theme
 
         post-build {
-            set env(doc_path) ${worksrcpath}/acme/docs
+            set env(doc_path) ${worksrcpath}/docs
             set env(python_branch) ${python.branch}
             exec sh -c {cd $doc_path && sphinx-build-$python_branch -N -b man . _build/man} >@stdout
         }
 
         post-destroot {
             xinstall -d ${destroot}${prefix}/share/man/man1
-            xinstall -d ${destroot}${prefix}/share/man/man7
-            xinstall -m 640 ${worksrcpath}/acme/docs/_build/man/acme-python.1 \
+            xinstall -m 640 ${worksrcpath}/docs/_build/man/acme-python.1 \
                 ${destroot}${prefix}/share/man/man1/
-            xinstall -m 640 ${worksrcpath}/acme/docs/_build/man/jws.1 \
+            xinstall -m 640 ${worksrcpath}/docs/_build/man/jws.1 \
                 ${destroot}${prefix}/share/man/man1/
         }
     }

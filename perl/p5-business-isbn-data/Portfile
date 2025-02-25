@@ -4,20 +4,20 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.28 5.30 5.32 5.34
-perl5.setup         Business-ISBN-Data 20210112.006
-maintainers         nomaintainer
+perl5.setup         Business-ISBN-Data 20250220.001 ../../authors/id/B/BR/BRIANDFOY
+revision            0
 license             Artistic-2
-
-description         ISBN data required for use of Business::ISBN
-long_description    This package provides ISBN data used by the \
-                    Business::ISBN family of Perl modules to associate \
-                    countries with ISBN codes.  It has been made a separate \
-                    module so that it can be updated independently of the \
-                    Business::ISBN code.
-
-checksums           rmd160  c56ecf26fcadadb0007f76f997a8fd106f100c66 \
-                    sha256  98c2cfb266b5fdd016989abaa471d9dd4c1d593c508a6f01f66d184d5fee8bae \
-                    size    29035
+maintainers         nomaintainer
+description         Business::ISBN::Data - data pack for Business::ISBN
+long_description    {*}${description}
 
 platforms           {darwin any}
 supported_archs     noarch
+
+checksums           rmd160  c7a7777072562fc5ee647e97d310871cd19cf478 \
+                    sha256  fb76ca33b68a54550daffe7277ce661be6bb4453c9dc4e4106d8bf6ea2f9ad34 \
+                    size    36442
+
+livecheck.type      regex
+livecheck.url       https://cpan.metacpan.org/authors/id/B/BR/BRIANDFOY
+livecheck.regex     "${perl5.module}-(\\d+(?:\[\\._\]\\d+)+)"

@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-sunpy
-version             4.1.1
+version             6.1.1
 revision            0
 categories          python
 license             BSD
@@ -12,13 +12,15 @@ maintainers         {mps @Schamschula} openmaintainer
 description         SunPy is an open-source Python library for Solar Physics data \
                     analysis and visualization.
 long_description    {*}${description}
+supported_archs     noarch
+platforms           {darwin any >= 11}
 homepage            https://sunpy.org
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312
 
-checksums           rmd160  f7517ef244fa53e813d0679f51609212798d7fcb \
-                    sha256  57fb7d46982fc25cf6d6f0b941c20a701158a43473a32368a97d99c4a2b60dc1 \
-                    size    5008928
+checksums           rmd160  3dbf0a0416e8431a2fd8645ee56adb29783ccb15 \
+                    sha256  c609a6b1b0bb286bd42789940f54fcb7d6900dfcfe217df54f859ff6082e13db \
+                    size    3788826
 
 if {${name} ne ${subport}} {
     depends_build-append \
@@ -28,11 +30,20 @@ if {${name} ne ${subport}} {
     depends_lib-append \
                     port:py${python.version}-astropy \
                     port:py${python.version}-numpy \
+                    port:py${python.version}-packaging \
                     port:py${python.version}-parfive
 
-    variant asdf {
-        depends_lib-append \
-                    port:py${python.version}-pyasdf
+    python.pep517   yes
+
+    patchfiles      patch-pyproject.toml.diff
+
+    # Note:
+    # the asdf variant requires py311-obspy which is missing dependencies.
+    if {${python.version} < 311} {
+        variant asdf {
+            depends_lib-append \
+                        port:py${python.version}-pyasdf
+        }
     }
 
     variant dask {

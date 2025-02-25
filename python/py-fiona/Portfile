@@ -4,13 +4,12 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-fiona
-python.rootname     Fiona
-version             1.8.21
+version             1.10.1
 revision            0
 categories-append   gis
 license             BSD
 
-python.versions     37 38 39 310
+python.versions     39 310 311 312 313
 
 maintainers         {stromnov @stromnov} openmaintainer
 
@@ -22,19 +21,22 @@ long_description    Fiona provides uncomplicated Python interfaces \
 
 homepage            https://github.com/Toblerity/Fiona
 
-checksums           rmd160  6925907550a2de8d2a510f11c02eb3f31d564de0 \
-                    sha256  3a0edca2a7a070db405d71187214a43d2333a57b4097544a3fcc282066a58bfc \
-                    size    1040639
+checksums           rmd160  2bfb5995f240cb85c19eacdbff51881fb7dc3280 \
+                    sha256  b00ae357669460c6491caba29c2022ff0acfcbde86a95361ea8ff5cd14a86b68 \
+                    size    444606
 
 if {${name} ne ${subport}} {
     depends_build-append \
                         port:py${python.version}-cython
 
-    depends_lib-append  port:py${python.version}-setuptools \
-                        port:py${python.version}-attrs \
+    depends_lib-append  port:py${python.version}-attrs \
+                        port:py${python.version}-certifi \
+                        port:py${python.version}-click \
                         port:py${python.version}-click-plugins \
                         port:py${python.version}-cligj \
-                        port:py${python.version}-munch \
-                        port:py${python.version}-six \
                         port:gdal
+
+    if {${python.version} < 310} {
+        depends_lib-append  port:py${python.version}-importlib-metadata
+    }
 }
